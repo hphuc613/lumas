@@ -1,18 +1,5 @@
 Document Root Source
 
-I. How to Clone a Specific Branch?
-   Run this command:
-    
-        git clone --branch <branchname> <remote-repo-url>
-        git clone --branch laravel_admin https://github.com/phelanhp/template_admin.git
-       
-   Or:
-    
-        git clone -b <branchname> <remote-repo-url>
-        git clone -b laravel_admin https://github.com/phelanhp/template_admin.git
-     
-   Here -b is just an alias for --branch
-    
 II. Set .env file
     Clone .env.example to .env and set database info.
     
@@ -42,9 +29,3 @@ VI. Generate Application Key:
 
         php artisan key:generate
 
-VII. Add new Module                  
-    Run this command:
-    
-        php artisan make:module {name}
-   
-   {name} is Module name            
