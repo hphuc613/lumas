@@ -1,0 +1,42 @@
+$smaller: "(max-width: 360px)";
+$small-mobile: "(max-width: 413px)";
+$mobile: "(max-width: 739px)";
+$medium: "(min-width: 740px)";
+$tablet: "(min-width: 768px)";
+$desktop: "(min-width: 1024px)";
+
+@mixin smaller() {
+    @media #{$smaller}{
+        @content;
+    }
+}
+
+@mixin medium() {
+    @media #{$medium}{
+        @content;
+    }
+}
+
+@mixin small-mobile() {
+    @media #{$small-mobile}{
+        @content;
+    }
+}
+
+@mixin mobile() {
+    @media #{$mobile}{
+        @content;
+    }
+}
+
+@mixin tablet() {
+    @media #{$tablet}{
+        @content;
+    }
+}
+
+@mixin desktop() {
+    @media #{$desktop}{
+        @content;
+    }
+}
