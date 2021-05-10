@@ -1,18 +1,18 @@
 <?php
 return [
-    'name' => 'member',
-    'display_name' => trans('Member'),
+    'name' => 'member-view',
+    'display_name' => trans('Members'),
     'group' => [
         [
-            'name'         => 'role-create',
+            'name'         => 'member-create',
             'display_name' => trans('Create new role'),
         ],
         [
-            'name'         => 'role-update',
+            'name'         => 'member-update',
             'display_name' => trans('Update role'),
         ],
         [
-            'name'         => 'role-delete',
+            'name'         => 'member-delete',
             'display_name' => trans('Delete role'),
         ],
     ]

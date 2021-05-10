@@ -18,6 +18,6 @@ class MemberController extends Controller{
     }
 
     public function index(Request $request){
-        return view("Member::index");
+        return view("Member::backend.index");
     }
 }

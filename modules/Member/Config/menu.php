@@ -5,6 +5,6 @@ return [
     'sort' => 1,
     'active'=> TRUE,
     'icon' => 'fas fa-user-friends',
-    'middleware' => [],
+    'middleware' => ['member-view'],
     'group' => []
 ];

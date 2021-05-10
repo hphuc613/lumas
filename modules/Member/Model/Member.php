@@ -9,7 +9,7 @@ class Member extends Model
 {
     use SoftDeletes;
 
-    protected $table = "member";
+    protected $table = "members";
 
     protected $primaryKey = "id";
 
