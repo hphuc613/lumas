@@ -33,7 +33,7 @@ class AuthController extends Controller {
      */
     public function getLogin(Request $request) {
         if(Auth::check()) {
-            return redirect()->back();
+            return redirect()->route("dashboard");
         }
 
         return view('Auth::backend.login');

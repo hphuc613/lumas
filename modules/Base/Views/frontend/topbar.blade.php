@@ -1,7 +1,7 @@
 <header class="topbar">
     <nav class="navbar top-navbar navbar-expand-md navbar-dark">
         <div class="navbar-header">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="{{ route('frontend.dashboard') }}">
                 <!-- Logo icon -->
                 <b>
                     <img src="{{ asset('logo/company_logo.png') }}" width="70%" alt="homepage" class="light-logo" />
@@ -109,23 +109,12 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown u-pro">
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="#" alt="user" class=""> <span class="hidden-md-down">Mark &nbsp;<i class="fa fa-angle-down"></i></span> </a>
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ \Auth::guard('member')->user()->name }} &nbsp;<i class="fa fa-angle-down"></i></span> </a>
                     <div class="dropdown-menu dropdown-menu-right animated flipInY">
                         <!-- text-->
-                        <a href="javascript:void(0)" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
-                        <!-- text-->
-                        <a href="javascript:void(0)" class="dropdown-item"><i class="ti-wallet"></i> My Balance</a>
-                        <!-- text-->
-                        <a href="javascript:void(0)" class="dropdown-item"><i class="ti-email"></i> Inbox</a>
-                        <!-- text-->
-                        <div class="dropdown-divider"></div>
-                        <!-- text-->
-                        <a href="javascript:void(0)" class="dropdown-item"><i class="ti-settings"></i> Account Setting</a>
-                        <!-- text-->
-                        <div class="dropdown-divider"></div>
-                        <!-- text-->
-                        <a href="login.html" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</a>
-                        <!-- text-->
+                        <a href="{{ route("frontend.get.member.profile") }}" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
+                        <a href="{{ route('frontend.get.logout.member') }}" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</a>
                     </div>
                 </li>
             </ul>

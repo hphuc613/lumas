@@ -13,7 +13,10 @@ use Illuminate\View\View;
 use Modules\Base\Model\Status;
 use Modules\Member\Model\Member;
 
-
+/**
+ * Class AuthMemberController
+ * @package Modules\Auth\Http\Controllers
+ */
 class AuthMemberController extends Controller{
 
     /**
@@ -23,7 +26,7 @@ class AuthMemberController extends Controller{
      */
     public function getLogin(Request $request){
         if(Auth::guard('member')->check()){
-            return redirect()->back();
+            return redirect()->route("frontend.dashboard");
         }
 
         return view('Auth::frontend.login');
@@ -90,9 +93,9 @@ class AuthMemberController extends Controller{
                 $request->session()->flash('error', trans('Your email not exist.'));
             }
 
-            return redirect()->route('get.login.member');
+            return redirect()->route('frontend.get.login.member');
         }
 
-        return view('Auth::frontend.member.forgot_password');
+        return view('Auth::frontend.forgot_password');
     }
 }

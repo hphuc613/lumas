@@ -1,0 +1,13 @@
+form label {
+  font-weight: 500;
+}
+
+.alert-fade-out {
+  max-width: 300px;
+  position: fixed;
+  right: -300px;
+  top: 70px;
+  z-index: 1;
+}
+
+/*# sourceMappingURL=main.css.map */

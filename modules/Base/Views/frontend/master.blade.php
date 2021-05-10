@@ -11,16 +11,11 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="#">
     <title>Elite Admin Template - The Ultimate Multipurpose admin template</title>
-    <!-- Calendar CSS -->
     <link href="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.css') }}" rel="stylesheet" />
-    <!-- Custom CSS -->
     <link href="{{ asset('assets/frontend/dist/css/style.css') }}" rel="stylesheet">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <link href="{{ asset('assets/frontend/css/main.css') }}" rel="stylesheet">
 </head>
 
 <body class="skin-blue fixed-layout">
@@ -35,6 +30,16 @@
     @include('Base::frontend.left_sidebar')
     <div class="page-wrapper">
         <div class="container-fluid">
+            @if (session('error'))
+                <div class="alert alert-danger  alert-fade-out" role="alert">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if (session('success'))
+                <div class="alert alert-success alert-fade-out" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
             @yield('content')
         </div>
     </div>
@@ -52,6 +57,12 @@
 <script src="{{ asset('assets/frontend/assets/node_modules/moment/moment.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/calendar/dist/cal-init.js') }}"></script>
+<script src="{{ asset('assets/frontend/js/main.js') }}"></script>
 </body>
-
+<script>
+    if ($('.alert-success').html() !== undefined) {
+        $('.alert-danger').css('top', '120px');
+    }
+    slideAlert($('.alert-fade-out'));
+</script>
 </html>

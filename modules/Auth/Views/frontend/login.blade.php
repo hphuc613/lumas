@@ -48,7 +48,7 @@
                             <button type="submit" class="btn btn-primary w-100">{{ trans('Login') }}</button>
                         </div>
                         <div class="p-2">
-                            <a href="#" class="text-info">{{ trans('Forget Password?') }}</a>
+                            <a href="{{ route('frontend.get.forgot_password.member') }}" class="text-info">{{ trans('Forget Password?') }}</a>
                         </div>
                     </form>
                 </div>
