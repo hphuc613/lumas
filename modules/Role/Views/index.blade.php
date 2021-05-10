@@ -71,7 +71,7 @@
                                         <input type="checkbox" name='id[]' value="{{ $role->id }}" class="checkbox-style checkbox-item">
                                     </td>
                                     <td>{{$key++}}</td>
-                                    <td>{{ gg_trans($role->name) }}</td>
+                                    <td>{{ trans($role->name) }}</td>
                                     <td>{{ \Modules\Base\Model\Status::getStatus($role->status) ?? NULL }}</td>
                                     <td>{{ \Carbon\Carbon::parse($role->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($role->updated_at)->format('d/m/Y H:i:s')}}</td>

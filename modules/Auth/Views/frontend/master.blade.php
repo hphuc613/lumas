@@ -20,4 +20,7 @@
 <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/custom.js') }}"></script>
+<script src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
+@stack('js')
+
 </html>

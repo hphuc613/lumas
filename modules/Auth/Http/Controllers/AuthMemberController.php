@@ -6,10 +6,12 @@ use App\AppHelpers\Helper;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Modules\Auth\Http\Requests\SignUpValidation;
 use Modules\Base\Model\Status;
 use Modules\Member\Model\Member;
 
@@ -17,14 +19,43 @@ use Modules\Member\Model\Member;
  * Class AuthMemberController
  * @package Modules\Auth\Http\Controllers
  */
-class AuthMemberController extends Controller{
+class AuthMemberController extends Controller
+{
+
+    /**
+     * @param SignUpValidation $request
+     * @return Application|Factory|RedirectResponse|View
+     */
+    public function getSignUp()
+    {
+        return view('Auth::frontend.signup');
+    }
+
+    /**
+     * @param SignUpValidation $request
+     * @return RedirectResponse
+     */
+    public function postSignUp(SignUpValidation $request)
+    {
+        if($request->post()){
+            $data = $request->all();
+            unset($data['re_enter_password']);
+            $member = new Member($data);
+            $member->save();
+
+            return redirect()->route('frontend.get.login.member');
+        }
+        return redirect()->back();
+    }
+
 
     /**
      * @param Request $request
      *
      * @return string
      */
-    public function getLogin(Request $request){
+    public function getLogin(Request $request)
+    {
         if(Auth::guard('member')->check()){
             return redirect()->route("frontend.dashboard");
         }
@@ -37,7 +68,8 @@ class AuthMemberController extends Controller{
      *
      * @return string
      */
-    public function postLogin(Request $request){
+    public function postLogin(Request $request)
+    {
         $login = [
             'username' => $request->input('username'),
             'password' => $request->input('password'),
@@ -48,7 +80,7 @@ class AuthMemberController extends Controller{
                 return redirect()->route("frontend.dashboard");
             }
             $request->session()->flash('error',
-                                       trans('Your account is inactive. Please contact with admin page to get more information.'));
+                trans('Your account is inactive. Please contact with admin page to get more information.'));
             return $this->logout();
         }else{
             $request->session()->flash('error', trans('Incorrect username or password'));
@@ -61,7 +93,8 @@ class AuthMemberController extends Controller{
      *
      * @return RedirectResponse
      */
-    public function logout(){
+    public function logout()
+    {
         if(Auth::guard('member')->check()){
             session('username', Auth::guard('member')->user()->username);
             Auth::guard('member')->logout();
@@ -73,7 +106,8 @@ class AuthMemberController extends Controller{
      * @param Request $request
      * @return Application|Factory|RedirectResponse|View
      */
-    public function forgotPassword(Request $request){
+    public function forgotPassword(Request $request)
+    {
         if($request->post()){
             $member = Member::where('email', $request->email)->first();
             if(!empty($member)){

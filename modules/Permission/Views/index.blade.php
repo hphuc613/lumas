@@ -26,7 +26,7 @@ use Modules\Permission\Model\PermissionRole;
                                     <th width="50px">#</th>
                                     <th>{{ trans('Name') }}</th>
                                     @foreach($roles as $role)
-                                        <th>{{ gg_trans($role->name) }}</th>
+                                        <th>{{ trans($role->name) }}</th>
                                     @endforeach
                                 </tr>
                                 </thead>
