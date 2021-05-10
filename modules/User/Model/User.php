@@ -2,11 +2,9 @@
 
 namespace Modules\User\Model;
 
-use App\AppHelpers\Helper;
 use App\User as BaseUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 /**
@@ -19,8 +17,6 @@ class User extends BaseUser{
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
-
-    protected $guarded = [];
 
     public static function filter($filter){
         $query = self::query();

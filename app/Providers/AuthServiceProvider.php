@@ -32,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider{
             $permissions = Permission::all();
             foreach ($permissions as $permission){
                 Gate::define($permission->name, function ($user) use ($permission){
-                    $role = $user->role;
+                    $role = $user->getRoleAttribute();
 
                     return PermissionRole::checkRolePermission($permission->id, $role->id);
                 });
