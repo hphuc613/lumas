@@ -4,24 +4,28 @@
             <a class="navbar-brand" href="{{ route('frontend.dashboard') }}">
                 <!-- Logo icon -->
                 <b>
-                    <img src="{{ asset('logo/company_logo.png') }}" width="70%" alt="homepage" class="light-logo" />
+                    <img src="{{ asset('logo/company_logo.png') }}" width="70%" alt="homepage" class="light-logo"/>
                 </b>
             </a>
         </div>
         <div class="navbar-collapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item"> <a class="nav-link nav-toggler d-block d-sm-none waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
-                <li class="nav-item"> <a class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark" href="javascript:void(0)"><i class="icon-menu"></i></a> </li>
+                <li class="nav-item"><a class="nav-link nav-toggler d-block d-sm-none waves-effect waves-dark"
+                                        href="javascript:void(0)"><i class="ti-menu"></i></a></li>
+                <li class="nav-item"><a
+                        class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark"
+                        href="javascript:void(0)"><i class="icon-menu"></i></a></li>
                 <li class="nav-item">
                     <form class="app-search d-none d-md-block d-lg-block">
-                        <input type="text" class="form-control" placeholder="Search & enter">
+                        <input type="text" class="form-control" placeholder="{{ trans('Search') }}">
                     </form>
                 </li>
             </ul>
             <ul class="navbar-nav my-lg-0">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="ti-email"></i>
-                        <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false"> <i class="ti-email"></i>
+                        <div class="notify"><span class="heartbit"></span> <span class="point"></span></div>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right mailbox animated bounceInDown">
                         <ul>
@@ -49,25 +53,44 @@
                                     <a href="javascript:void(0)">
                                         <div class="btn btn-primary btn-circle"><i class="ti-user"></i></div>
                                         <div class="mail-contnet">
-                                            <h5>Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:02 AM</span> </div>
+                                            <h5>Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span>
+                                            <span class="time">9:02 AM</span></div>
                                     </a>
                                 </div>
                             </li>
                             <li>
-                                <a class="nav-link text-center link" href="javascript:void(0);"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>
+                                <a class="nav-link text-center link" href="javascript:void(0);"> <strong>Check all
+                                        notifications</strong> <i class="fa fa-angle-right"></i> </a>
                             </li>
                         </ul>
                     </div>
                 </li>
-                <!-- ============================================================== -->
-                <!-- End Comment -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
-                <!-- Messages -->
-                <!-- ============================================================== -->
+                <li class="nav-item">
+                    <div class="btn-group h-100 align-items-center">
+                        <a href="javascript:void(0)" class="nav-link dropdown-toggle waves-effect waves-dark"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            LANG
+                        </a>
+                        <div class="dropdown-menu animated flipInY">
+                            <a class="dropdown-item @if(session()->get('locale') === 'en') active @endif"
+                               href="{{ route('change_locale','en') }}">
+                                @if(session()->get('locale') === 'en') <i
+                                    class="icon-lang mdi mdi-check text-success"></i> @endif
+                                {{ trans('English') }}(US)
+                            </a>
+                            <a class="dropdown-item @if(session()->get('locale') === 'cn') active @endif"
+                               href="{{ route('change_locale','cn') }}">
+                                @if(session()->get('locale') === 'cn') <i
+                                    class="icon-lang mdi mdi-check text-success"></i> @endif
+                                {{ trans('Chinese') }}(Traditional)
+                            </a>
+                        </div>
+                    </div>
+                </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" id="2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="icon-note"></i>
-                        <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" id="2" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false"> <i class="icon-note"></i>
+                        <div class="notify"><span class="heartbit"></span> <span class="point"></span></div>
                     </a>
                     <div class="dropdown-menu mailbox dropdown-menu-right animated bounceInDown" aria-labelledby="2">
                         <ul>
@@ -111,14 +134,17 @@
 
 
                 <li class="nav-item dropdown u-pro">
-                    <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href=""
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="ti-user"></i>
                         {{ \Auth::guard('member')->user()->name }}
                         <i class="fa fa-angle-down"></i></span> </a>
                     <div class="dropdown-menu dropdown-menu-right animated flipInY">
                         <!-- text-->
-                        <a href="{{ route("frontend.get.member.profile") }}" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
-                        <a href="{{ route('frontend.get.logout.member') }}" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</a>
+                        <a href="{{ route("frontend.get.member.profile") }}" class="dropdown-item"><i
+                                class="ti-user"></i> {{ trans('My Profile') }}</a>
+                        <a href="{{ route('frontend.get.logout.member') }}" class="dropdown-item"><i
+                                class="fa fa-power-off"></i> {{ trans('Log out') }}</a>
                     </div>
                 </li>
             </ul>

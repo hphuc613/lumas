@@ -29,8 +29,16 @@ class MemberController extends Controller{
      * @return Application|Factory|View
      */
     public function index(Request $request){
-        $members = Member::where('deleted_at', null)->paginate(20);
-        return view("Member::backend.index", compact('members'));
+        $members = Member::query();
+        $filter  = [];
+        if($request->post()){
+            $filter = $request->all();
+            if(!empty($filter['name'])){
+                $members = $members->where('name', 'LIKE', '%' . $filter['name'] . '%');
+            }
+        }
+        $members = $members->where('deleted_at', null)->paginate(20);
+        return view("Member::backend.index", compact('members', 'filter'));
     }
 
     /**

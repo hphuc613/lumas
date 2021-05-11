@@ -32,12 +32,18 @@
   border-color: red;
 }
 
-.alert-fade-out {
-  max-width: 300px;
-  position: fixed;
-  right: -300px;
-  top: 70px;
-  z-index: 1;
+.topbar .top-navbar .navbar-header {
+  background: #efa5a0;
+}
+.topbar .dropdown-menu .dropdown-item {
+  padding: 7px 6px;
+}
+.topbar .dropdown-menu .dropdown-item .icon-lang {
+  font-size: 15px;
+}
+
+.skin-default-dark .topbar {
+  background: #007a5c;
 }
 
 /*# sourceMappingURL=main.css.map */

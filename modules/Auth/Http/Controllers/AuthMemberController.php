@@ -6,10 +6,10 @@ use App\AppHelpers\Helper;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Modules\Auth\Http\Requests\SignUpValidation;
 use Modules\Base\Model\Status;
@@ -116,7 +116,7 @@ class AuthMemberController extends Controller
         if($request->post()){
             $member = Member::where('email', $request->email)->first();
             if(!empty($member)){
-                $password = substr(md5(microtime()), rand(0, 26), 6);
+                $password = Str::random(6);
                 $body     = '';
                 $body     .= "<div><p>" . trans("Your password: ") . $password . "</p></div>";
                 $body     .= '<div><i><p style="color: red">' . trans("You should change password after login.") . '</p></i></div>';

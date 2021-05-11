@@ -9,7 +9,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Modules\Base\Model\Status;
 use Modules\User\Model\User;
@@ -85,7 +85,7 @@ class AuthController extends Controller {
         if($request->post()) {
             $user = User::where('email', $request->email)->first();
             if(!empty($user)) {
-                $password = substr(md5(microtime()), rand(0, 26), 6);
+                $password = Str::random(6);
                 $body     = '';
                 $body     .= "<div><p>" . trans("Your password: ") . $password . "</p></div>";
                 $body     .= '<div><i><p style="color: red">' . trans("You should change password after login.") . '</p></i></div>';

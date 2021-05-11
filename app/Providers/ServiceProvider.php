@@ -17,12 +17,17 @@ class ServiceProvider extends BaseServiceProvider{
 
             Route::group(['module' => $module, 'namespace' => $namespace . '\Http\Controllers'],
                 function() use ($module_path, $module){
+                    /** Route base */
+                    $route_path = $module_path . '/Http/Routes/route.php';
+                    if(file_exists($route_path)){
+                        $this->loadRoutesFrom($route_path);
+                    }
+
                     /** Route admin */
                     $route_path_admin = $module_path . '/Http/Routes/admin.php';
                     if(file_exists($route_path_admin)){
                         $this->loadRoutesFrom($route_path_admin);
                     }
-
 
                     /** Route web */
                     $route_path_web = $module_path . '/Http/Routes/web.php';

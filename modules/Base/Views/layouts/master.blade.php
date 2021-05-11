@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/datetimepicker/css/datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/backend/css/main.css') }}">
-    <title>System</title>
+    <title>{{ trans('Lumas System - Administration') }}</title>
 </head>
 <body>
 

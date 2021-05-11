@@ -11,14 +11,15 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="#">
     <title>Lumas</title>
-    <link href="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('assets/frontend/assets/node_modules/toast-master/css/jquery.toast.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/frontend/dist/css/style.css') }}" rel="stylesheet">
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <link href="{{ asset('assets/frontend/css/main.css') }}" rel="stylesheet">
 </head>
 
-<body class="skin-blue fixed-layout">
+<body class="skin-default-dark fixed-layout">
 <div class="preloader">
     <div class="loader">
         <div class="loader__figure"></div>
@@ -30,16 +31,6 @@
     @include('Base::frontend.left_sidebar')
     <div class="page-wrapper">
         <div class="container-fluid">
-            @if (session('error'))
-                <div class="alert alert-danger  alert-fade-out" role="alert">
-                    {{ session('error') }}
-                </div>
-            @endif
-            @if (session('success'))
-                <div class="alert alert-success alert-fade-out" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
             @yield('content')
         </div>
     </div>
@@ -57,14 +48,35 @@
 <script src="{{ asset('assets/frontend/assets/node_modules/moment/moment.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/calendar/dist/cal-init.js') }}"></script>
+<script src="{{ asset('assets/frontend/assets/node_modules/toast-master/js/jquery.toast.js') }}"></script>
 <script src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 <script src="{{ asset('assets/frontend/js/main.js') }}"></script>
 </body>
-<script>
-    if ($('.alert-success').html() !== undefined) {
-        $('.alert-danger').css('top', '120px');
-    }
-    slideAlert($('.alert-fade-out'));
-</script>
+@if (session('success'))
+    <script>
+        $.toast({
+            heading: "{{ trans('Success') }}",
+            text: "{{ session('success') }}",
+            position: 'top-right',
+            loaderBg: '#ff6849',
+            icon: 'success',
+            hideAfter: 6000,
+            stack: 6
+        });
+    </script>
+@endif
+@if (session('error'))
+    <script>
+        $.toast({
+            heading: "{{ trans('Error') }}",
+            text: "{{ session('error') }}",
+            position: 'top-right',
+            loaderBg: '#ff6849',
+            icon: 'error',
+            hideAfter: 6000,
+            stack: 6
+        });
+    </script>
+@endif
 @stack('js')
 </html>

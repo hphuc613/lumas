@@ -20,20 +20,28 @@ class RoleController extends Controller {
         # parent::__construct();
     }
 
-    public function index(Request $request) {
+    public function index(Request $request){
         $filter = $request->all();
         $roles  = Role::filter($filter)->paginate(20);
 
         return view('Role::index', compact('roles', 'filter'));
     }
 
-    public function getCreate() {
+    /**
+     * @param Request $request
+     * @return array|string
+     */
+    public function getCreate(Request $request){
         $statuses = Status::STATUSES;
+
+        if(!$request->ajax()){
+            return redirect()->back();
+        }
 
         return $this->renderAjax('Role::form', compact('statuses'));
     }
 
-    public function postCreate(RoleValidation $request) {
+    public function postCreate(RoleValidation $request){
         $role = new Role($request->all());
         $role->save();
         $request->session()->flash('success', trans('Role created successfully.'));
@@ -41,10 +49,12 @@ class RoleController extends Controller {
         return back();
     }
 
-    public function getUpdate($id) {
+    public function getUpdate(Request $request, $id){
         $role     = Role::find($id);
         $statuses = Status::STATUSES;
-
+        if(!$request->ajax()){
+            return redirect()->back();
+        }
         return $this->renderAjax('Role::form', compact('role', 'statuses'));
     }
 
