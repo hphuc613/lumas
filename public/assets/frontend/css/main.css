@@ -1,5 +1,35 @@
-form label {
-  font-weight: 500;
+.form-group {
+  /** Validation **/
+}
+.form-group label {
+  font-weight: 600;
+}
+.form-group .help-block.error-help-block {
+  color: red;
+}
+.form-group.has-success label {
+  color: #2ebb00;
+}
+.form-group.has-success .form-control {
+  border: 1px solid #2ebb00 !important;
+}
+.form-group.has-success .select2-container .select2-selection--single {
+  border: 1px solid #2ebb00;
+}
+.form-group.has-success .select2-container .select2-selection--single:focus {
+  border-color: #2ebb00;
+}
+.form-group.has-error label {
+  color: red;
+}
+.form-group.has-error .form-control {
+  border: 1px solid red !important;
+}
+.form-group.has-error .select2-container .select2-selection--single {
+  border: 1px solid red;
+}
+.form-group.has-error .select2-container .select2-selection--single:focus {
+  border-color: red;
 }
 
 .alert-fade-out {

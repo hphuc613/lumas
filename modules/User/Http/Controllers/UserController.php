@@ -95,6 +95,10 @@ class UserController extends Controller {
         return redirect()->route('get.user.list');
     }
 
+    /**
+     * @param Request $request
+     * @return bool
+     */
     public function postUpdateStatus(Request $request) {
         $data = $request->all();
         if($data != null) {

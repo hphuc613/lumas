@@ -2,8 +2,8 @@
 
 @section('content')
     <div class="content container" id="login">
-        <div class="d-flex justify-content-center" style="margin-top: 150px">
-            <div class="card">
+        <div class="d-flex justify-content-center">
+            <div class="card" style="margin-top: 150px;">
                 <div class="card-header">
                     <h4>{{ trans('Reset Password') }}</h4>
                 </div>

@@ -1,6 +1,49 @@
-form{
-    label{
-        font-weight: 500;
+.form-group {
+    label {
+        font-weight: 600;
+    }
+
+    /** Validation **/
+    .help-block {
+        &.error-help-block{
+            color: red;
+        }
+    }
+
+    &.has-success{
+        label {
+            color: #2ebb00;
+        }
+        .form-control{
+            border: 1px solid #2ebb00 !important;
+        }
+        .select2-container {
+            .select2-selection--single {
+                border: 1px solid #2ebb00;
+
+                &:focus {
+                    border-color: #2ebb00;
+                }
+            }
+        }
+    }
+
+    &.has-error{
+        label {
+            color: red;
+        }
+        .form-control{
+            border: 1px solid red !important;
+        }
+        .select2-container {
+            .select2-selection--single {
+                border: 1px solid red;
+
+                &:focus {
+                    border-color: red;
+                }
+            }
+        }
     }
 }
 

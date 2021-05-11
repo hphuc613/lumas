@@ -5,8 +5,9 @@
   outline: none;
 }
 
-body {
+body, html {
   background-color: #cecece6e;
+  height: 100%;
 }
 
 footer {
@@ -255,6 +256,7 @@ table tr td .btn {
 .page-wrapper .page-content .breadcrumb {
   padding-left: 0;
   margin-bottom: 20px;
+  background-color: transparent;
 }
 .page-wrapper .page-content .page-title {
   margin-bottom: 20px;

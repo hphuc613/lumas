@@ -23,11 +23,13 @@ class AuthMemberController extends Controller
 {
 
     /**
-     * @param SignUpValidation $request
      * @return Application|Factory|RedirectResponse|View
      */
     public function getSignUp()
     {
+        if(Auth::guard('member')->check()){
+            return redirect()->route("frontend.dashboard");
+        }
         return view('Auth::frontend.signup');
     }
 
@@ -42,6 +44,8 @@ class AuthMemberController extends Controller
             unset($data['re_enter_password']);
             $member = new Member($data);
             $member->save();
+
+            $request->session()->put('username', $request->username ?? NULL);
 
             return redirect()->route('frontend.get.login.member');
         }
@@ -59,6 +63,7 @@ class AuthMemberController extends Controller
         if(Auth::guard('member')->check()){
             return redirect()->route("frontend.dashboard");
         }
+        $this->logout();
 
         return view('Auth::frontend.login');
     }
@@ -76,7 +81,7 @@ class AuthMemberController extends Controller
         ];
         $request->session()->put('username', $request->input('username'));
         if(Auth::guard('member')->attempt($login, $request->has('remember'))){
-            if(Auth::guard('member')->user()->status == Status::STATUS_ACTIVE){
+            if(empty(Auth::guard('member')->user()->deleted_at)  && Auth::guard('member')->user()->status == Status::STATUS_ACTIVE){
                 return redirect()->route("frontend.dashboard");
             }
             $request->session()->flash('error',

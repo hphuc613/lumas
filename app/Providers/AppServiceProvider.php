@@ -49,7 +49,6 @@ class AppServiceProvider extends ServiceProvider
             if (!empty($parameters)) {
                 $table = reset($parameters);
                 $id = (int)array_pop($parameters);
-
                 if ($id !== $table && is_numeric($id)) {
                     $result = DB::select(DB::raw("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'"));
                     $primary_key = $result[0]->Column_name;

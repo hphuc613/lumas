@@ -108,9 +108,13 @@
                         </ul>
                     </div>
                 </li>
+
+
                 <li class="nav-item dropdown u-pro">
                     <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ \Auth::guard('member')->user()->name }} &nbsp;<i class="fa fa-angle-down"></i></span> </a>
+                        <i class="ti-user"></i>
+                        {{ \Auth::guard('member')->user()->name }}
+                        <i class="fa fa-angle-down"></i></span> </a>
                     <div class="dropdown-menu dropdown-menu-right animated flipInY">
                         <!-- text-->
                         <a href="{{ route("frontend.get.member.profile") }}" class="dropdown-item"><i class="ti-user"></i> My Profile</a>

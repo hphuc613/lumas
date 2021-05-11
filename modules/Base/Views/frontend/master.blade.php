@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="#">
-    <title>Elite Admin Template - The Ultimate Multipurpose admin template</title>
+    <title>Lumas</title>
     <link href="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/frontend/dist/css/style.css') }}" rel="stylesheet">
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -22,7 +22,7 @@
 <div class="preloader">
     <div class="loader">
         <div class="loader__figure"></div>
-        <p class="loader__label">Elite admin</p>
+        <p class="loader__label">Lumas Loading</p>
     </div>
 </div>
 <div id="main-wrapper">
@@ -57,6 +57,7 @@
 <script src="{{ asset('assets/frontend/assets/node_modules/moment/moment.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/calendar/dist/cal-init.js') }}"></script>
+<script src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 <script src="{{ asset('assets/frontend/js/main.js') }}"></script>
 </body>
 <script>
@@ -65,4 +66,5 @@
     }
     slideAlert($('.alert-fade-out'));
 </script>
+@stack('js')
 </html>

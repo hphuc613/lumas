@@ -122,7 +122,7 @@
                 'status': status
             };
             $.ajax({
-                url: "/admin/user/update-status",
+                url: "{{ route('post.user.update_status') }}",
                 type: "post",
                 data: data_import
             }).done(function (data) {

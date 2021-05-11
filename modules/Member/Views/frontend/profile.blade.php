@@ -21,28 +21,36 @@
                     <form action="" method="post">
                         @csrf
                         <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label>{{ trans('Name') }}</label>
-                                <input type="text" class="form-control form-control-line" name="name" value="{{ $member->name }}">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>{{ trans('Email') }}</label>
-                                <input type="email" class="form-control form-control-line" name="email" value="{{ $member->email }}">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>{{ trans('Username') }}</label>
-                                <input type="text" class="form-control form-control-line" name="username"
-                                       value="{{ $member->username }}">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>{{ trans('Password') }}</label>
-                                <input type="password" class="form-control form-control-line" name="password">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ trans('Name') }}</label>
+                                    <input type="text" class="form-control form-control-line" name="name"
+                                           value="{{ $member->name }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ trans('Email') }}</label>
+                                    <input type="email" class="form-control form-control-line" name="email"
+                                           value="{{ $member->email }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ trans('Username') }}</label>
+                                    <input type="text" class="form-control form-control-line" name="username"
+                                           value="{{ $member->username }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ trans('Password') }}</label>
+                                    <input type="password" class="form-control form-control-line" name="password">
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ trans('Re-enter Password') }}</label>
+                                    <input type="password" class="form-control form-control-line" name="password_re_enter">
+                                </div>
                             </div>
                             <div class="col-md-12 form-group">
                                 <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">
                                     {{ trans('Submit') }}
                                 </button>
-                                <button type="submit" class="btn btn-inverse waves-effect waves-light">
+                                <button type="reset" class="btn btn-inverse waves-effect waves-light">
                                     {{ trans('Reset') }}
                                 </button>
                             </div>
@@ -53,3 +61,6 @@
         </div>
     </div>
 @endsection
+@push('js')
+    {!! JsValidator::formRequest('Modules\Member\Http\Requests\MemberRequest') !!}
+@endpush

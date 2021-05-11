@@ -25,7 +25,11 @@ class SignUpValidation extends FormRequest
     public function rules()
     {
         return [
-            'username'          => 'required|validate_unique:members',
+            'username'          => [
+                'required',
+                'regex:/(^([a-zA-Z0-9_.]+)(\d+)?$)/u',
+                'validate_unique:members'
+            ],
             'email'             => 'required|email|validate_unique:members',
             'password'          => 'min:6|required',
             'password_re_enter' => 're_enter_password|required_with:password'
@@ -37,6 +41,7 @@ class SignUpValidation extends FormRequest
     {
         return [
             'required'          => ':attribute' . trans(' can not be null.'),
+            'regex'             => ':attribute' . trans(' contains invalid characters.'),
             'email'             => ':attribute' . trans(' must be the email.'),
             'min'               => ':attribute' . trans('  too short.'),
             're_enter_password' => trans('Wrong password'),

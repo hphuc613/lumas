@@ -10,10 +10,12 @@
     <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/datetimepicker/css/datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/backend/css/main.css') }}">
-    <title>Login Page</title>
+    <title>{{ trans('Login Page') }}</title>
 </head>
-<body style="background-image: url('/logo/bg-login.jpg'); background-size: cover; background-repeat: no-repeat">
-    @yield('content')
+<body>
+    <div style="background-image: url({{ asset('logo/bg-login.jpg') }}); background-size: cover; background-repeat: no-repeat; background-position: center; height: 100%">
+        @yield('content')
+    </div>
 </body>
 <script src="{{ asset('assets/jquery/jquery-3.5.1.min.js') }}"></script>
 <script src="{{ asset('assets/bootstrap/datetimepicker/js/datetimepicker.min.js') }}"></script>

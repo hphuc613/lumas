@@ -52,7 +52,7 @@ class AuthController extends Controller {
         ];
         $request->session()->put('email', $request->input('email'));
         if(Auth::guard()->attempt($login, $request->has('remember'))) {
-            if(Auth::user()->status == Status::STATUS_ACTIVE && (Auth::user()->getRoleAttribute()->status ?? NULL) == Status::STATUS_ACTIVE ) {
+            if(Auth::user()->status == Status::STATUS_ACTIVE && empty(Auth::user()->deleted_at)  && (Auth::user()->getRoleAttribute()->status ?? NULL) == Status::STATUS_ACTIVE ) {
                 return redirect()->route('dashboard');
             }
             $request->session()->flash('error',

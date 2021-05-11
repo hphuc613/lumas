@@ -11,8 +11,9 @@ $main-color: #717171;
     }
 }
 
-body {
+body, html {
     background-color: #cecece6e;
+    height: 100%;
 }
 
 footer {
@@ -300,6 +301,7 @@ table {
         .breadcrumb {
             padding-left: 0;
             margin-bottom: 20px;
+            background-color: transparent;
         }
 
         .page-title {
