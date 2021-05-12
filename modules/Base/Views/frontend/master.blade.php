@@ -14,9 +14,14 @@
     <link href="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.css') }}" rel="stylesheet"/>
     <link href="{{ asset('assets/frontend/assets/node_modules/toast-master/css/jquery.toast.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/frontend/dist/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/select2/css/select2.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/frontend/assets/node_modules/Magnific-Popup-master/dist/magnific-popup.css') }}"
+          rel="stylesheet">
+    <link href="{{ asset('assets/frontend/dist/css/user-card.css') }}" rel="stylesheet">
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <link href="{{ asset('assets/frontend/css/main.css') }}" rel="stylesheet">
+    @stack('css')
 </head>
 
 <body class="skin-default-dark fixed-layout">
@@ -38,6 +43,7 @@
 <script src="{{ asset('assets/frontend/assets/node_modules/jquery/jquery-3.2.1.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/popper/popper.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/dist/js/perfect-scrollbar.jquery.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/dist/js/waves.js') }}"></script>
 <script src="{{ asset('assets/frontend/dist/js/sidebarmenu.js') }}"></script>
@@ -49,6 +55,10 @@
 <script src="{{ asset('assets/frontend/assets/node_modules/calendar/dist/fullcalendar.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/calendar/dist/cal-init.js') }}"></script>
 <script src="{{ asset('assets/frontend/assets/node_modules/toast-master/js/jquery.toast.js') }}"></script>
+<script
+    src="{{ asset('assets/frontend/assets/node_modules/Magnific-Popup-master/dist/jquery.magnific-popup.min.js') }}"></script>
+<script
+    src="{{ asset('assets/frontend/assets/node_modules/Magnific-Popup-master/dist/jquery.magnific-popup-init.js') }}"></script>
 <script src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 <script src="{{ asset('assets/frontend/js/main.js') }}"></script>
 </body>

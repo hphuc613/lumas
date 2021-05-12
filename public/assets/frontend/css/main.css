@@ -11,7 +11,7 @@
   color: #2ebb00;
 }
 .form-group.has-success .form-control {
-  border: 1px solid #2ebb00 !important;
+  border-bottom: 1px solid #2ebb00 !important;
 }
 .form-group.has-success .select2-container .select2-selection--single {
   border: 1px solid #2ebb00;
@@ -23,7 +23,7 @@
   color: red;
 }
 .form-group.has-error .form-control {
-  border: 1px solid red !important;
+  border-bottom: 1px solid red !important;
 }
 .form-group.has-error .select2-container .select2-selection--single {
   border: 1px solid red;

@@ -15,7 +15,7 @@
             color: #2ebb00;
         }
         .form-control{
-            border: 1px solid #2ebb00 !important;
+            border-bottom: 1px solid #2ebb00 !important;
         }
         .select2-container {
             .select2-selection--single {
@@ -32,8 +32,8 @@
         label {
             color: red;
         }
-        .form-control{
-            border: 1px solid red !important;
+        .form-control {
+            border-bottom: 1px solid red !important;
         }
         .select2-container {
             .select2-selection--single {

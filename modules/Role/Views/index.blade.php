@@ -13,13 +13,17 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans('Role Listing') }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.role.create') }}" class="btn btn-primary" data-toggle="modal" data-target="#form-modal"><i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}</a>
+                <a href="{{ route('get.role.create') }}" class="btn btn-primary" data-toggle="modal"
+                   data-target="#form-modal" data-title="Create Role">
+                    <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
+                </a>
             </div>
         </div>
         <!--Search box-->
         <div class="search-box">
             <div class="card">
-                <div class="card-header" data-toggle="collapse" data-target="#form-search-box" aria-expanded="false" aria-controls="form-search-box">
+                <div class="card-header" data-toggle="collapse" data-target="#form-search-box" aria-expanded="false"
+                     aria-controls="form-search-box">
                     <div class="title">{{ trans('Search') }}</div>
                 </div>
                 <div class="card-body collapse show" id="form-search-box">
@@ -68,17 +72,20 @@
                             @foreach($roles as $role)
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name='id[]' value="{{ $role->id }}" class="checkbox-style checkbox-item">
+                                        <input type="checkbox" name='id[]' value="{{ $role->id }}"
+                                               class="checkbox-style checkbox-item">
                                     </td>
                                     <td>{{$key++}}</td>
                                     <td>{{ trans($role->name) }}</td>
-                                    <td>{{ \Modules\Base\Model\Status::getStatus($role->status) ?? NULL }}</td>
+                                    <td>{{ \Modules\Base\Model\Status::getStatus($role->status) ?? null }}</td>
                                     <td>{{ \Carbon\Carbon::parse($role->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($role->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
-                                        <a href="{{ route('get.role.update',$role->id) }}" class="btn btn-primary mr-2" data-toggle="modal" data-target="#form-modal">
+                                        <a href="{{ route('get.role.update',$role->id) }}" class="btn btn-primary mr-2"
+                                           data-toggle="modal" data-title="Update Role" data-target="#form-modal">
                                             <i class="fas fa-pencil-alt"></i></a>
-                                        <a href="{{ route('get.role.delete',$role->id) }}" class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
+                                        <a href="{{ route('get.role.delete',$role->id) }}"
+                                           class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
