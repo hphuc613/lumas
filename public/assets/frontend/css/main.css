@@ -4,6 +4,14 @@
 .form-group label {
   font-weight: 600;
 }
+.form-group .custom-file-input {
+  cursor: pointer;
+}
+.form-group .custom-file-label {
+  border: inherit;
+  border-bottom: 1px solid #c1c1c1;
+  font-weight: inherit;
+}
 .form-group .help-block.error-help-block {
   color: red;
 }
@@ -19,6 +27,9 @@
 .form-group.has-success .select2-container .select2-selection--single:focus {
   border-color: #2ebb00;
 }
+.form-group.has-success .custom-file-label {
+  border-bottom: 1px solid #2ebb00 !important;
+}
 .form-group.has-error label {
   color: red;
 }
@@ -30,6 +41,9 @@
 }
 .form-group.has-error .select2-container .select2-selection--single:focus {
   border-color: red;
+}
+.form-group.has-error .custom-file-label {
+  border-bottom: 1px solid red !important;
 }
 
 .topbar .top-navbar .navbar-header {
@@ -44,6 +58,11 @@
 
 .skin-default-dark .topbar {
   background: #007a5c;
+}
+
+.el-element-overlay .el-card-item .el-overlay-1 .profile-image {
+  width: 106px;
+  height: 106px;
 }
 
 /*# sourceMappingURL=main.css.map */

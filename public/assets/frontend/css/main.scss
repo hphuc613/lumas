@@ -3,20 +3,31 @@
         font-weight: 600;
     }
 
+    .custom-file-input {
+        cursor: pointer;
+    }
+
+    .custom-file-label {
+        border: inherit;
+        border-bottom: 1px solid #c1c1c1;
+        font-weight: inherit;
+    }
+
     /** Validation **/
     .help-block {
-        &.error-help-block{
+        &.error-help-block {
             color: red;
         }
     }
 
-    &.has-success{
+    &.has-success {
         label {
             color: #2ebb00;
         }
         .form-control{
             border-bottom: 1px solid #2ebb00 !important;
         }
+
         .select2-container {
             .select2-selection--single {
                 border: 1px solid #2ebb00;
@@ -25,6 +36,10 @@
                     border-color: #2ebb00;
                 }
             }
+        }
+
+        .custom-file-label {
+            border-bottom: 1px solid #2ebb00 !important;
         }
     }
 
@@ -35,6 +50,7 @@
         .form-control {
             border-bottom: 1px solid red !important;
         }
+
         .select2-container {
             .select2-selection--single {
                 border: 1px solid red;
@@ -43,6 +59,10 @@
                     border-color: red;
                 }
             }
+        }
+
+        .custom-file-label {
+            border-bottom: 1px solid red !important;
         }
     }
 }
@@ -67,4 +87,15 @@
 
 .skin-default-dark .topbar {
     background: #007a5c;
+}
+
+.el-element-overlay {
+    .el-card-item {
+        .el-overlay-1 {
+            .profile-image {
+                width: 106px;
+                height: 106px;
+            }
+        }
+    }
 }

@@ -25,6 +25,12 @@ class MemberRequest extends FormRequest{
     public function rules(){
         $method = Helper::segment(2);
         if(Helper::segment(0) === 'member-profile'){
+            if(Helper::segment(1) === 'change-avatar'){
+                return [
+                    'contact_info[avatar]' => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+                ];
+            }
+
             return [
                 'name'                => 'required',
                 'username'            => [
@@ -37,6 +43,7 @@ class MemberRequest extends FormRequest{
                 'contact_info[phone]' => 'digits:10',
                 'password_re_enter'   => 're_enter_password|required_with:password',
             ];
+
         }
 
         switch($method){
@@ -50,6 +57,7 @@ class MemberRequest extends FormRequest{
                     ],
                     'email'               => 'required|email|validate_unique:members',
                     'password'            => 'required|min:6',
+                    'contact_info[image]' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'contact_info[phone]' => 'digits:10',
                     'password_re_enter'   => 're_enter_password|required_with:password',
                 ];
@@ -63,6 +71,7 @@ class MemberRequest extends FormRequest{
                     ],
                     'email'               => 'required|email|validate_unique:members,' . $this->id,
                     'password'            => 'min:6|nullable',
+                    'contact_info[image]' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'contact_info[phone]' => 'digits:10',
                     'password_re_enter'   => 're_enter_password|required_with:password',
                 ];
@@ -78,19 +87,21 @@ class MemberRequest extends FormRequest{
             're_enter_password' => trans('Wrong password'),
             'required_with'     => ':attribute' . trans(' can not be null.'),
             'validate_unique'   => ':attribute' . trans(' was exist.'),
-            'digits' => ':attribute' . trans(' must be 10 digits.')
+            'digits'            => ':attribute' . trans(' must be 10 digits.'),
+            'mimes'             => ':attribute' . trans(' must be hahaha.')
         ];
     }
 
     public function attributes(){
         return [
-            'name'                => trans('Name'),
-            'username'            => trans('Username'),
-            'email'               => trans('Email'),
-            'contact_info[phone]' => trans('Phone'),
-            'password'            => trans('Password'),
-            'password_re_enter'   => trans('Re-enter Password'),
-            'status'              => trans('Re-enter Password'),
+            'name'                 => trans('Name'),
+            'username'             => trans('Username'),
+            'email'                => trans('Email'),
+            'contact_info[phone]'  => trans('Phone'),
+            'contact_info[avatar]' => trans('Avatar'),
+            'password'             => trans('Password'),
+            'password_re_enter'    => trans('Re-enter Password'),
+            'status'               => trans('Re-enter Password'),
         ];
     }
 }

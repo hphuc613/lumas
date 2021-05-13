@@ -40,8 +40,9 @@ class FrontendMemberController extends Controller{
     public function postProfile(MemberRequest $request){
         $member = Member::where('id', Auth::guard('member')->user()->id)->where('deleted_at', null)->first();
         if($request->post() && !empty('member')){
+            $contact_info         = json_decode($member->contact_info, 1);
             $data                 = $request->all();
-            $data['contact_info'] = json_encode($data['contact_info']);
+            $data['contact_info'] = json_encode(array_merge($contact_info, $data['contact_info']));
             if(empty($request->password)){
                 unset($data['password']);
             }
@@ -53,22 +54,37 @@ class FrontendMemberController extends Controller{
 
     /**
      * @param Request $request
-     * @return array|string
+     * @return array|RedirectResponse|string
      */
     public function getChangeAvatar(Request $request){
-
+        if(!$request->ajax()){
+            return redirect()->back();
+        }
         return $this->renderAjax('Member::frontend.change_avatar');
     }
 
     /**
-     * @param Request $request
+     * @param MemberRequest $request
      * @return array|string
      */
-    public function postChangeAvatar(Request $request){
-        if(!$request->ajax()){
+    public function postChangeAvatar(MemberRequest $request){
+        if($request->hasFile('contact_info')){
+            $image  = $request->contact_info['avatar'];
+            $member = Member::find(Auth::guard('member')->id());
+
+            $upload_folder = 'upload/member/' . $member->id . '-' . $member->username . '/avatar';
+            $image_name    = $member->username . '.' . $image->getClientOriginalExtension();
+
+            $contact_info           = json_decode($member->contact_info, 1);
+            $contact_info['avatar'] = $upload_folder . '/' . $image_name;
+            $member->contact_info   = json_encode($contact_info);
+            $member->save();
+
+            $image->storeAs('public/' . $upload_folder, $image_name);
+
             return redirect()->back();
         }
 
-        return $this->renderAjax('Member::frontend.change_avatar');
+        return redirect()->back();
     }
 }

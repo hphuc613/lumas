@@ -23,19 +23,19 @@
                         <div class="w-25 el-element-overlay">
                             <div class="el-card-item p-0">
                                 <div class="el-card-avatar el-overlay-1">
-                                    <img src="{{ $member->contact_info->image ?? asset('/image/user.png') }}"
-                                         class="img-circle" width="150"/>
+                                    <img src="{{ $member->getAvatar() }}"
+                                         class="img-circle profile-image"/>
                                     <div class="el-overlay">
                                         <ul class="el-info">
                                             <li>
                                                 <a class="btn default btn-outline image-popup-vertical-fit"
-                                                   href="{{ $member->contact_info->image ?? asset('/image/user.png') }}">
+                                                   href="{{ $member->getAvatar() }}">
                                                     <i class="icon-magnifier"></i>
                                                 </a>
                                                 <a class="btn default btn-outline"
-                                                   href="{{ route("frontend.post.member.change_avatar") }}"
+                                                   href="{{ route("frontend.get.member.change_avatar") }}"
                                                    data-toggle="modal" data-target="#form-modal"
-                                                   data-title="Update Avatar">
+                                                   data-title="{{ trans('Update Avatar')}}">
                                                     <i class="fa fa-pencil"></i>
                                                 </a>
                                             </li>
@@ -279,12 +279,12 @@
                 </div>
             </div>
         </div>
-
-        {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax'])  !!}
-        @endsection
-        @push('js')
-            {!! JsValidator::formRequest('Modules\Member\Http\Requests\MemberRequest') !!}
-            <script src="{{ asset('assets/backend/jquery/modal.js') }}"></script>
-    @endpush
+    </div>
+    {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax'])  !!}
+@endsection
+@push('js')
+    {!! JsValidator::formRequest('Modules\Member\Http\Requests\MemberRequest') !!}
+    <script src="{{ asset('assets/backend/jquery/modal.js') }}"></script>
+@endpush
 
 
