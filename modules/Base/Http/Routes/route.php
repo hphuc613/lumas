@@ -10,6 +10,7 @@ Route::get('/lalala', function(Request $request){
     Artisan::call('route:clear');
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
+    Artisan::call('view:clear');
     $request->session()->flash('success', trans("Cache is cleared"));
     return redirect()->back();
 });

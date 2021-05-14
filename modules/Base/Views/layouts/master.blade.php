@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/datetimepicker/css/datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/backend/css/main.css') }}">
     <title>{{ trans('Lumas System - Administration') }}</title>
+    @stack('css')
 </head>
 <body>
 

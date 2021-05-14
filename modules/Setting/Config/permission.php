@@ -1,6 +1,11 @@
 <?php
 return [
-    'name' => 'settings',
+    'name'         => 'settings',
     'display_name' => trans('Setting'),
-    'group' => []
+    'group'        => [
+        [
+            'name'         => 'setting-file-manager',
+            'display_name' => trans('Update role'),
+        ],
+    ]
 ];

@@ -163,9 +163,9 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
-         * Package Service Providers...
+         * Package Elfinder Service Provider...
          */
-
+        Barryvdh\Elfinder\ElfinderServiceProvider::class,
         /*
          * Application Service Providers...
          */
