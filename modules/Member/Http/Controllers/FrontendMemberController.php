@@ -40,7 +40,10 @@ class FrontendMemberController extends Controller{
     public function postProfile(MemberRequest $request){
         $member = Member::where('id', Auth::guard('member')->user()->id)->where('deleted_at', null)->first();
         if($request->post() && !empty('member')){
-            $contact_info         = json_decode($member->contact_info, 1);
+            $contact_info = [];
+            if(!empty($member->contact_info)){
+                $contact_info = json_decode($member->contact_info, 1);
+            }
             $data                 = $request->all();
             $data['contact_info'] = json_encode(array_merge($contact_info, $data['contact_info']));
             if(empty($request->password)){

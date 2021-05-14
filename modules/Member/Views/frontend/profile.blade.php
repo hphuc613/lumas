@@ -20,7 +20,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-center">
-                        <div class="w-25 el-element-overlay">
+                        <div class="el-element-overlay">
                             <div class="el-card-item p-0">
                                 <div class="el-card-avatar el-overlay-1">
                                     <img src="{{ $member->getAvatar() }}"
