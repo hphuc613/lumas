@@ -20,11 +20,14 @@
                     @endif
                     <div class="form-group">
                         <label for="change-language">{{ trans('Language') }}</label>
-                        <select class="select2 form-control" id="change-language">
-                            <option value="en" @if(session()->get('locale') === 'en') selected @endif>{{ trans('English') }}
+                        <select class="select2 form-control" id="change-language"
+                                data-href="{{ route('change_locale','') }}">
+                            <option value="en"
+                                    @if(session()->get('locale') === 'en') selected @endif>{{ trans('English') }}
                                 (US)
                             </option>
-                            <option value="cn" @if(session()->get('locale') === 'cn') selected @endif>{{ trans('Chinese') }}
+                            <option value="cn"
+                                    @if(session()->get('locale') === 'cn') selected @endif>{{ trans('Chinese') }}
                                 (Traditional)
                             </option>
                         </select>

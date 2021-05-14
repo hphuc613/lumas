@@ -43,10 +43,9 @@ class MemberRequest extends FormRequest
                 ],
                 'email'              => 'required|email|validate_unique:members,' . Auth::guard('member')->id(),
                 'password'           => 'min:6|nullable',
-                'contact_info.phone' => 'digits:10',
+                'contact_info.phone' => 'required|digits:10',
                 'password_re_enter'  => 're_enter_password|required_with:password',
             ];
-
         }
 
         switch($method){
@@ -60,8 +59,8 @@ class MemberRequest extends FormRequest
                     ],
                     'email'               => 'required|email|validate_unique:members',
                     'password'            => 'required|min:6',
-                    'contact_info.avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                    'contact_info.phone'  => 'digits:10',
+                    'contact_info.avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+                    'contact_info.phone'  => 'required|digits:10',
                     'password_re_enter'   => 're_enter_password|required_with:password',
                 ];
             case 'update':
@@ -74,8 +73,8 @@ class MemberRequest extends FormRequest
                     ],
                     'email'               => 'required|email|validate_unique:members,' . $this->id,
                     'password'            => 'min:6|nullable',
-                    'contact_info.avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                    'contact_info.phone'  => 'digits:10',
+                    'contact_info.avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+                    'contact_info.phone'  => 'required|digits:10',
                     'password_re_enter'   => 're_enter_password|required_with:password',
                 ];
         }
@@ -91,8 +90,9 @@ class MemberRequest extends FormRequest
             're_enter_password' => trans('Wrong password'),
             'required_with'     => ':attribute' . trans(' can not be null.'),
             'validate_unique'   => ':attribute' . trans(' was exist.'),
+            'image' => ':attribute' . trans(' must be an image.'),
             'digits'            => ':attribute' . trans(' must be 10 digits.'),
-            'mimes'             => ':attribute' . trans(' must be hahaha.')
+            'mimes'             => ':attribute' . trans(' extention must be one of the following: jpeg, png, jpg, gif, svg.')
         ];
     }
 

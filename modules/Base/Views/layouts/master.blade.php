@@ -27,7 +27,7 @@
     <!-- Right-Sidebar -->
     <div class="d-flex align-items-center">
         <div class="mr-2" style="width: 160px;">
-            <select class="select2 form-control" id="change-language" name="dropdown">
+            <select class="select2 form-control" id="change-language" data-href="{{ route('change_locale','') }}">
                 <option value="en" @if(session()->get('locale') === 'en') selected @endif>{{ trans('English') }}(US)
                 </option>
                 <option value="cn" @if(session()->get('locale') === 'cn') selected @endif>{{ trans('Chinese') }}

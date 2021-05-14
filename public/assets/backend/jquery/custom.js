@@ -5,6 +5,7 @@ $(document).ready(function () {
 function changeLanguage() {
     $('#change-language').change(function () {
         var lang = $(this).val();
-        window.location.href = '/change-locale/'+lang;
+        var url = $(this).attr('data-href');
+        window.location.href = url + '/' + lang;
     });
 }

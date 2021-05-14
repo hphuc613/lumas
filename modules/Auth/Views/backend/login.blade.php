@@ -20,7 +20,7 @@
                 @endif
                 <div class="form-group">
                     <label for="password">{{ trans('Language') }}</label>
-                    <select class="select2 form-control" id="change-language">
+                    <select class="select2 form-control" id="change-language" data-href="{{ route('change_locale','') }}">
                         <option value="en" @if(session()->get('locale') === 'en') selected @endif>{{ trans('English') }}
                             (US)
                         </option>

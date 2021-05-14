@@ -24,7 +24,7 @@
                             <div class="el-card-item p-0">
                                 <div class="el-card-avatar el-overlay-1">
                                     <img src="{{ $member->getAvatar() }}"
-                                         class="img-circle profile-image"/>
+                                         class="img-circle profile-image m-auto"/>
                                     <div class="el-overlay">
                                         <ul class="el-info">
                                             <li>

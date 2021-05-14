@@ -50,18 +50,20 @@ $menu = Helper::config_menu_merge();
                     @endcan
                 @endforeach
             @endif
-            <li>
-                <a href="https://fontawesome.com/icons?d=gallery" target="_blank">
-                    <i class="fas fa-flag"></i>
-                    <span class="title-link">Fontawesome</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://getbootstrap.com/docs/4.0/getting-started/introduction/" target="_blank">
-                    <i class="fab fa-bootstrap"></i>
-                    <span class="title-link">Bootstrap4</span>
-                </a>
-            </li>
+            @env('local')
+                <li>
+                    <a href="https://fontawesome.com/icons?d=gallery" target="_blank">
+                        <i class="fas fa-flag"></i>
+                        <span class="title-link">Fontawesome</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://getbootstrap.com/docs/4.0/getting-started/introduction/" target="_blank">
+                        <i class="fab fa-bootstrap"></i>
+                        <span class="title-link">Bootstrap4</span>
+                    </a>
+                </li>
+            @endenv
         </ul>
     </div>
 </div>

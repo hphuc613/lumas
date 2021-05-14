@@ -85,6 +85,8 @@ class FrontendMemberController extends Controller{
 
             $image->storeAs('public/' . $upload_folder, $image_name);
 
+            $request->session()->flash('success', trans("Avatar Updated successfully"));
+
             return redirect()->back();
         }
 
