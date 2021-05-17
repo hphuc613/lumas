@@ -15,9 +15,10 @@ $menu = Helper::config_menu_merge();
                     @if($item['active'])
                         @if(!empty($item['group']))
                             <!--Has child-->
-                                <li>
-                                    <a class="position-relative" data-toggle="collapse" href="#child"
-                                       aria-expanded="false" id="has-child">
+                                <li class="li-has-child">
+                                    <a class="menu-link has-child" data-toggle="collapse"
+                                       href="#{{ $item['id'] }}-child"
+                                       aria-expanded="false">
                                         <div class="d-flex justify-content-between">
                                             <div class="menu-parent">
                                                 <i class="{{ !empty($item['icon']) ? $item['icon'] : null }}"></i>
@@ -27,10 +28,11 @@ $menu = Helper::config_menu_merge();
                                             <span class="title-link-has-child"><i class="fas fa-angle-down"></i></span>
                                         </div>
                                     </a>
-                                    <ul class="collapse list-unstyled ml-3" id="child">
+                                    <ul class="collapse list-unstyled ml-3 child" id="{{ $item['id'] }}-child">
                                         @foreach($item['group'] as $child)
                                             <li>
-                                                <a href="{{ $child['route'] }}">
+                                                <a href="{{ $child['route'] }}" id="{{ $child['id'] }}"
+                                                   class="menu-link-child">
                                                     <span>{{ trans($child['name']) }}</span>
                                                 </a>
                                             </li>
@@ -39,7 +41,8 @@ $menu = Helper::config_menu_merge();
                                 </li>
                             @else
                                 <li>
-                                    <a href="{{ !empty($item['route']) ? $item['route'] : '#' }}">
+                                    <a href="{{ !empty($item['route']) ? $item['route'] : '#' }}" id="{{ $item['id'] }}"
+                                       class="menu-link">
                                         <i class="{{ !empty($item['icon']) ? $item['icon'] : null }}"></i>
                                         <span
                                             class="title-link">{{ !empty($item['name']) ? trans($item['name']) : 'N/A' }}</span>

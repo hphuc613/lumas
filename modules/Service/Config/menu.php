@@ -1,5 +1,6 @@
 <?php
 return [
+    'id'         => 'service',
     'name'       => trans('Service'),
     'sort'       => 1,
     'active'     => true,
@@ -7,12 +8,14 @@ return [
     'middleware' => [],
     'group'      => [
         [
-            'name'       => 'Service Type',
+            'id'         => 'service-type',
+            'name'       => trans('Service Type'),
             'route'      => route("get.service_type.list"),
             'middleware' => ''
         ],
         [
-            'name'       => 'Service List',
+            'id'         => 'service',
+            'name'       => trans('Service'),
             'route'      => route('get.service.list'),
             'middleware' => ''
         ]

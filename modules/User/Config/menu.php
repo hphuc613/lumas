@@ -1,12 +1,11 @@
 <?php
 
-use Modules\Base\Model\Status;
-
 return [
+    'id'         => 'user',
     'name'       => trans('Users'),
     'route'      => route('get.user.list'),
     'sort'       => 97,
-    'active'     => TRUE,
+    'active'     => true,
     'icon'       => 'fas fa-user',
     'middleware' => ['users'],
     'group'      => []

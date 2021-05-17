@@ -236,13 +236,13 @@ table tr td .btn {
   color: #000000;
 }
 .menu-sidebar li ul.list-child-hide {
-  position: absolute;
-  left: 30px;
-  z-index: 999;
-  background: white;
-  width: 220px;
-  top: 130px;
-  box-shadow: 4px 5px 15px #ababab;
+    position: absolute;
+    left: 30px;
+    z-index: 999;
+    background: white;
+    width: 220px;
+    top: 0;
+    box-shadow: 4px 5px 15px #ababab;
 }
 
 .page-wrapper {

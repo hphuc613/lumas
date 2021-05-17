@@ -1,5 +1,6 @@
 <?php
 return [
+    'id'         => 'member',
     'name'       => trans('Clients'),
     'route'      => route('get.member.list'),
     'sort'       => 1,

@@ -13,5 +13,9 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
     });
     Route::prefix("service")->group(function(){
         Route::get("/", "ServiceController@index")->name("get.service.list");
+        Route::get("/create", "ServiceController@getCreate")->name("get.service.create");
+        Route::post("/create", "ServiceController@postCreate")->name("post.service.create");
+        Route::get("/update/{id}", "ServiceController@getUpdate")->name("get.service.update");
+        Route::post("/update/{id}", "ServiceController@postUpdate")->name("post.service.update");
     });
 });
