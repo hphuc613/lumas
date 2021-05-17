@@ -4,6 +4,10 @@ namespace Modules\Permission\Model;
 
 use Modules\Base\Model\BaseModel;
 
+/**
+ * Class Permission
+ * @package Modules\Permission\Model
+ */
 class Permission extends BaseModel{
 
     protected $table = 'permissions';
@@ -33,13 +37,20 @@ class Permission extends BaseModel{
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function child(){
-        return $this->hasMany(self::class,'parent_id','id');
+        return $this->hasMany(self::class, 'parent_id', 'id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent(){
-        return $this->belongsTo(self::class,'parent_id','id');
+        return $this->belongsTo(self::class, 'parent_id', 'id');
+    }
+
+    /**
+     * @return string
+     */
+    public static function getTableName(){
+        return (new self())->getTable();
     }
 }

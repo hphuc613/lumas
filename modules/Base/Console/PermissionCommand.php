@@ -50,19 +50,12 @@ class PermissionCommand extends Command{
         DB::unprepared($statement);
         /** Insert permission list */
         foreach($permissions as $value){
-            $data  = [
-                'name'         => trim($value['name']),
-                'display_name' => ucfirst($value['display_name']),
-                'parent_id'    => 0,
-            ];
-            $group = Permission::firstOrCreate($data);
-            if(isset($value['group']) && count($value['group']) > 0){
-                foreach($value['group'] as $subs => $sub){
-                    Permission::firstOrCreate([
-                        'name'      => trim($sub['name']),
-                        'parent_id' => $group->id,
-                    ], $sub);
+            if(!isset($value['name'])){
+                foreach($value as $item){
+                    self::updatePermission($item);
                 }
+            }else{
+                self::updatePermission($value);
             }
         }
 
@@ -96,5 +89,25 @@ class PermissionCommand extends Command{
         }
 
         $this->info('Update Permission Successfully');
+    }
+
+    /**
+     * @param $value
+     */
+    public static function updatePermission($value){
+        $data  = [
+            'name'         => trim($value['name']),
+            'display_name' => ucfirst($value['display_name']),
+            'parent_id'    => 0,
+        ];
+        $group = Permission::firstOrCreate($data);
+        if(isset($value['group']) && count($value['group']) > 0){
+            foreach($value['group'] as $subs => $sub){
+                Permission::firstOrCreate([
+                                              'name'      => trim($sub['name']),
+                                              'parent_id' => $group->id,
+                                          ], $sub);
+            }
+        }
     }
 }
