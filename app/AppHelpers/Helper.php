@@ -5,6 +5,7 @@ namespace App\AppHelpers;
 use App\Http\Mail\SendMail;
 use Exception;
 use Illuminate\Support\Facades\Mail;
+use Modules\Setting\Model\Setting;
 
 class Helper{
 
@@ -339,5 +340,14 @@ class Helper{
             return false;
         }
         return true;
+    }
+
+    /**
+     * @param $key
+     * @return null
+     */
+    public static function getSetting($key){
+        $data = Setting::where('key', $key)->first();
+        return !empty($data) ? $data->value : null;
     }
 }

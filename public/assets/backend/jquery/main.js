@@ -1,6 +1,19 @@
+/*function loadTheme() {
+    setTheme('Dark');
+}
+
+function setTheme(theme) {
+    if (theme == 'Dark') {
+        $('#current-theme').text(theme);
+        $(':root').css('--main-color', '#000000');
+        console.log($(':root'));
+    }
+}*/
+
+
 // Should work for most cases
 function uniqueId() {
-    return Math.round(new Date().getTime()+ 1000 + (Math.random() * 100)) + 250;
+    return Math.round(new Date().getTime() + 1000 + (Math.random() * 100)) + 250;
 }
 
 function slideAlert(selector) {
@@ -40,14 +53,12 @@ $(document).ready(function () {
             if (child.length > 0) {
                 console.log('cl');
                 child.not(this).prop('checked', this.checked);
-            }
-            else {
+            } else {
                 if (!$(this).hasClass('select-all-with-other-child')) {
                     $('input.checkbox-item').not(this).prop('checked', this.checked);
                 }
             }
-        }
-        else {
+        } else {
             console.log('ccl');
             $('input.checkbox-item').not(this).prop('checked', this.checked);
         }
@@ -116,8 +127,7 @@ $(document).ready(function () {
             var checkbox_group;
             if (typeof $(item).attr('disabled') !== typeof undefined && $(item).attr('disabled') !== false) {
                 checkbox_group = parent.html() + '<span class="checkmark checkmark-disabled"></span>';
-            }
-            else {
+            } else {
                 checkbox_group = parent.html() + '<span class="checkmark"></span>';
             }
             parent.html('');

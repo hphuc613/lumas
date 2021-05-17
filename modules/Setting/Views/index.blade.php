@@ -17,20 +17,27 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-2">
                     <a href="{{ route("get.setting.emailConfig") }}" class="btn btn-light btn-setting">
                         <span>{{ trans('Email Setting') }} </span>
                         <div>{{ trans('To configuration the site email and SMTP') }}</div>
                     </a>
                 </div>
-                @env('local')
-                <div class="col-md-6">
-                    <a href="{{ route("get.setting.langManagement") }}" class="btn btn-light btn-setting">
-                        <span>{{ trans('Language Setting') }}
-                            <i class="fas fa-exclamation-circle text-danger" data-toggle="tooltip" data-placement="top" title="Not release yet"></i>
-                        </span>
-                        <div>{{ trans('To manage system language') }}</div>
+                <div class="col-md-6 mb-2">
+                    <a href="{{ route("get.setting.websiteConfig") }}" class="btn btn-light btn-setting">
+                        <span>{{ trans('Website Setting') }} </span>
+                        <div>{{ trans('To configuration the website') }}</div>
                     </a>
+                </div>
+                @env('local')
+                    <div class="col-md-6 mb-2">
+                        <a href="{{ route("get.setting.langManagement") }}" class="btn btn-light btn-setting">
+                        <span>{{ trans('Language Setting') }}
+                            <i class="fas fa-exclamation-circle text-danger" data-toggle="tooltip" data-placement="top"
+                               title="Not release yet"></i>
+                        </span>
+                            <div>{{ trans('To manage system language') }}</div>
+                        </a>
                 </div>
                 @endenv
             </div>

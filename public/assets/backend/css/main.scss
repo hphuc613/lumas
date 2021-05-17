@@ -49,8 +49,8 @@ a {
         width: 220px;
 
         img {
-            width: 100px;
-            height: 60px;
+            width: 100%;
+            height: 100%;
 
             @include mobile {
                 display: none;
@@ -58,6 +58,8 @@ a {
         }
 
         .menu-button {
+            background-color: #848484;
+
             &:focus {
                 box-shadow: none;
             }

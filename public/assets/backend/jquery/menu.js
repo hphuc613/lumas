@@ -41,7 +41,7 @@
                 /*Hide menu only show icon*/
                 menu.animate({width: '60px'}, 'slow');
                 menu.addClass('hide-menu');
-                btn.parent('#logo').animate({width: '130px'});
+                btn.parent('#logo').animate({width: '80px'});
 
                 /* Has Child */
                 item_has_child.find('span').hide();

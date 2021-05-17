@@ -8,10 +8,10 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Modules\Setting\Model\Language;
 use Modules\Setting\Model\MailConfig;
+use Modules\Setting\Model\Website;
 
 
 class SettingController extends Controller {
@@ -86,12 +86,41 @@ class SettingController extends Controller {
         $subject = 'Test email';
         $title   = 'Test email function';
         $body    = 'We are testing email!';
-        $send = Helper::sendMail($mail_to, $subject, $title, $body);
+        $send    = Helper::sendMail($mail_to, $subject, $title, $body);
         if($send){
             $request->session()->flash('success', 'Mail send successfully');
         }else{
             $request->session()->flash('error', trans('Can not send email. Please check your Email config.'));
         }
         return redirect()->back();
+    }
+
+    /**
+     * @param Request $request
+     * @return Application|Factory|RedirectResponse|View
+     */
+    public function websiteConfig(Request $request){
+        $post    = $request->post();
+        $setting = Website::getWebsiteConfig();
+        if($post){
+            unset($post['_token']);
+            foreach($post as $key => $value){
+                $setting = Website::where('key', $key)->first();
+                if(!empty($setting)){
+                    $setting->update(['value' => $value]);
+                }else{
+                    $setting        = new MailConfig();
+                    $setting->key   = $key;
+                    $setting->value = $value;
+                    $setting->save();
+                }
+            }
+
+            $request->session()->flash('success', 'Website Config updated successfully.');
+
+            return redirect()->back();
+        }
+
+        return view("Setting::website", compact('setting'));
     }
 }

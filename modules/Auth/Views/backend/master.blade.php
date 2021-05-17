@@ -13,9 +13,14 @@
     <title>{{ trans('Login Page') }}</title>
 </head>
 <body>
-    <div style="background-image: url({{ asset('logo/bg-login.jpg') }}); background-size: cover; background-repeat: no-repeat; background-position: center; height: 100%">
-        @yield('content')
-    </div>
+@php
+    use App\AppHelpers\Helper;
+    $bg = Helper::getSetting('BG_LOGIN')
+@endphp
+<div
+    style="background-image: url({{ asset(!empty($bg) ? $bg : 'logo/bg-login.jpg') }}); background-size: cover; background-repeat: no-repeat; background-position: center; height: 100%">
+    @yield('content')
+</div>
 </body>
 <script src="{{ asset('assets/jquery/jquery-3.5.1.min.js') }}"></script>
 <script src="{{ asset('assets/bootstrap/datetimepicker/js/datetimepicker.min.js') }}"></script>

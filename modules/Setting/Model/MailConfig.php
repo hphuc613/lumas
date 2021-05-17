@@ -17,14 +17,14 @@ class MailConfig extends Setting {
     const MAIL_NAME     = 'MAIL_NAME';
 
     const MAIL_CONFIG = [
-        'MAIL_HOST',
-        'MAIL_DRIVER',
-        'MAIL_PORT',
-        'MAIL_USERNAME',
-        'MAIL_PASSWORD',
-        'MAIL_ENCRYPTION',
-        'MAIL_ADDRESS',
-        'MAIL_NAME'
+        self::MAIL_DRIVER,
+        self::MAIL_HOST,
+        self::MAIL_PORT,
+        self::MAIL_USERNAME,
+        self::MAIL_PASSWORD,
+        self::PROTOCOL,
+        self::MAIL_ADDRESS,
+        self::MAIL_NAME
     ];
 
     /**
