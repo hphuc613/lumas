@@ -5,7 +5,7 @@ return [
     'group'        => [
         [
             'name'         => 'user-create',
-            'display_name' => trans('Create new user'),
+            'display_name' => trans('Create user'),
         ],
         [
             'name'         => 'user-update',

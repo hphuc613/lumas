@@ -5,7 +5,7 @@ return [
     'group'        => [
         [
             'name'         => 'role-create',
-            'display_name' => trans('Create new role'),
+            'display_name' => trans('Create role'),
         ],
         [
             'name'         => 'role-update',

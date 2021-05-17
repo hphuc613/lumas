@@ -1,10 +1,10 @@
 <?php
 return [
-    'name' => trans('Member'),
-    'route' => route('get.member.list'),
-    'sort' => 1,
-    'active'=> TRUE,
-    'icon' => 'fas fa-user-friends',
+    'name'       => trans('Clients'),
+    'route'      => route('get.member.list'),
+    'sort'       => 1,
+    'active'     => true,
+    'icon'       => 'fas fa-user-friends',
     'middleware' => ['member-view'],
-    'group' => []
+    'group'      => []
 ];

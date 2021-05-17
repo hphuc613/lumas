@@ -5,8 +5,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans('Home') }}</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('get.member.list') }}">{{ trans('Member') }}</a></li>
-                    <li class="breadcrumb-item active">{{ trans('Create Member') }}</li>
+                    <li class="breadcrumb-item"><a href="{{ route('get.member.list') }}">{{ trans('Client') }}</a></li>
+                    <li class="breadcrumb-item active">{{ trans('Create Client') }}</li>
                 </ol>
             </nav>
         </div>

@@ -6,12 +6,12 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
-                    <li class="breadcrumb-item"><a href="#">{{ trans("Member") }}</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ trans("Client") }}</a></li>
                 </ol>
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Member Listing") }}</h3></div>
+            <div class="page-title"><h3>{{ trans("Client Listing") }}</h3></div>
         </div>
     </div>
     <!--Search box-->
@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="text-input">{{ trans("Member name") }}</label>
+                                <label for="text-input">{{ trans("Client name") }}</label>
                                 <input type="text" class="form-control" id="text-input" name="name"
                                        value="{{ $filter['name'] ?? null }}">
                             </div>
