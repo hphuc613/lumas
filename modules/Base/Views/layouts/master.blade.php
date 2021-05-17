@@ -38,7 +38,6 @@
     </div>
 @endif
 <!-- Footer -->
-{{--<footer>© 2018 Admin Template by Phelan</footer>--}}
 </body>
 <script src="{{ asset('assets/jquery/jquery-3.5.1.min.js') }}"></script>
 <script src="{{ asset('assets/bootstrap/js/popper.min.js') }}"></script>

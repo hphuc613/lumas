@@ -4,9 +4,7 @@ use App\AppHelpers\Helper;
 
 $menu = Helper::config_menu_merge();
 ?>
-<!-- Left Sidebar -->
 <div class="left-sidebar">
-    <!-- Menu -->
     <div class="menu-sidebar">
         <ul class="list-unstyled">
         @if(!empty($menu))

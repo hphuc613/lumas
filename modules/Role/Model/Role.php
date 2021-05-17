@@ -48,8 +48,8 @@ class Role extends BaseModel{
      * @return bool
      */
     public function checkUserHasRole(){
-        if(empty($this->users->first()->user)){
-            return TRUE;
+        if($this->users->first()->user->isEmpty()){
+            return true;
         }
         return FALSE;
     }

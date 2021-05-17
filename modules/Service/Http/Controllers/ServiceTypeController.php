@@ -89,9 +89,9 @@ class ServiceTypeController extends Controller{
      */
     public function delete(Request $request, $id){
         $service_type = ServiceType::find($id);
-        if(empty($service_type->services)){
+        if($service_type->services->isEmpty()){
             $service_type->delete();
-            $request->session()->flash('success', trans('Service type  deleted successfully.'));
+            $request->session()->flash('success', trans('Service type deleted successfully.'));
         }else{
             $request->session()->flash('error',
                                        trans('Service type cannot delete because has service belongs this service type'));

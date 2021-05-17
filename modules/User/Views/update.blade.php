@@ -13,6 +13,9 @@
                 </ol>
             </nav>
         </div>
+        <div id="head-page" class="d-flex justify-content-between">
+            <div class="page-title"><h3>{{ trans("Update User") }}</h3></div>
+        </div>
     </div>
 
     <div id="user" class="card">

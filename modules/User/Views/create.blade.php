@@ -1,4 +1,5 @@
 @extends('Base::layouts.master')
+
 @section('content')
     <div id="role-module">
         <div class="breadcrumb-line">
@@ -9,6 +10,9 @@
                     <li class="breadcrumb-item active">{{ trans('Create User') }}</li>
                 </ol>
             </nav>
+        </div>
+        <div id="head-page" class="d-flex justify-content-between">
+            <div class="page-title"><h3>{{ trans("Create User") }}</h3></div>
         </div>
     </div>
 

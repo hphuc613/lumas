@@ -13,6 +13,9 @@ use Modules\Permission\Model\PermissionRole;
                 </ol>
             </nav>
         </div>
+        <div id="head-page" class="d-flex justify-content-between">
+            <div class="page-title"><h3>{{ trans("Access Control") }}</h3></div>
+        </div>
         <!--Search box-->
         <div class="listing">
             <form action="" method="post">

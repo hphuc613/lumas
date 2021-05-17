@@ -28,6 +28,6 @@ class ServiceType extends BaseModel{
     }
 
     public function services(){
-        return $this->hasMany(Service::class, '');
+        return $this->hasMany(Service::class, 'type_id');
     }
 }

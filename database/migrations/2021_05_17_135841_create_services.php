@@ -4,23 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMembersTable extends Migration{
+class CreateServices extends Migration{
     /**
      * Run the migrations.
      *
      * @return void
      */
     public function up(){
-        Schema::create('members', function(Blueprint $table){
-            $table->bigIncrements('id');
+        Schema::create('services', function(Blueprint $table){
+            $table->id();
             $table->string('name');
-            $table->string('email');
-            $table->text('contact_info')->nullable();
-            $table->string('username');
-            $table->string('password');
+            $table->double('price');
+            $table->double('additional_price')->nullable();
+            $table->text('additional_service')->nullable();
+            $table->text('description')->nullable();
             $table->integer('status')->default(1);
-            $table->string('remember_token')->nullable();
-            $table->string('email_verified_at')->nullable();
+            $table->unsignedInteger('type_id');
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
@@ -32,6 +31,6 @@ class CreateMembersTable extends Migration{
      * @return void
      */
     public function down(){
-        Schema::dropIfExists('members');
+        Schema::dropIfExists('services');
     }
 }
