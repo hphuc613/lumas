@@ -1,5 +1,18 @@
 @extends("Base::layouts.master")
+@push('css')
+    <link href='{{ asset('assets/fullcalendar/lib/main.css') }}' rel='stylesheet'/>
+    <style>
+        #fullcalendar {
+            margin: 40px auto;
+            max-height: 600px;
+        }
 
+        button.fc-button {
+            text-transform: capitalize !important;
+        }
+
+    </style>
+@endpush
 @section("content")
     <div id="appointment-module">
         <div class="breadcrumb-line">
@@ -13,61 +26,78 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Appointment Listing") }}</h3></div>
             <div class="group-btn">
-                <a href="#" class="btn btn-primary"><i class="fa fa-plus"></i> &nbsp; {{ trans("Add New") }}</a>
+                <a href="{{ route('get.appointment.create') }}" id="create-booking" class="btn btn-primary"
+                   data-toggle="modal"
+                   data-target="#form-modal" data-title="Create Appointment">
+                    <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
+                </a>
+                <a href="#" class="d-none" id="update-booking" data-toggle="modal" data-target="#form-modal"></a>
             </div>
         </div>
     </div>
-    <!--Search box-->
-    <div class="search-box">
-        <div class="card">
-            <div class="card-header" data-toggle="collapse" data-target="#form-search-box" aria-expanded="false"
-                 aria-controls="form-search-box">
-                <div class="title">{{ trans("Search") }}</div>
-            </div>
-            <div class="card-body collapse show" id="form-search-box">
-                <form action="" method="get">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="text-input">{{ trans("Appointment name") }}</label>
-                                <input type="text" class="form-control" id="text-input" name="name" value="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans("Search") }}</button>
-                        <button type="button" class="btn btn-default clear">{{ trans("Cancel") }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="listing">
+    <div class="appointment">
         <div class="card">
             <div class="card-body">
-                <div class="sumary">
-                    <span class="listing-information">
-                        <!-- Quantity item -->
-                        </span>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th width="50px">#</th>
-                            <th>{{ trans("Search") }}</th>
-                            <th width="200px" class="action">{{ trans("Search") }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- listing -->
-                        </tbody>
-                    </table>
-                    <div class="mt-5 pagination-style">
-                        <!-- Pagination -->
-                    </div>
-                </div>
+                <div id="fullcalendar"></div>
+                <input type="hidden" id="get-date">
+                <textarea id="event" class="d-none">{{ $events }}</textarea>
             </div>
         </div>
     </div>
+    {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'size' => ' modal-lg'])  !!}
 @endsection
+@push('js')
+    <script src='{{ asset('assets/fullcalendar/lib/main.js') }}'></script>
+    <script src='{{ asset('assets/fullcalendar/lib/locales-all.js') }}'></script>
+    <script>
+        $(document).ready(function () {
+            var calendarEl = document.getElementById('fullcalendar');
+            var initialLocaleCode = "{{ App::getLocale() }}";
+            var events = JSON.parse($('#event').val());
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
+                },
+                initialView: 'timeGridWeek',
+                selectable: true,
+                locale: initialLocaleCode,
+                weekNumbers: true,
+                navLinks: true, // can click day/week names to navigate views
+                editable: true,
+                eventDrop: function (info) {
+                    var eventObj = info.event;
+                    var time = info.event.start.toISOString();
+                    if (confirm("{{ trans('Are you sure change this appointment?') }}")) {
+                        $.ajax({
+                            url: "{{ route("post.appointment.update_time",'') }}/" + eventObj.id,
+                            method: "post",
+                            data: {'time': formatDateTime(time)}
+                        }).done(function (response) {
+                            if (response.status !== 200) {
+                                alert(response.message);
+                            }
+                            location.reload()
+                        });
+                    }
+                    location.reload()
+                },
+                eventDurationEditable: false,
+                dayMaxEvents: true, // allow "more" link when too many events
+                events: events,
+                dateClick: function (info) {
+                    $('#create-booking').click();
+                    $('input#get-date').val(formatDateTime(info.dateStr));
+                },
+                eventClick: function (info) {
+                    var eventObj = info.event;
+                    $("#update-booking").attr("href", "{{ route("get.appointment.update",'') }}/" + eventObj.id);
+                    $("#update-booking").click();
+                },
+            });
+
+            calendar.render();
+        })
+    </script>
+@endpush

@@ -1,29 +1,24 @@
 <?php
+
 namespace Modules\Base\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class BaseModel
+ * @package Modules\Base\Model
+ */
 class BaseModel extends Model{
-
     /**
      * @param null $status
-     *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Collection|\Modules\Base\Model\BaseModel[]
+     * @return array
      */
-    public static function getArray($status = NULL){
-        $query = self::select('id','name');
-        if (!empty($status)){
-            $query = $query->where('status',$status);
-        }
-        $query = $query->orderBy('name', 'asc')->get();
-
-        $data = [];
-
-        foreach ($query as $item){
-            $data[$item->id] = $item->name;
+    public static function getArray($status = null){
+        $query = self::query();
+        if(!empty($status)){
+            $query = $query->where('status', $status);
         }
 
-        return $data;
+        return $query->orderBy('name', 'asc')->pluck("name", "id")->toArray();
     }
-
 }

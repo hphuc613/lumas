@@ -2,14 +2,15 @@
 
 namespace Modules\Service\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Base\Model\BaseModel;
 
 /**
  * Class Service
  * @package Modules\Service\Model
  */
-class Service extends Model{
+class Service extends BaseModel{
     use SoftDeletes;
 
     protected $table = "services";
@@ -23,10 +24,9 @@ class Service extends Model{
     public $timestamps = true;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function type(){
         return $this->belongsTo(ServiceType::class);
     }
-
 }

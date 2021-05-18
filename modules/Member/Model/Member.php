@@ -58,4 +58,24 @@ class Member extends BaseMember{
         return $this->belongsTo(MemberType::class, 'type_id');
     }
 
+    /**
+     * @param null $status
+     * @return array
+     */
+    public static function getArray($status = null){
+        $query = self::select('id', 'name', 'phone', 'email');
+        if(!empty($status)){
+            $query = $query->where('status', $status);
+        }
+        $query = $query->orderBy('name', 'asc')->get();
+
+        $data = [];
+
+        foreach($query as $item){
+            $data[$item->id] = $item->name . ' | ' . $item->phone . ' | ' . $item->email;
+        }
+
+        return $data;
+    }
+
 }

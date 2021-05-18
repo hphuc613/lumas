@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateApponintmentsTable extends Migration{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(){
+        Schema::create('appointments', function(Blueprint $table){
+            $table->id();
+            $table->string('name');
+            $table->string('location', 400)->nullable();
+            $table->timestamp('time')->nullable();
+            $table->unsignedInteger('store_id');
+            $table->unsignedInteger('service_id');
+            $table->unsignedInteger('member_id');
+            $table->unsignedInteger('user_id');
+            $table->integer('status')->default(1);
+            $table->text('description')->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(){
+        Schema::dropIfExists('appointments');
+    }
+}

@@ -1,10 +1,17 @@
 $(document).ready(function () {
+    $('#form-modal').on('hidden.bs.modal', function () {
+        location.reload();
+    })
     /** Modal Ajax */
     $(document).on('click', '[data-toggle=modal]', function () {
         var modal = $(this).attr('data-target');
         var title = $(this).attr('data-title');
+        var url = $(this).attr('href');
+        getFormView(modal, title, url);
+    });
+
+    function getFormView(modal, title, url) {
         if ($(modal).hasClass('modal-ajax')) {
-            var url = $(this).attr('href');
             $.ajax({
                 url: url,
                 type: 'GET',
@@ -19,5 +26,5 @@ $(document).ready(function () {
                 $(modal).find('form').attr('action', url);
             });
         }
-    });
+    }
 });

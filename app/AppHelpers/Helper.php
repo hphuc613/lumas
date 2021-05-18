@@ -81,13 +81,14 @@ class Helper{
             $class    = $array['class'] ?? null;
             $id       = $array['id'] ?? 'form-modal';
             $tabindex = $array['tabindex'] ?? '-1';
+            $size     = $array['size'] ?? null;
             $title    = $array['title'] ?? 'Title';
             if($tabindex !== false){
                 $html = '<div class="modal fade ' . $class . '" id="' . $id . '" tabindex="' . $tabindex . '" role="dialog" aria-hidden="true">';
             }else{
                 $html = '<div class="modal fade ' . $class . '" id="' . $id . '" role="dialog" aria-hidden="true">';
             }
-            $html .= '<div class="modal-dialog">';
+            $html .= '<div class="modal-dialog ' . $size . ' ">';
             $html .= '<div class="modal-content">';
             $html .= '<div class="modal-header"><h5>' . $title . '</h5></div>';
             $html .= '<div class="modal-body">';
