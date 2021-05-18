@@ -3,6 +3,7 @@
 namespace Modules\Member\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +12,7 @@ use Illuminate\View\View;
 use Modules\Base\Model\Status;
 use Modules\Member\Http\Requests\MemberRequest;
 use Modules\Member\Model\Member;
+use Modules\Member\Model\MemberType;
 
 
 class MemberController extends Controller{
@@ -29,16 +31,11 @@ class MemberController extends Controller{
      * @return Application|Factory|View
      */
     public function index(Request $request){
-        $members = Member::query();
-        $filter  = [];
-        if($request->post()){
-            $filter = $request->all();
-            if(!empty($filter['name'])){
-                $members = $members->where('name', 'LIKE', '%' . $filter['name'] . '%');
-            }
-        }
-        $members = $members->where('deleted_at', null)->paginate(20);
-        return view("Member::backend.index", compact('members', 'filter'));
+        $filter       = $request->all();
+        $statuses     = Status::STATUSES;
+        $member_types = MemberType::getArray();
+        $members      = Member::filter($filter)->paginate(20);
+        return view("Member::backend.member.index", compact('members', 'filter', 'member_types', 'statuses'));
     }
 
     /**
@@ -46,9 +43,10 @@ class MemberController extends Controller{
      * @return Application|Factory|View
      */
     public function getUpdate($id){
-        $member   = Member::find($id);
-        $statuses = Status::STATUSES;
-        return view('Member::backend.update', compact('member', 'statuses'));
+        $member       = Member::find($id);
+        $statuses     = Status::STATUSES;
+        $member_types = MemberType::getArray();
+        return view('Member::backend.member.update', compact('member', 'member_types', 'statuses'));
     }
 
     /**
@@ -64,8 +62,9 @@ class MemberController extends Controller{
                 unset($data['password']);
             }
             unset($data['password_re_enter']);
+            $data['birthday'] = Carbon::parse($data['birthday'])->format('Y-m-d');
             $member->update($data);
-            $request->session()->flash('success', trans('Member updated successfully.'));
+            $request->session()->flash('success', trans('Client updated successfully.'));
         }
 
         return redirect()->route('get.member.list');
@@ -82,7 +81,7 @@ class MemberController extends Controller{
             if($member){
                 $member->status = $data['status'];
                 $member->save();
-                $request->session()->flash('success', trans('Member updated successfully.'));
+                $request->session()->flash('success', trans('Client updated successfully.'));
             }
         }
         return true;
@@ -96,7 +95,7 @@ class MemberController extends Controller{
     public function delete(Request $request, $id){
         $member = Member::find($id);
         $member->delete();
-        $request->session()->flash('success', trans('Member updated successfully.'));
+        $request->session()->flash('success', trans('Client deleted successfully.'));
 
         return redirect()->back();
     }

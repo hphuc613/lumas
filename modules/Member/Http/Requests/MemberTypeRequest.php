@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Service\Http\Requests;
+namespace Modules\Member\Http\Requests;
 
 use App\AppHelpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ServiceTypeRequest extends FormRequest{
+class MemberTypeRequest extends FormRequest{
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,12 +25,12 @@ class ServiceTypeRequest extends FormRequest{
         switch($method){
             default:
                 return [
-                    'name'   => 'required|validate_unique:service_types',
+                    'name'   => 'required|validate_unique:member_types',
                     'status' => 'required',
                 ];
             case 'update':
                 return [
-                    'name'   => 'required|validate_unique:service_types,' . $this->id,
+                    'name'   => 'required|validate_unique:member_types,' . $this->id,
                     'status' => 'required',
                 ];
         }
@@ -45,7 +45,7 @@ class ServiceTypeRequest extends FormRequest{
 
     public function attributes(){
         return [
-            'name'        => trans('Service type name'),
+            'name'        => trans('Client type name'),
             'status'      => trans('Status'),
             'description' => trans('Description'),
         ];

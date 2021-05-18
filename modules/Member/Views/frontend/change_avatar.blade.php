@@ -10,7 +10,7 @@
       enctype="multipart/form-data">
     @csrf
     <div class="form-group custom-file">
-        <input type="file" class="form-control custom-file-input" name="contact_info[avatar]">
+        <input type="file" class="form-control custom-file-input" name="avatar">
         <label class="custom-file-label">
             <div class="custom-file-input-name">{{ trans('Choose file') }}</div>
         </label>

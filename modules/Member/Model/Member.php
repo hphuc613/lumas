@@ -2,8 +2,9 @@
 
 namespace Modules\Member\Model;
 
-use App\AppHelpers\Helper;
 use App\Member as BaseMember;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\File;
 
@@ -15,18 +16,46 @@ class Member extends BaseMember{
     public $timestamps = true;
 
     /**
+     * @param $filter
+     * @return Builder
+     */
+    public static function filter($filter){
+        $query = self::query();
+        if(isset($filter['name'])){
+            $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
+        }
+        if(isset($filter['phone'])){
+            $query->where('phone', 'LIKE', '%' . $filter['phone'] . '%');
+        }
+        if(isset($filter['email'])){
+            $query->where('email', 'LIKE', '%' . $filter['email'] . '%');
+        }
+        if(isset($filter['status'])){
+            $query->where('status', $filter['status']);
+        }
+        if(isset($filter['type_id'])){
+            $query->where('type_id', $filter['type_id']);
+        }
+
+        return $query;
+    }
+
+    /**
      * @return string
      */
     public function getAvatar(){
-        $contact_info = $this->contact_info;
-        if(Helper::isJson($contact_info)){
-            $contact_info = json_decode($this->contact_info);
-        }
-        $avatar = $contact_info->avatar ?? null;
+        $avatar = $this->avatar;
         if(!empty($avatar) && File::exists(base_path() . '/storage/app/public/' . $avatar)){
             return url('/storage/' . $avatar);
         }
         return asset('/image/user.png');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function type(){
+        return $this->belongsTo(MemberType::class, 'type_id');
     }
 
 }

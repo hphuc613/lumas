@@ -29,15 +29,19 @@
             <input type="text" id="additional_price" class="form-control" name="additional_price"
                    value="{{ $service->additional_price ?? old('additional_price') }}">
         </div>
-        <div class="col-md-6 form-group">
-            <label for="additional_service">{{ trans('Additional Service') }}</label>
-            <textarea name="additional_service" class="form-control" id="additional_service"
-                      rows="6">{{ $service->additional_service ?? old('additional_service') }}</textarea>
-        </div>
-        <div class="col-md-6 form-group">
-            <label for="description">{{ trans('Description') }}</label>
-            <textarea name="description" class="form-control" id="description"
-                      rows="6">{{ $service->description ?? old('description') }}</textarea>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="additional_service">{{ trans('Additional Service') }}</label>
+                    <textarea name="additional_service" class="form-control" id="additional_service"
+                              rows="6">{{ $service->additional_service ?? old('additional_service') }}</textarea>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="description">{{ trans('Description') }}</label>
+                    <textarea name="description" class="form-control" id="description"
+                              rows="6">{{ $service->description ?? old('description') }}</textarea>
+                </div>
+            </div>
         </div>
         <div class="col-md-12 input-group mt-5">
             <button type="submit" id="save" class="btn btn-primary mr-2">{{ trans('Save') }}</button>

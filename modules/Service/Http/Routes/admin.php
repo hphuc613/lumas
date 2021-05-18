@@ -14,7 +14,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
             Route::post("/update/{id}", "ServiceTypeController@postUpdate")->name("post.service_type.update");
         });
         Route::get("/delete/{id}",
-                   "ServiceTypeController@delete")->name("get.service_type.delete")->middleware('service-type-delete');
+                   "ServiceTypeController@delete")->name("get.service_type.delete")->middleware('can:service-type-delete');
     });
     Route::prefix("service")->group(function(){
         Route::get("/", "ServiceController@index")->name("get.service.list")->middleware('can:service');

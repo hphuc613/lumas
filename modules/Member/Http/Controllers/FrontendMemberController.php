@@ -22,11 +22,8 @@ class FrontendMemberController extends Controller{
      * @return Application|Factory|RedirectResponse|View
      */
     public function getProfile(){
-        $member = Member::where('id', Auth::guard('member')->user()->id)
-                        ->where('deleted_at', null)
-                        ->first();
+        $member = Member::where('id', Auth::guard('member')->user()->id)->where('deleted_at', null)->first();
         if(!empty($member)){
-            $member->contact_info = json_decode($member->contact_info);
             return view("Member::frontend.profile", compact('member'));
         }
 
@@ -38,14 +35,9 @@ class FrontendMemberController extends Controller{
      * @return RedirectResponse
      */
     public function postProfile(MemberRequest $request){
-        $member = Member::where('id', Auth::guard('member')->user()->id)->where('deleted_at', null)->first();
-        if($request->post() && !empty('member')){
-            $contact_info = [];
-            if(!empty($member->contact_info)){
-                $contact_info = json_decode($member->contact_info, 1);
-            }
-            $data                 = $request->all();
-            $data['contact_info'] = json_encode(array_merge($contact_info, $data['contact_info']));
+        $member = Member::where('id', Auth::guard('member')->user()->id)->first();
+        if($request->post() && !empty($member)){
+            $data = $request->all();
             if(empty($request->password)){
                 unset($data['password']);
             }
@@ -71,16 +63,14 @@ class FrontendMemberController extends Controller{
      * @return array|string
      */
     public function postChangeAvatar(MemberRequest $request){
-        if($request->hasFile('contact_info')){
-            $image  = $request->contact_info['avatar'];
+        if($request->hasFile('avatar')){
+            $image  = $request->avatar;
             $member = Member::find(Auth::guard('member')->id());
 
             $upload_folder = 'upload/member/' . $member->id . '-' . $member->username . '/avatar';
-            $image_name    = $member->username . '.' . $image->getClientOriginalExtension();
+            $image_name    = $member->username . '.png';
 
-            $contact_info           = json_decode($member->contact_info, 1);
-            $contact_info['avatar'] = $upload_folder . '/' . $image_name;
-            $member->contact_info   = json_encode($contact_info);
+            $member->avatar = $upload_folder . '/' . $image_name;
             $member->save();
 
             $image->storeAs('public/' . $upload_folder, $image_name);

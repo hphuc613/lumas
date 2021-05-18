@@ -15,7 +15,7 @@ class BaseModel extends Model{
         if (!empty($status)){
             $query = $query->where('status',$status);
         }
-        $query = $query->where('deleted_at', NULL)->orderBy('name', 'asc')->get();
+        $query = $query->orderBy('name', 'asc')->get();
 
         $data = [];
 

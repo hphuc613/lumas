@@ -54,9 +54,9 @@
                     <small class="text-muted">{{ trans('Email address') }}</small>
                     <h6>{{ $member->email }}</h6>
                     <small class="text-muted p-t-30 db">{{ trans('Phone') }}</small>
-                    <h6>{{ $member->contact_info->phone ?? null }}</h6>
+                    <h6>{{ $member->phone ?? null }}</h6>
                     <small class="text-muted p-t-30 db">{{ trans('Address') }}</small>
-                    <h6>{{ $member->contact_info->address  ?? null }}</h6>
+                    <h6>{{ $member->address  ?? null }}</h6>
                 </div>
             </div>
         </div>
@@ -242,14 +242,14 @@
                                 <div class="form-group">
                                     <label>{{ trans('Phone') }}</label>
                                     <input type="tel" class="form-control form-control-line"
-                                           name="contact_info[phone]"
-                                           value="{{ $member->contact_info->phone ?? null }}">
+                                           name="phone"
+                                           value="{{ $member->phone ?? null }}">
                                 </div>
                                 <div class="form-group">
                                     <label>{{ trans('Address') }}</label>
                                     <input type="tel" class="form-control form-control-line"
-                                           name="contact_info[address]"
-                                           value="{{ $member->contact_info->address ?? null }}">
+                                           name="address"
+                                           value="{{ $member->address ?? null }}">
                                 </div>
                                 <div class="form-group">
                                     <label>{{ trans('Username') }}</label>

@@ -24,12 +24,34 @@
             <div class="card-body collapse show" id="form-search-box">
                 <form action="" method="get">
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="text-input">{{ trans("Client name") }}</label>
-                                <input type="text" class="form-control" id="text-input" name="name"
-                                       value="{{ $filter['name'] ?? null }}">
-                            </div>
+                        <div class="col-md-3 form-group">
+                            <label for="name">{{ trans("Client name") }}</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   value="{{ $filter['name'] ?? null }}">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="phone">{{ trans("Phone Number") }}</label>
+                            <input type="text" class="form-control" id="phone" name="phone"
+                                   value="{{ $filter['phone'] ?? null }}">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="email">{{ trans("Email") }}</label>
+                            <input type="text" class="form-control" id="text-input" name="email"
+                                   value="{{ $filter['email'] ?? null }}">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="type-id">Member Type</label>
+                            {{ Form::select('type_id', [null => 'Select'] + $member_types, $filter['type_id'] ?? null,
+                                             ['id' => 'type-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="status">{{ trans('Status') }}</label>
+                            <select name="status" id="status" class="select2 form-control">
+                                @foreach($statuses as $key => $status)
+                                    <option value="{{ $key }}"
+                                            @if(isset($filter['status']) && $filter['status'] == $key) selected @endif>{{ $status }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="input-group">
@@ -55,9 +77,9 @@
                             <th width="50px">#</th>
                             <th>{{ trans('Name') }}</th>
                             <th>{{ trans('Email') }}</th>
-                            @can('update-user-role')
-                                <th width="200px">{{ trans('Status') }}</th>
-                            @endcan
+                            <th>{{ trans('Phone Number') }}</th>
+                            <th>{{ trans('Client Type') }}</th>
+                            <th width="200px">{{ trans('Status') }}</th>
                             <th width="200px">{{ trans('Created At') }}</th>
                             <th width="200px">{{ trans('Updated At') }}</th>
                             <th width="200px" class="action">{{ trans('Action') }}</th>
@@ -70,14 +92,14 @@
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $member->name }}</td>
                                 <td>{{ $member->email }}</td>
-                                @can('update-user-role')
-                                    <td>
-                                        <input type="checkbox" class="checkbox-style checkbox-item member-status"
-                                               data-id="{{ $member->id }}"
-                                               @if($member->status == \Modules\Base\Model\Status::STATUS_ACTIVE) checked
-                                               @endif value="1">
-                                    </td>
-                                @endcan
+                                <td>{{ $member->phone }}</td>
+                                <td>{{ $member->type->name }}</td>
+                                <td>
+                                    <input type="checkbox" class="checkbox-style checkbox-item member-status"
+                                           data-id="{{ $member->id }}"
+                                           @if($member->status == \Modules\Base\Model\Status::STATUS_ACTIVE) checked
+                                           @endif value="1">
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($member->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($member->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">
