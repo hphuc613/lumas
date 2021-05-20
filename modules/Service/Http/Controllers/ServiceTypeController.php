@@ -94,7 +94,7 @@ class ServiceTypeController extends Controller{
             $request->session()->flash('success', trans('Service type deleted successfully.'));
         }else{
             $request->session()->flash('error',
-                                       trans('Service type cannot delete because has service belongs this service type'));
+                                       trans('This service type cannot delete because has active services belongs this type'));
         }
 
         return back();

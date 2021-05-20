@@ -1,22 +1,27 @@
 (function ($) {
     $(document).ready(function () {
-
         /** Active menu **/
         var url = window.location.pathname;
         var path_arr = url.split('/');
-        var menu_link = $('.left-sidebar').find('a');
+        var menu_link = $('.left-sidebar').find('.menu-link');
         $.each(menu_link, function (i, item) {
-            if ($(item).attr('id') === $(path_arr).get(2)) {
-                $(item).addClass('active');
-            }
-            if ($(item).parents('li.li-has-child').length > 0) {
+            if ($(item).parents('li.li-has-child').length > 0) { /*Has children*/
                 var child = $(item).parents('li.li-has-child').find('a.menu-link-child');
                 $.each(child, function (i, child_item) {
                     var child_id = $(child_item).attr('id');
                     if (child_id === $(path_arr).get(2)) {
                         $(item).addClass('active');
+                        $(child_item).addClass('active');
+                        $(child_item).parents('ul').addClass('show');
+                    } else {
+                        $(child_item).removeClass('active');
                     }
                 });
+            } else {
+                var active_id = $(path_arr).get(2) === undefined ? 'dashboard' : $(path_arr).get(2);
+                if ($(item).attr('id') === active_id) {
+                    $(item).addClass('active');
+                }
             }
         });
 

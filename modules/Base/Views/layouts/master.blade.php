@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ \App::getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -45,6 +45,7 @@
 <script src="{{ asset('assets/bootstrap/datetimepicker/js/datetimepicker.min.js') }}"></script>
 <script src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/modal.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/menu.js') }}"></script>

@@ -1,7 +1,9 @@
 @import "mixins";
 
-$main-fade-color: #9a9a9a;
-$main-color: #717171;
+$main-fade-color: #ffccc8;
+$main-color: #efa6a1;
+$text-color: #848484;
+$text-fade-color: #c9c9c9;
 
 * {
     font-size: 14px;
@@ -34,9 +36,11 @@ a {
     content: "";
     clear: both;
 }
-.modal-dialog{
+
+.modal-dialog {
     z-index: 9999;
 }
+
 .topbar {
     background-color: $main-fade-color;
     width: 100%;
@@ -45,7 +49,7 @@ a {
     z-index: 199;
 
     .logo {
-        background-color: #848484;
+        background-color: $main-color;
         width: 220px;
 
         img {
@@ -58,7 +62,8 @@ a {
         }
 
         .menu-button {
-            background-color: #848484;
+            background-color: $main-color;
+            color: white;
 
             &:focus {
                 box-shadow: none;
@@ -67,8 +72,6 @@ a {
             @include mobile {
                 top: 63px;
                 left: 3px;
-                background-color: $main-color !important;
-                color: white;
                 width: 60px;
             }
         }
@@ -80,10 +83,16 @@ a {
     }
 
     .right-sidebar {
+        a.text-light {
+            text-shadow: black 0.1em 0.1em 0.2em;
+            font-weight: 600
+        }
+
+        color: $text-color;
         padding: 20px;
         width: 140px;
         height: 60px;
-        border-left: 1px solid #afafaf;
+        border-left: 1px solid white;
         position: relative;
 
         ul {
@@ -128,7 +137,7 @@ a {
     }
 }
 
-.select2{
+.select2 {
     width: 100% !important;
 }
 
@@ -163,18 +172,20 @@ a {
 
     /** Validation **/
     .help-block {
-        &.error-help-block{
+        &.error-help-block {
             color: red;
         }
     }
 
-    &.has-success{
+    &.has-success {
         label {
             color: #2ebb00;
         }
-        .form-control{
+
+        .form-control {
             border: 1px solid #2ebb00 !important;
         }
+
         .select2-container {
             .select2-selection--single {
                 border: 1px solid #2ebb00;
@@ -186,13 +197,15 @@ a {
         }
     }
 
-    &.has-error{
+    &.has-error {
         label {
             color: red;
         }
-        .form-control{
+
+        .form-control {
             border: 1px solid red !important;
         }
+
         .select2-container {
             .select2-selection--single {
                 border: 1px solid red;
@@ -244,7 +257,7 @@ table {
 
     li {
         cursor: pointer;
-        color: $main-color;
+        color: $text-color;
 
         a {
             font-weight: 600;
@@ -273,7 +286,11 @@ table {
             }
 
             &:hover, &.active {
-                color: #000000;
+                color: $main-color;
+            }
+
+            .menu-link-child {
+                color: inherit;
             }
         }
 
@@ -334,8 +351,8 @@ table {
             border-radius: 5px;
 
             &:hover {
-                background-color: #5a626833;
-                color: $main-color;
+                background-color: $main-fade-color;
+                color: white;
             }
 
             &.active {
@@ -343,14 +360,14 @@ table {
                 background-color: $main-color;
 
                 &:hover {
-                    background-color: #717171ba;
+                    background-color: $main-fade-color;
                     color: white;
                 }
             }
 
             &.disabled {
                 cursor: default;
-                color: #717171ba;
+                color: $main-fade-color;
 
                 &:hover {
                     background-color: transparent;
@@ -369,11 +386,11 @@ input[type='checkbox'].checkbox-style {
     margin-right: 20px;
 
     &:checked ~ .checkmark {
-        background-color: $main-color;
+        background-color: $text-color;
     }
 
     &:checked ~ .checkmark.checkmark-disabled {
-        background-color: $main-fade-color;
+        background-color: $text-fade-color;
     }
 
     &:checked ~ .checkmark:after {
@@ -382,7 +399,7 @@ input[type='checkbox'].checkbox-style {
 
 }
 
-label.selection-style-label{
+label.selection-style-label {
     position: relative;
     font-weight: normal;
     margin-bottom: 0;
@@ -390,10 +407,11 @@ label.selection-style-label{
 }
 
 tr {
-    .checkbox-style-label{
+    .checkbox-style-label {
         width: 100%;
         padding: 10px;
     }
+
     .checkmark {
         left: auto;
     }
@@ -425,6 +443,7 @@ tr {
         transform: rotate(45deg);
     }
 }
+
 /*** Radio customize ***/
 input[type=radio].radio-style {
     opacity: 0;
@@ -443,10 +462,11 @@ input[type=radio].radio-style:checked ~ .radiomark:after {
     left: 0;
     height: 20px;
     width: 20px;
-    border: 2px solid $main-color;
+    border: 2px solid $text-color;
     margin-bottom: 0;
     border-radius: 50%;
 }
+
 .radiomark:after {
     content: "";
     position: absolute;
@@ -457,28 +477,29 @@ input[type=radio].radio-style:checked ~ .radiomark:after {
     height: 13px;
     border: 1px solid white;
     border-width: 0 3px 3px 0;
-    background-color: gray;
+    background-color: $text-color;
     border-radius: 50%;
 }
 
 
 /** Input file **/
-input[type='file']{
+input[type='file'] {
     display: none;
 }
+
 .upload-style + label {
     background-color: $main-color;
     width: 165px;
     padding: 10px 20px;
     color: white;
 
-    &:hover{
-        background-color: #9a9a9a;
+    &:hover {
+        background-color: $main-fade-color;
     }
 }
 
 
-.alert-fade-out{
+.alert-fade-out {
     max-width: 300px;
     position: fixed;
     right: -300px;
@@ -491,13 +512,13 @@ input[type='file']{
     width: 350px;
 }
 
-.btn-setting{
+.btn-setting {
     padding: 10px 20px;
     width: 100%;
     text-align: left;
     border: #0c5460 solid 2px;
 
-    span{
+    span {
         font-weight: bold;
         color: darkblue;
     }

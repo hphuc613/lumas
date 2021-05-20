@@ -95,7 +95,7 @@ class MemberTypeController extends Controller{
             $request->session()->flash('success', trans('Client type deleted successfully.'));
         }else{
             $request->session()->flash('error',
-                                       trans('Client type cannot delete because has service belongs this service type'));
+                                       trans('This client type cannot delete because has active clients belongs this type'));
         }
 
         return back();

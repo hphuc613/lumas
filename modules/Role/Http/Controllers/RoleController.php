@@ -72,7 +72,7 @@ class RoleController extends Controller {
             $role->delete();
             $request->session()->flash('success', trans('Role deleted successfully.'));
         } else {
-            $request->session()->flash('error', trans('Role cannot delete because has user belongs this role'));
+            $request->session()->flash('error', trans('This role cannot delete because has users belongs this role'));
         }
 
         return back();

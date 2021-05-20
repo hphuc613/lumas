@@ -30,8 +30,9 @@ class ServiceController extends Controller{
      * @return Application|Factory|View
      */
     public function index(Request $request){
-        $services = Service::paginate(20);
-        return view("Service::service.index", compact('services'));
+        $filter   = $request->all();
+        $services = Service::filter($filter)->paginate(20);
+        return view("Service::service.index", compact('services', 'filter'));
     }
 
     /**

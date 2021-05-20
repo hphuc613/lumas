@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\File;
+use Modules\Base\Model\Status;
 
 class Member extends BaseMember{
     use SoftDeletes;
@@ -20,7 +21,10 @@ class Member extends BaseMember{
      * @return Builder
      */
     public static function filter($filter){
-        $query = self::query();
+        $query = self::with('type');
+        $query = $query->whereHas('type', function($query){
+            return $query->where('status', Status::STATUS_ACTIVE);
+        });
         if(isset($filter['name'])){
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }

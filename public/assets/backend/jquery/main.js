@@ -34,8 +34,23 @@ $(document).ready(function () {
     //Select2
     $('select.select2').select2();
     /***** Action delete *****/
-    $(document).on('click', '.btn-delete', function () {
-        return confirm('Are you sure you want to delete this item?');
+    $(document).on('click', '.btn-delete', function (e) {
+        e.preventDefault();
+        var action = $(this).attr('href');
+        var lang = $('html').attr('lang');
+        var title = (lang === 'zh-TW') ? "你確定嗎?" : "Are you sure?";
+        var button_group = (lang === 'zh-TW') ? ['取消', '刪除'] : ['Cancel', 'Delete'];
+
+        swal({
+            title: title,
+            icon: "warning",
+            buttons: button_group,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                window.location.replace(action);
+            }
+        });
     });
     /***** Action Clear Search *****/
     $(document).on('click', 'button.clear', function (event) {

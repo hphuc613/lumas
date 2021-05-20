@@ -57,7 +57,7 @@ class MemberRequest extends FormRequest{
                     'email'             => 'required|email|validate_unique:members',
                     'password'          => 'required|min:6',
                     'avatar'            => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
-                    'phone'             => 'digits:10|validate_unique:members',
+                    'phone'             => 'digits:10|nullable|validate_unique:members',
                     'password_re_enter' => 're_enter_password|required_with:password',
                 ];
             case 'update':
@@ -70,7 +70,7 @@ class MemberRequest extends FormRequest{
                     ],
                     'email'             => 'required|email|validate_unique:members,' . $this->id,
                     'avatar'            => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
-                    'phone'             => 'digits:10|validate_unique:members,' . $this->id,
+                    'phone'             => 'digits:10|nullable|validate_unique:members,' . $this->id,
                     'password'          => 'min:6|nullable',
                     'password_re_enter' => 're_enter_password|required_with:password',
                 ];
