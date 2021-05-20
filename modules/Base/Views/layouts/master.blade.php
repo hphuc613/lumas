@@ -43,6 +43,7 @@
 <script src="{{ asset('assets/bootstrap/js/popper.min.js') }}"></script>
 <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('assets/bootstrap/datetimepicker/js/datetimepicker.min.js') }}"></script>
+<script src="{{ asset('assets/bootstrap/datetimepicker/js/locales/bootstrap-datetimepicker.zh-TW.js') }}"></script>
 <script src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

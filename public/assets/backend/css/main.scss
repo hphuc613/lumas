@@ -159,7 +159,7 @@ a {
             color: #495057;
             background-color: #fff;
             outline: 0;
-            border-color: $main-fade-color;
+            border-color: #cbcbcb;
             box-shadow: 0 0 0 0.2rem #9a9a9a33;
         }
     }
@@ -232,6 +232,14 @@ table {
         td {
             .btn {
                 min-width: 20px;
+            }
+        }
+    }
+
+    &.access-control {
+        tr {
+            &:hover {
+                background-color: rgb(255 0 0 / 4%) !important;
             }
         }
     }
@@ -521,5 +529,21 @@ input[type='file'] {
     span {
         font-weight: bold;
         color: darkblue;
+    }
+}
+
+.fc {
+    button {
+        background-color: $main-color !important;
+        border-color: $main-color !important;
+
+        &:focus {
+            box-shadow: inherit !important;
+        }
+
+        &.fc-button-active {
+            background-color: $main-fade-color !important;
+            border-color: $main-fade-color !important;
+        }
     }
 }

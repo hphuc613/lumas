@@ -5,7 +5,7 @@ return [
     'group'        => [
         [
             'name'         => 'setting-file-manager',
-            'display_name' => trans('Update role'),
+            'display_name' => trans('File Manager'),
         ],
     ]
 ];

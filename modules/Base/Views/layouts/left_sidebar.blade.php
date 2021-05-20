@@ -28,12 +28,14 @@ $menu = Helper::config_menu_merge();
                                     </a>
                                     <ul class="collapse list-unstyled ml-3 child" id="{{ $item['id'] }}-child">
                                         @foreach($item['group'] as $child)
+                                            @can($child['middleware'])
                                             <li>
                                                 <a href="{{ $child['route'] }}" id="{{ $child['id'] }}"
                                                    class="menu-link-child">
                                                     <span>{{ trans($child['name']) }}</span>
                                                 </a>
                                             </li>
+                                            @endcan
                                         @endforeach
                                     </ul>
                                 </li>

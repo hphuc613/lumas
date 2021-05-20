@@ -23,7 +23,7 @@ use Modules\Permission\Model\PermissionRole;
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped">
+                            <table class="table table-striped access-control">
                                 <thead>
                                 <tr>
                                     <th width="50px">#</th>

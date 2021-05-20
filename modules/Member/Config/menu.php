@@ -1,22 +1,22 @@
 <?php
 return [
     'id'         => 'member',
-    'name'       => trans('Client'),
+    'name'       => trans('Client Management'),
     'route'      => '#',
     'sort'       => 1,
     'active'     => true,
     'icon'       => 'fas fa-user-friends',
-    'middleware' => ['member'],
+    'middleware' => [],
     'group'      => [
         [
             'id'         => 'member-type',
-            'name'       => trans('Client Type'),
+            'name'       => trans('Client Types'),
             'route'      => route("get.member_type.list"),
-            'middleware' => ''
+            'middleware' => 'member-type'
         ],
         [
             'id'         => 'member',
-            'name'       => trans('Client'),
+            'name'       => trans('Clients'),
             'route'      => route('get.member.list'),
             'middleware' => ['member']
         ],

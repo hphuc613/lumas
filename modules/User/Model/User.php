@@ -6,6 +6,7 @@ use App\User as BaseUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Request;
+use Modules\Role\Model\Role;
 
 /**
  * Class User
@@ -60,5 +61,15 @@ class User extends BaseUser{
      */
     public function getRoleAttribute(){
         return $this->roles->first()->role ?? null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin(){
+        if($this->getRoleAttribute()->id == Role::getAdminRole()->id){
+            return true;
+        }
+        return false;
     }
 }

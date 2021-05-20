@@ -29,7 +29,7 @@ class AppointmentRequest extends FormRequest{
                     'member_id'  => 'required|check_exist:members,id',
                     'service_id' => 'required|check_exist:services,id',
                     'store_id'   => 'required|check_exist:stores,id',
-                    'time'       => 'required',
+                    'time'       => 'required|check_past',
                 ];
             case "update":
                 return [];
@@ -40,6 +40,7 @@ class AppointmentRequest extends FormRequest{
         return [
             'required'    => ':attribute' . trans(' cannot be null.'),
             'check_exist' => ':attribute' . trans(' does not exist.'),
+            'check_past'  => ':attribute' . trans(' is not in the past.'),
         ];
     }
 

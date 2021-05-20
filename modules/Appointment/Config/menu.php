@@ -6,6 +6,6 @@ return [
     'sort'       => 2,
     'active'     => true,
     'icon'       => 'fas fa-calendar-check',
-    'middleware' => [],
+    'middleware' => ['appointment'],
     'group'      => []
 ];

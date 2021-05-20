@@ -69,18 +69,16 @@
                 eventDrop: function (info) {
                     var eventObj = info.event;
                     var time = info.event.start.toISOString();
-                    if (confirm("{{ trans('Are you sure change this appointment?') }}")) {
-                        $.ajax({
-                            url: "{{ route("post.appointment.update_time",'') }}/" + eventObj.id,
-                            method: "post",
-                            data: {'time': formatDateTime(time)}
-                        }).done(function (response) {
-                            if (response.status !== 200) {
-                                alert(response.message);
-                            }
-                            location.reload()
-                        });
-                    }
+                    $.ajax({
+                        url: "{{ route("post.appointment.update_time",'') }}/" + eventObj.id,
+                        method: "post",
+                        data: {'time': formatDateTime(time)}
+                    }).done(function (response) {
+                        if (response.status !== 200) {
+                            alert(response.message);
+                        }
+                        location.reload()
+                    });
                     location.reload()
                 },
                 eventDurationEditable: false,

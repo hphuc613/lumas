@@ -1,21 +1,21 @@
 <?php
 return [
     'id'         => 'service',
-    'name'       => trans('Service'),
+    'name'       => trans('Service Management'),
     'sort'       => 1,
     'active'     => true,
     'icon'       => 'fas fa-cocktail',
-    'middleware' => 'service',
+    'middleware' => [],
     'group'      => [
         [
             'id'         => 'service-type',
-            'name'       => trans('Service Type'),
+            'name'       => trans('Service Types'),
             'route'      => route("get.service_type.list"),
             'middleware' => ['service-type']
         ],
         [
             'id'         => 'service',
-            'name'       => trans('Service'),
+            'name'       => trans('Services'),
             'route'      => route('get.service.list'),
             'middleware' => 'service'
         ]
