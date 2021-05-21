@@ -26,22 +26,36 @@
                     <div class="col-md-6">
                         <div class="form-group row">
                             <div class="col-md-4">
-                                <label for="name">{{ trans('Logo') }}</label>
+                                <label for="logo">{{ trans('Logo') }}</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" id="host"
-                                       name="{{ \Modules\Setting\Model\Website::LOGO }}"
-                                       value="{{ $setting[\Modules\Setting\Model\Website::LOGO] ?? null}}">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="logo"
+                                           name="{{ \Modules\Setting\Model\Website::LOGO }}"
+                                           value="{{ $setting[\Modules\Setting\Model\Website::LOGO] ?? null}}">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-primary btn-elfinder" type="button">
+                                            {{ trans('Open File Manager') }}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-4">
-                                <label for="name">{{ trans('Background Login') }}</label>
+                                <label for="background">{{ trans('Background Login') }}</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" id="host"
-                                       name="{{ \Modules\Setting\Model\Website::BG_LOGIN }}"
-                                       value="{{ $setting[\Modules\Setting\Model\Website::BG_LOGIN] ?? null}}">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="background"
+                                           name="{{ \Modules\Setting\Model\Website::BG_LOGIN }}"
+                                           value="{{ $setting[\Modules\Setting\Model\Website::BG_LOGIN] ?? null}}">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-primary btn-elfinder" id="elfinder-popup" type="button">
+                                            {{ trans('Open File Manager') }}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -51,12 +65,6 @@
                         <button type="submit" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
                         <button type="reset" class="btn btn-default">{{ trans('Reset') }}</button>
                     </div>
-                    @if(Auth::user()->getRoleAttribute()->id === \Modules\Role\Model\Role::getAdminRole()->id)
-                        <div>
-                            <a href="{{ route("get.setting.testSendMail") }}"
-                               class="btn btn-primary">{{ trans('Test Send Mail') }}</a>
-                        </div>
-                    @endif
                 </div>
             </form>
         </div>

@@ -30,6 +30,57 @@ function slideAlert(selector) {
     }
 }
 
+/** Elfinder Popup */
+function openElfinder(btn, url, soundPath, lang, csrf) {
+    var modal = '\n' +
+        '    <div class="modal fade" id="elfinder-show">\n' +
+        '        <div class="modal-dialog modal-lg" style="max-width: 90%">\n' +
+        '            <div class="modal-content">\n' +
+        '                <div class="modal-body">\n' +
+        '                    <div id="elfinder"></div>\n' +
+        '                </div>\n' +
+        '            </div>\n' +
+        '        </div>\n' +
+        '    </div>';
+
+    if ($('body').find('#elfinder-show').length === 0) {
+        $('body').append(modal);
+    }
+    $('#elfinder-show').modal();
+    $('#elfinder').elfinder({
+        debug: false,
+        lang: lang,
+        width: '100%',
+        height: '100%',
+        customData: {
+            _token: csrf
+        },
+        commandsOptions: {
+            getfile: {
+                onlyPath: true,
+                folders: false,
+                multiple: false,
+                oncomplete: 'destroy'
+            },
+            ui: 'uploadbutton'
+        },
+        mimeDetect: 'internal',
+        onlyMimes: [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif'
+        ],
+        soundPath: soundPath,
+        url: url,
+        getFileCallback: function (file) {
+            $(btn).parents('.input-group').find('input').val(file.url)
+            $('#elfinder-show').modal('hide');
+        },
+        resizable: false
+    }).elfinder('instance');
+}
+
 $(document).ready(function () {
     //Select2
     $('select.select2').select2();
@@ -94,6 +145,8 @@ $(document).ready(function () {
         fontAwesome: true,
         autoclose: true,
         todayHighlight: true,
+        todayBtn: true,
+        language: $('html').attr('lang'),
         //VN Calendar
         /*format: 'dd-mm-yyyy HH:ii P',
         language: 'vn',
@@ -106,27 +159,32 @@ $(document).ready(function () {
         startView: 2, // 0: hour current, 1: time in date current, 2: date
                       // in month current, 3: month in year current, 4 year
                       // in decade current
-        minView: 2
+        minView: 2,
+        todayBtn: true,
+        language: $('html').attr('lang'),
     });
     $('input.time').datetimepicker({
         format: 'hh:ii',
         fontAwesome: true,
         autoclose: true,
         startView: 1,
+        language: $('html').attr('lang'),
     });
     $('input.month').datetimepicker({
         format: 'mm-yyyy',
         fontAwesome: true,
         autoclose: true,
         startView: 3,
-        minView: 3
+        minView: 3,
+        language: $('html').attr('lang'),
     });
     $('input.year').datetimepicker({
         format: 'yyyy',
         fontAwesome: true,
         autoclose: true,
         startView: 4,
-        minView: 4
+        minView: 4,
+        language: $('html').attr('lang'),
     });
     /***********************************************************************/
 
@@ -172,6 +230,4 @@ $(document).ready(function () {
         var file_name = e.target.files[0].name;
         $(this).siblings('label#upload-display').html('<i class="fas fa-upload"></i> ' + file_name);
     });
-
-
 });

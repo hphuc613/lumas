@@ -1,4 +1,5 @@
 {
+    "This action is unauthorized": "此動作未經授權",
     "Appointment": "約定",
     "Create Appointment": "創建約會",
     "Update Appointment": "更新預約",
@@ -204,5 +205,19 @@
     "User": "用戶",
     "Create User": "創建用戶",
     "User Listing": "用戶列表",
-    "User name": "用戶名"
+    "User name": "用戶名",
+    "Voucher": "代金券",
+    "Create Voucher": "創建優惠券",
+    "Update Voucher": "更新優惠券",
+    "Delete Voucher": "刪除優惠券",
+    "Voucher created successfully.": "優惠券成功創建。",
+    "Voucher updated successfully.": "優惠券成功更新。",
+    "Voucher deleted successfully.": "優惠券成功刪除。",
+    "Code": "代碼",
+    "Start day": "開始日",
+    "Voucher Listing": "優惠券列表",
+    "Voucher name": "優惠券名稱",
+    "End day": "結束日",
+    "Image": "圖像",
+    "Open File Manager": "打開文件管理器"
 }

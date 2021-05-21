@@ -37,6 +37,9 @@ class Service extends BaseModel{
         if(isset($filter['name'])){
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
+        if(isset($filter['type_id'])){
+            $query->where('type_id', $filter['type_id']);
+        }
 
         return $query;
     }

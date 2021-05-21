@@ -1571,7 +1571,7 @@
          * @type String
          * @default "en"
          **/
-        this.lang = this.storage('lang') || this.options.lang;
+        this.lang = this.storage('lang') ?? this.options.lang;
         if (this.lang === 'jp') {
             this.lang = this.options.lang = 'ja';
         }
@@ -4983,7 +4983,7 @@
 
         // auto load language file
         dfrdsBeforeBootup.push((function () {
-            var lang = self.lang,
+            var lang = self.options.lang,
                 langJs = self.i18nBaseUrl + 'elfinder.' + lang + '.js',
                 dfd = $.Deferred().done(function () {
                     if (self.i18[lang]) {

@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/datetimepicker/css/datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/backend/css/main.css') }}">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/barryvdh/elfinder/css/elfinder.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/barryvdh/elfinder/css/theme.css') }}">
     <title>{{ trans('Lumas System - Administration') }}</title>
     @stack('css')
 </head>
@@ -47,6 +50,9 @@
 <script src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script src="{{ asset('vendor/barryvdh/elfinder/js/elfinder.full.js') }}"></script>
+<script src="{{ asset("vendor/barryvdh/elfinder/js/i18n/elfinder.zh_TW.js") }}"></script>
 <script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/modal.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/menu.js') }}"></script>
@@ -59,6 +65,15 @@
             $('.alert-danger').css('top', '120px');
         }
         slideAlert($('.alert-fade-out'));
+        $(".btn-elfinder").click(function () {
+            @php
+                $locale = session()->get('locale');
+                if($locale === 'cn'){
+                    $locale = 'zh_TW';
+                }
+            @endphp
+            openElfinder($(this), '{{ route("elfinder.connector") }}', '{{ asset("packages/barryvdh/elfinder/sounds") }}', "{{ $locale }}", '{{ csrf_token() }}');
+        })
     });
 </script>
 @stack('js')

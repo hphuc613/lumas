@@ -508,11 +508,21 @@ input[type='file'] {
 
 
 .alert-fade-out {
+    background-color: whitesmoke;
     max-width: 300px;
     position: fixed;
     right: -300px;
     top: 70px;
     z-index: 100;
+    font-size: 16px;
+}
+
+.alert-danger.alert-fade-out {
+    border: solid 0.15rem #ff4e4e;
+}
+
+.alert-primary.alert-fade-out {
+    border: solid 0.15rem #19cc47;
 }
 
 #login .login-box .card {

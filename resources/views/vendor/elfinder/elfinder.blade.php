@@ -4,29 +4,23 @@
     $locale = session()->get('locale');
     if($locale === 'cn'){
         $locale = 'zh_TW';
-    }elseif($locale === 'en'){
-        $locale = 'el';
     }
 @endphp
-@push('css')
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css"/>
-    <link rel="stylesheet" type="text/css" href="{{ asset($dir.'/css/elfinder.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset($dir.'/css/theme.css') }}">
-@endpush
 @section('content')
-    <div id="elfinder"></div>
+    <div class="mt-3">
+        <div class="card">
+            <div class="card-body">
+                <div id="elfinder"></div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('js')
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-    <script src="{{ asset($dir.'/js/elfinder.full.js') }}"></script>
-
-    @if($locale)
-        <script src="{{ asset($dir."/js/i18n/elfinder.$locale.js") }}"></script>
-    @endif
-
     <script type="text/javascript" charset="utf-8">
         $().ready(function () {
             $('#elfinder').elfinder({
+                width: '100%',
+                height: '90%',
                 @if($locale)
                 lang: '{{ $locale }}',
                 @endif
