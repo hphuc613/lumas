@@ -9,7 +9,11 @@ if(!function_exists('gg_trans')){
      * @return string|null
      * @throws ErrorException
      */
-    function gg_trans($string): ?string{
+    function gg_trans($string, $locale = null): ?string{
+        if(!empty($locale)){
+            $tr = new GoogleTranslate($locale);
+            return $tr->translate($string);
+        }
         $target = (App::getLocale() === 'cn') ? 'zh-TW' : App::getLocale();
         if(!empty($target) && $target !== 'en'){
             $tr = new GoogleTranslate($target);
