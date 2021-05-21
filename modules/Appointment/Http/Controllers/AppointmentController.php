@@ -36,7 +36,7 @@ class AppointmentController extends Controller{
      * @param Request $request
      * @return Application|Factory|View
      */
-    public function index(Request $request){
+    public function index(){
         $appointments = Appointment::with('member')
                                    ->with('service')
                                    ->with('store')
@@ -58,8 +58,7 @@ class AppointmentController extends Controller{
             ];
         }
         $events = json_encode($events);
-        return view("Appointment::index",
-            compact('events'));
+        return view("Appointment::index", compact('events'));
     }
 
     /**
@@ -142,7 +141,7 @@ class AppointmentController extends Controller{
     }
 
     /**
-     * @param Request $request
+     * @param AppointmentRequest $request
      * @return RedirectResponse
      */
     public function postUpdate(AppointmentRequest $request, $id){
@@ -182,10 +181,13 @@ class AppointmentController extends Controller{
         $data         = $request->all();
         $data['time'] = Carbon::parse($data['time'])
                               ->format('Y-m-d H:i');
-        $book         = Appointment::find($id);
+        $appointment  = Appointment::find($id);
         try{
-            $book->update($data);
-            return ['status' => 200];
+            $appointment->update($data);
+            return [
+                'status'    => 200,
+                'past_time' => (strtotime($appointment->time) < time())
+            ];
         }catch(Exception $e){
             return [
                 'status'  => 400,
@@ -202,14 +204,10 @@ class AppointmentController extends Controller{
      */
     public function getListServiceByType(Request $request, $id){
 
-        $services = Service::where('status',
-            Status::STATUS_ACTIVE)
-                           ->where('type_id',
-                               $id)
-                           ->orderBy('name',
-                               'asc')
-                           ->pluck('name',
-                               'id')
+        $services = Service::where('status', Status::STATUS_ACTIVE)
+                           ->where('type_id', $id)
+                           ->orderBy('name', 'asc')
+                           ->pluck('name', 'id')
                            ->toArray();
         $html     = "<option value=''>Select</option>";
         foreach($services as $key => $service){

@@ -1,6 +1,7 @@
 $(document).ready(function () {
     $('#form-modal').on('hidden.bs.modal', function () {
-        location.reload();
+        if ($(document).find(".datetimepicker").length > 1)
+            $(document).find(".datetimepicker").not(':first').remove();
     })
     /** Modal Ajax */
     $(document).on('click', '[data-toggle=modal]', function () {

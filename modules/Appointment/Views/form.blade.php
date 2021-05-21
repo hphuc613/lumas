@@ -2,7 +2,7 @@
     use App\AppHelpers\Helper;$prompt = [null => trans('Select')];
     $segment = Helper::segment(2)
 @endphp
-<form action="{{ route("post.appointment.create") }}" method="post" id="appointment-form">
+<form action="" method="post" id="appointment-form">
     @csrf
     <div class="row">
         <div class="col-md-6 form-group">
@@ -27,7 +27,7 @@
         <div class="col-md-6 form-group">
             <label for="service">{{ trans('Service') }}</label>
             @if(isset($services))
-                {!! Form::select('', $prompt + $services, $appointment->service_id ?? null, [
+                {!! Form::select('service_id', $prompt + $services, $appointment->service_id ?? null, [
                 'id' => 'service',
                 'class' => 'select2 form-control',
                 'style' => 'width: 100%']) !!}
