@@ -54,6 +54,7 @@ class MemberRequest extends FormRequest{
                         'regex:/(^([a-zA-Z0-9_.]+)(\d+)?$)/u',
                         'validate_unique:members'
                     ],
+                    'type_id'           => 'required|check_exist:member_types,id',
                     'email'             => 'required|email|validate_unique:members',
                     'password'          => 'required|min:6',
                     'avatar'            => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
@@ -68,6 +69,7 @@ class MemberRequest extends FormRequest{
                         'regex:/(^([a-zA-Z0-9_.]+)(\d+)?$)/u',
                         'validate_unique:members,' . $this->id,
                     ],
+                    'type_id'           => 'required|check_exist:member_types,id',
                     'email'             => 'required|email|validate_unique:members,' . $this->id,
                     'avatar'            => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
                     'phone'             => 'digits:10|nullable|validate_unique:members,' . $this->id,
@@ -88,7 +90,8 @@ class MemberRequest extends FormRequest{
             'validate_unique'   => ':attribute' . trans(' was exist.'),
             'image'             => ':attribute' . trans(' must be an image.'),
             'digits'            => ':attribute' . trans(' must be 10 digits.'),
-            'mimes'             => ':attribute' . trans(' extention must be one of the following: jpeg, png, jpg, gif, svg.')
+            'mimes'             => ':attribute' . trans(' extention must be one of the following: jpeg, png, jpg, gif, svg.'),
+            'check_exist'       => ':attribute' . trans(' does not exist.'),
         ];
     }
 
@@ -96,6 +99,7 @@ class MemberRequest extends FormRequest{
         return [
             'name'              => trans('Name'),
             'username'          => trans('Username'),
+            'type_id'           => trans('Member Type'),
             'email'             => trans('Email'),
             'phone'             => trans('Phone'),
             'avatar'            => trans('Avatar'),

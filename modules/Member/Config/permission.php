@@ -12,6 +12,10 @@ return [
                 'name'         => 'member-delete',
                 'display_name' => trans('Delete Client'),
             ],
+            [
+                'name'         => 'member-add-service',
+                'display_name' => trans('Add Product For Member'),
+            ],
         ]
     ],
     [

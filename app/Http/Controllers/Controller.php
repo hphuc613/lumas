@@ -12,8 +12,6 @@ class Controller extends BaseController{
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function renderAjax($view, $compact = NULL){
-        $returnHTML = view($view)->with($compact)->render();
-
-        return $returnHTML;
+        return view($view)->with($compact)->render();
     }
 }

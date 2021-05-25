@@ -27,14 +27,14 @@ class VoucherRequest extends FormRequest{
                 return [
                     "code"       => "required|validate_unique:vouchers",
                     "price"      => "required",
-                    "service_id" => "required",
+                    "service_id" => "required|check_exist:services,id",
                     "start_at"   => "required",
                 ];
             case "update":
                 return [
                     "code"       => "required|validate_unique:vouchers," . $this->id,
                     "price"      => "required",
-                    "service_id" => "required",
+                    "service_id" => "required|check_exist:services,id",
                     "start_at"   => "required",
                 ];
         }
@@ -44,6 +44,7 @@ class VoucherRequest extends FormRequest{
         return [
             'required'        => ':attribute' . trans(' can not be null.'),
             'validate_unique' => ':attribute' . trans(' was exist.'),
+            'check_exist'     => ':attribute' . trans(' does not exist.'),
         ];
     }
 

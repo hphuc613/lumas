@@ -27,8 +27,12 @@ footer {
 }
 
 a {
-    color: inherit;
+    color: $text-color;
     text-decoration: none !important;
+
+    &:hover {
+        color: $main-color;
+    }
 }
 
 .clearfix {
@@ -506,9 +510,8 @@ input[type='file'] {
     }
 }
 
-
 .alert-fade-out {
-    background-color: whitesmoke;
+    background-color: white;
     max-width: 300px;
     position: fixed;
     right: -300px;
@@ -518,10 +521,12 @@ input[type='file'] {
 }
 
 .alert-danger.alert-fade-out {
+    color: #ff4e4e;
     border: solid 0.15rem #ff4e4e;
 }
 
 .alert-primary.alert-fade-out {
+    color: #19cc47;
     border: solid 0.15rem #19cc47;
 }
 

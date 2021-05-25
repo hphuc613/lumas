@@ -5,6 +5,7 @@ namespace Modules\Member\Model;
 use App\Member as BaseMember;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\File;
 use Modules\Base\Model\Status;
@@ -60,6 +61,13 @@ class Member extends BaseMember{
      */
     public function type(){
         return $this->belongsTo(MemberType::class, 'type_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function memberService(){
+        return $this->hasMany(MemberService::class);
     }
 
     /**

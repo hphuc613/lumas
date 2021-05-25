@@ -90,7 +90,7 @@
         if ($('input#booking-time').val() !== "") {
             /*Read only*/
             $("input").prop('disabled', true);
-            $('select').prop('disabled', true);
+            $('.select2').prop('disabled', true);
             $("textarea").prop('disabled', true);
             $("#edit-btn").show();
             $("#submit-btn").hide();

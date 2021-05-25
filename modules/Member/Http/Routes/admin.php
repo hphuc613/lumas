@@ -26,7 +26,19 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
         Route::get('/delete/{id}', 'MemberController@delete')
              ->name('get.member.delete')->middleware('can:member-delete');
 
-        Route::get('/add-service/{id}', 'MemberController@getAddService')
-             ->name('get.member.add_service')->middleware('can:member-add-service');
+
+        /** ADD Service For Client */
+        Route::middleware('can:member-add-service')->group(function(){
+            Route::get('/add-service/{id}', 'MemberServiceController@getAdd')->name('get.member_service.add');
+            Route::post('/add-service/{id}', 'MemberServiceController@postAdd')->name('post.member_service.add');
+            Route::get('/edit-service/{id}', 'MemberServiceController@getEdit')->name('get.member_service.edit');
+            Route::post('/edit-service/{id}', 'MemberServiceController@postEdit')->name('post.member_service.edit');
+            Route::get('/delete-service/{id}', 'MemberServiceController@delete')->name('get.member_service.delete');
+
+            /** E sign */
+            Route::get('/e-sign/{id}', 'MemberServiceController@eSign')->name('get.member_service.e_sign');
+            Route::post('/e-sign/{id}', 'MemberServiceController@eSign')->name('get.member_service.e_sign');
+        });
+
     });
 });

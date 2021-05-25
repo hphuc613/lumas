@@ -74,7 +74,7 @@
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $voucher->code }}</td>
                                 <td>{{ $voucher->price }}</td>
-                                <td>{{ formatDate($voucher->price) }}</td>
+                                <td>{{ formatDate($voucher->start_at) }}</td>
                                 <td>{{ $voucher->service->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->updated_at)->format('d/m/Y H:i:s')}}</td>

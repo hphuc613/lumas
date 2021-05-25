@@ -21,8 +21,11 @@ footer {
 }
 
 a {
-  color: inherit;
+  color: #848484;
   text-decoration: none !important;
+}
+a:hover {
+  color: #efa6a1;
 }
 
 .clearfix {
@@ -423,7 +426,7 @@ input[type=file] {
 }
 
 .alert-fade-out {
-  background-color: whitesmoke;
+  background-color: white;
   max-width: 300px;
   position: fixed;
   right: -300px;
@@ -433,11 +436,13 @@ input[type=file] {
 }
 
 .alert-danger.alert-fade-out {
-  border: solid 0.15rem #ff4e4e;
+    color: #ff4e4e;
+    border: solid 0.15rem #ff4e4e;
 }
 
 .alert-primary.alert-fade-out {
-  border: solid 0.15rem #19cc47;
+    color: #19cc47;
+    border: solid 0.15rem #19cc47;
 }
 
 #login .login-box .card {

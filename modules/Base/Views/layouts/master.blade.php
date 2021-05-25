@@ -60,6 +60,7 @@
 <script>
     $(document).ready(function () {
         $('.select2').select2();
+        $('.change-language').select2();
         $('[data-toggle="tooltip"]').tooltip()
         if ($('.alert-primary').html() !== undefined) {
             $('.alert-danger').css('top', '120px');

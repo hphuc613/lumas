@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 if(!function_exists('gg_trans')){
@@ -35,5 +36,16 @@ if(!function_exists('formatDate')){
             return Carbon::parse($data)->format($format);
         }
         return Carbon::parse($data)->format("d-m-Y");
+    }
+}
+
+if(!function_exists('generateQRCode')){
+    /**
+     * @param $data
+     * @param null $format
+     * @return string|null
+     */
+    function generateQRCode($data, $format = 'svg'): ?string{
+        return QrCode::format($format)->generate($data);
     }
 }

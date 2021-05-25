@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.0",
         "laravelcollective/html": "~6.0",
         "proengsoft/laravel-jsvalidation": "4.4",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "stichoza/google-translate-php": "^4.1"
     },
     "require-dev": {

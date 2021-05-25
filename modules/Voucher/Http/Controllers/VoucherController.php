@@ -63,14 +63,45 @@ class VoucherController extends Controller{
     }
 
     /**
+     * @param Request $request
+     * @return array|string
+     */
+    public function getCreatePopUp(Request $request){
+        $statuses      = Status::STATUSES;
+        $service_types = ServiceType::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
+
+        if(!$request->ajax()){
+            return redirect()->back();
+        }
+
+        return view("Voucher::_form", compact('statuses', 'service_types'));
+    }
+
+    /**
+     * @param VoucherRequest $request
+     * @throws ErrorException
+     */
+    public function postCreatePopUp(VoucherRequest $request){
+        $this->postCreate($request);
+
+        $request->session()->flash('success', trans('Voucher created successfully.'));
+        return redirect()->back();
+    }
+
+    /**
      * @param $id
      * @return Application|Factory|View
      */
     public function getUpdate($id){
         $statuses      = Status::STATUSES;
         $voucher       = Voucher::find($id);
-        $services      = Service::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
         $service_types = ServiceType::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
+        $services      = Service::query()
+                                ->where('type_id', $voucher->service->type_id)
+                                ->where('status', Status::STATUS_ACTIVE)
+                                ->pluck('name', 'id')
+                                ->toArray();
+
         return view("Voucher::update", compact('statuses', 'voucher', 'services', 'service_types'));
     }
 
@@ -101,5 +132,23 @@ class VoucherController extends Controller{
 
         $request->session()->flash('success', trans('Voucher deleted successfully.'));
         return redirect()->route('get.voucher.list');
+    }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public function getListVoucherByService($id){
+        $services = Voucher::where('status', Status::STATUS_ACTIVE)
+                           ->where('service_id', $id)
+                           ->orderBy('start_at', 'desc')
+                           ->pluck('code', 'id')
+                           ->toArray();
+        $html     = "<option value=''>Select</option>";
+        foreach($services as $key => $service){
+            $html .= "<option value='$key'>$service</option>";
+        }
+
+        return $html;
     }
 }

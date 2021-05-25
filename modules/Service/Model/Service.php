@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Base\Model\BaseModel;
 use Modules\Base\Model\Status;
+use Modules\Member\Model\MemberService;
 use Modules\Voucher\Model\Voucher;
 
 /**
@@ -58,5 +59,12 @@ class Service extends BaseModel{
      */
     public function vouchers(){
         return $this->hasMany(Voucher::class, 'service_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function memberService(){
+        return $this->hasMany(MemberService::class);
     }
 }
