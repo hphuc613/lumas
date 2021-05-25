@@ -25,15 +25,17 @@ class VoucherRequest extends FormRequest{
         switch($method){
             default:
                 return [
-                    "code"     => "required|validate_unique:vouchers",
-                    "price"    => "required",
-                    "start_at" => "required",
+                    "code"       => "required|validate_unique:vouchers",
+                    "price"      => "required",
+                    "service_id" => "required",
+                    "start_at"   => "required",
                 ];
             case "update":
                 return [
-                    "code"     => "required|validate_unique:vouchers," . $this->id,
-                    "price"    => "required",
-                    "start_at" => "required",
+                    "code"       => "required|validate_unique:vouchers," . $this->id,
+                    "price"      => "required",
+                    "service_id" => "required",
+                    "start_at"   => "required",
                 ];
         }
     }
@@ -47,9 +49,10 @@ class VoucherRequest extends FormRequest{
 
     public function attributes(){
         return [
-            "code"     => trans("Code"),
-            "start_at" => trans("Start day"),
-            "price"    => trans("Price"),
+            "code"       => trans("Code"),
+            "start_at"   => trans("Start day"),
+            "price"      => trans("Price"),
+            "service_id" => trans("Service"),
         ];
     }
 }

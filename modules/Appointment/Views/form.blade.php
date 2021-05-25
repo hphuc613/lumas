@@ -36,7 +36,6 @@
                     <option value="">{{ trans("Please Select Service Type") }}</option>
                 </select>
             @endif
-
         </div>
         <div class="col-md-6 form-group">
             <label for="store">{{ trans('Store') }}</label>
@@ -124,7 +123,7 @@
             var service_type = $(this);
             var type_id = service_type.val();
             $.ajax({
-                url: "{{ route("get.appointment.get_list_service_by_type", '') }}/" + type_id,
+                url: "{{ route("get.service.get_list_service_by_type", '') }}/" + type_id,
                 method: "get"
             }).done(function (response) {
                 service_type.parents('form').find('#service').html(response);

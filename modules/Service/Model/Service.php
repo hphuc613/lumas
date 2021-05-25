@@ -4,9 +4,11 @@ namespace Modules\Service\Model;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Base\Model\BaseModel;
 use Modules\Base\Model\Status;
+use Modules\Voucher\Model\Voucher;
 
 /**
  * Class Service
@@ -49,5 +51,12 @@ class Service extends BaseModel{
      */
     public function type(){
         return $this->belongsTo(ServiceType::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function vouchers(){
+        return $this->hasMany(Voucher::class, 'service_id');
     }
 }

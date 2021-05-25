@@ -6,7 +6,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('get.voucher.index') }}">{{ trans("Voucher") }}</a>
+                    <li class="breadcrumb-item"><a href="{{ route('get.voucher.list') }}">{{ trans("Voucher") }}</a>
                     </li>
                     <li class="breadcrumb-item active"><a href="#">{{ trans("Update Voucher") }}</a></li>
                 </ol>

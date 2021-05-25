@@ -2,8 +2,11 @@
 
 namespace Modules\Voucher\Model;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Service\Model\Service;
 
 class Voucher extends Model{
     use SoftDeletes;
@@ -20,7 +23,7 @@ class Voucher extends Model{
 
     /**
      * @param $filter
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public static function filter($filter){
         $query = self::query();
@@ -31,4 +34,10 @@ class Voucher extends Model{
         return $query;
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function service(){
+        return $this->belongsTo(Service::class, 'service_id');
+    }
 }

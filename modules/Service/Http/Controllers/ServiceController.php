@@ -91,4 +91,24 @@ class ServiceController extends Controller{
 
         return back();
     }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return string
+     */
+    public function getListServiceByType(Request $request, $id){
+
+        $services = Service::where('status', Status::STATUS_ACTIVE)
+                           ->where('type_id', $id)
+                           ->orderBy('name', 'asc')
+                           ->pluck('name', 'id')
+                           ->toArray();
+        $html     = "<option value=''>Select</option>";
+        foreach($services as $key => $service){
+            $html .= "<option value='$key'>$service</option>";
+        }
+
+        return $html;
+    }
 }

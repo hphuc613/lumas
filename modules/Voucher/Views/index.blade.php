@@ -61,6 +61,7 @@
                             <th>{{ trans('Code') }}</th>
                             <th>{{ trans('Price') }}</th>
                             <th>{{ trans('Start day') }}</th>
+                            <th>{{ trans('Service') }}</th>
                             <th width="200px">{{ trans('Created At') }}</th>
                             <th width="200px">{{ trans('Updated At') }}</th>
                             <th width="200px" class="action">{{ trans('Action') }}</th>
@@ -74,6 +75,7 @@
                                 <td>{{ $voucher->code }}</td>
                                 <td>{{ $voucher->price }}</td>
                                 <td>{{ formatDate($voucher->price) }}</td>
+                                <td>{{ $voucher->service->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">

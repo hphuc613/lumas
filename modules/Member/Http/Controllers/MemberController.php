@@ -99,4 +99,15 @@ class MemberController extends Controller{
 
         return redirect()->back();
     }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return Application|Factory|View
+     */
+    public function getAddService(Request $request, $id){
+        $member = Member::find($id);
+
+        return view('Member::backend.member.add_service', compact('member',));
+    }
 }

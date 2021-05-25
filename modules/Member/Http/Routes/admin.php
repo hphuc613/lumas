@@ -14,7 +14,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
             Route::post("/update/{id}", "MemberTypeController@postUpdate")->name("post.member_type.update");
         });
         Route::get("/delete/{id}",
-                   "MemberTypeController@delete")->name("get.member_type.delete")->middleware('can:member-type-delete');
+            "MemberTypeController@delete")->name("get.member_type.delete")->middleware('can:member-type-delete');
     });
     Route::prefix("member")->group(function(){
         Route::get("/", "MemberController@index")->name("get.member.list")->middleware('can:member');
@@ -23,7 +23,10 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
             Route::post('/update/{id}', 'MemberController@postUpdate')->name('post.member.update');
             Route::post('/update-status', 'MemberController@postUpdateStatus')->name('post.member.update_status');
         });
-        Route::get('/delete/{id}',
-                   'MemberController@delete')->name('get.member.delete')->middleware('can:member-delete');
+        Route::get('/delete/{id}', 'MemberController@delete')
+             ->name('get.member.delete')->middleware('can:member-delete');
+
+        Route::get('/add-service/{id}', 'MemberController@getAddService')
+             ->name('get.member.add_service')->middleware('can:member-add-service');
     });
 });

@@ -11,6 +11,8 @@ use Modules\Role\Model\Role;
 
 class PermissionCommand extends Command{
 
+    protected $list_permission = [];
+
     /**
      * The name and signature of the console command.
      *
@@ -43,7 +45,6 @@ class PermissionCommand extends Command{
 
         $permissions = Helper::config_permission_merge();
 
-        DB::table('permissions')->delete();
         $statement = "ALTER TABLE permissions AUTO_INCREMENT = 1;";
         DB::unprepared($statement);
         /** Insert permission list */
@@ -56,6 +57,10 @@ class PermissionCommand extends Command{
                 self::updatePermission($value);
             }
         }
+
+        /** Delete permission not exist*/
+        $permission_del = array_diff(Permission::pluck('name')->toArray(), $this->list_permission);
+        Permission::whereIn('name', $permission_del)->delete();
 
         $db_permissions = Permission::all();
         $admin_role     = Role::getAdminRole();
@@ -92,20 +97,23 @@ class PermissionCommand extends Command{
     /**
      * @param $value
      */
-    public static function updatePermission($value){
-        $data  = [
+    public function updatePermission($value){
+        $data                              = [
             'name'         => trim($value['name']),
             'display_name' => ucwords($value['display_name']),
             'parent_id'    => 0,
         ];
-        $group = Permission::firstOrCreate($data);
+        $group                             = Permission::firstOrCreate($data);
+        $this->list_permission[$group->id] = $group->name;
         if(isset($value['group']) && count($value['group']) > 0){
             foreach($value['group'] as $subs => $sub){
-                Permission::firstOrCreate([
+                $child = Permission::firstOrCreate([
                     'name'         => trim($sub['name']),
                     'display_name' => ucwords($sub['display_name']),
                     'parent_id'    => $group->id,
                 ], $sub);
+
+                $this->list_permission[$child->id] = $child->name;
             }
         }
     }

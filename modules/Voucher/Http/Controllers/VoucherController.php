@@ -10,6 +10,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Modules\Base\Model\Status;
+use Modules\Service\Model\Service;
+use Modules\Service\Model\ServiceType;
 use Modules\Voucher\Http\Requests\VoucherRequest;
 use Modules\Voucher\Model\Voucher;
 
@@ -27,20 +29,21 @@ class VoucherController extends Controller{
 
     public function index(Request $request){
         $filter   = $request->all();
+        $services = Service::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
         $vouchers = Voucher::filter($filter)
                            ->where('status', Status::STATUS_ACTIVE)
                            ->orderBy('start_at', 'DESC')
                            ->paginate(20);
-        return view("Voucher::index", compact('vouchers'));
+        return view("Voucher::index", compact('vouchers', 'services'));
     }
 
     /**
      * @return Application|Factory|View
      */
     public function getCreate(){
-        $statuses = Status::STATUSES;
-
-        return view("Voucher::create", compact('statuses'));
+        $statuses      = Status::STATUSES;
+        $service_types = ServiceType::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
+        return view("Voucher::create", compact('statuses', 'service_types'));
     }
 
     /**
@@ -60,12 +63,15 @@ class VoucherController extends Controller{
     }
 
     /**
+     * @param $id
      * @return Application|Factory|View
      */
     public function getUpdate($id){
-        $statuses = Status::STATUSES;
-        $voucher  = Voucher::find($id);
-        return view("Voucher::update", compact('statuses', 'voucher'));
+        $statuses      = Status::STATUSES;
+        $voucher       = Voucher::find($id);
+        $services      = Service::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
+        $service_types = ServiceType::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
+        return view("Voucher::update", compact('statuses', 'voucher', 'services', 'service_types'));
     }
 
     /**

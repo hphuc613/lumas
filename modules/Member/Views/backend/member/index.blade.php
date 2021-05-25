@@ -108,6 +108,8 @@
                                 <td>{{ \Carbon\Carbon::parse($member->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($member->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">
+                                    <a href="{{ route('get.member.add_service',$member->id) }}"
+                                       class="btn btn-info"><i class="fas fa-plus-alt"></i></a>
                                     <a href="{{ route('get.member.update',$member->id) }}" class="btn btn-primary mr-2">
                                         <i class="fas fa-pencil-alt"></i></a>
                                     <a href="{{ route('get.member.delete',$member->id) }}"

@@ -18,6 +18,8 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
     });
     Route::prefix("service")->group(function(){
         Route::get("/", "ServiceController@index")->name("get.service.list")->middleware('can:service');
+        Route::get("/get-service-list/{id}",
+            "ServiceController@getListServiceByType")->name("get.service.get_list_service_by_type");
         Route::group(['middleware' => 'can:service-create'], function(){
             Route::get("/create", "ServiceController@getCreate")->name("get.service.create");
             Route::post("/create", "ServiceController@postCreate")->name("post.service.create");
@@ -27,6 +29,6 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
             Route::post("/update/{id}", "ServiceController@postUpdate")->name("post.service.update");
         });
         Route::get("/delete/{id}",
-                   "ServiceController@delete")->name("get.service.delete")->middleware('can:service-delete');
+            "ServiceController@delete")->name("get.service.delete")->middleware('can:service-delete');
     });
 });

@@ -20,6 +20,7 @@ class CreateTableVouchers extends Migration{
             $table->integer('status')->default(1);
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
+            $table->unsignedInteger('service_id');
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
