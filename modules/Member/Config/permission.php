@@ -5,6 +5,10 @@ return [
         'display_name' => trans('Client'),
         'group'        => [
             [
+                'name'         => 'member-create',
+                'display_name' => trans('Create Client'),
+            ],
+            [
                 'name'         => 'member-update',
                 'display_name' => trans('Update Client'),
             ],

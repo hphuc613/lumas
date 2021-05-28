@@ -31,7 +31,7 @@
                         <div class="col-md-4 form-group">
                             <label for="birthday">{{ trans('Birthday') }}</label>
                             <input type="text" class="form-control date" id="birthday" name="birthday"
-                                   value="{{ \Carbon\Carbon::parse($member->birthday)->format('d-m-Y') ?? old('birthday') }}"
+                                   value="{{ !empty($member) ? \Carbon\Carbon::parse($member->birthday)->format('d-m-Y') : old('birthday') }}"
                                    placeholder="dd-mm-yyyy">
                         </div>
                         <div class="col-md-4 form-group">
@@ -39,12 +39,12 @@
                             <div class="row">
                                 <div class="col-md-6 radio">
                                     <input type="radio" class="radio-style" name="sex" value="1"
-                                           @if($member->sex === 1) checked @endif>
+                                           @if(!empty($member) && $member->sex === 1) checked @endif>
                                     <span class="pl-2"> {{ trans('Male') }}</span>
                                 </div>
                                 <div class="col-md-6 radio">
                                     <input type="radio" class="radio-style" name="sex" value="0"
-                                           @if($member->sex === 0) checked @endif>
+                                           @if(!empty($member) && $member->sex === 0) checked @endif>
                                     <span class="pl-2"> {{ trans('Female') }}</span>
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="type-id">Member Type</label>
-                            {{ Form::select('type_id', [null => 'Select'] + $member_types, $member->type_id,
+                            {{ Form::select('type_id', [null => 'Select'] + $member_types, $member->type_id ?? NULL,
                                              ['id' => 'type-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
                         </div>
                         <div class="col-md-4 form-group">

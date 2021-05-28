@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Mail;
+namespace App\AppHelpers\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Mail;
 
-class SendMail extends Mailable
-{
+class SendMail extends Mailable{
     use Queueable, SerializesModels;
 
     public $title;
@@ -45,6 +43,4 @@ class SendMail extends Mailable
     {
         return $this;
     }
-
-
 }

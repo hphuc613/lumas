@@ -12,6 +12,16 @@
         </div>
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Client Listing") }}</h3></div>
+            <div class="group-btn">
+                <a href="{{route('get.member.import')}}" class="btn btn-info" data-toggle="modal"
+                   data-title="Import Client" data-target="#form-modal">
+                    <i class="fa fa-plus"></i>
+                    {{ trans("Import Client") }}
+                </a>
+                <a href="{{ route("get.member.create") }}" class="btn btn-primary"><i class="fa fa-plus"></i>
+                    {{ trans("Add New") }}
+                </a>
+            </div>
         </div>
     </div>
     <!--Search box-->
@@ -126,6 +136,7 @@
             </div>
         </div>
     </div>
+    {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax']) !!}
 @endsection
 
 @push('js')

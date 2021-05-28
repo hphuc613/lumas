@@ -48,6 +48,18 @@ class MemberRequest extends FormRequest{
         switch($method){
             default:
                 return [
+                    'name'     => 'required',
+                    'username' => [
+                        'required',
+                        'regex:/(^([a-zA-Z0-9_.]+)(\d+)?$)/u',
+                        'validate_unique:members'
+                    ],
+                    'email'    => 'required|email|validate_unique:members',
+                    'password' => 'required|min:6',
+                    'phone'    => 'digits:10|nullable|validate_unique:members',
+                ];
+            case 'create':
+                return [
                     'name'              => 'required',
                     'username'          => [
                         'required',

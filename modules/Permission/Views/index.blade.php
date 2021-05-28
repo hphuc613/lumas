@@ -1,6 +1,6 @@
 @extends('Base::layouts.master')
 @php
-use Modules\Permission\Model\PermissionRole;
+    use Modules\Permission\Model\PermissionRole
 
 @endphp
 @section('content')
@@ -42,10 +42,14 @@ use Modules\Permission\Model\PermissionRole;
                                             <td><b>{{ trans($permission->display_name) }}</b></td>
                                             @foreach($roles as $role)
                                                 <td>
-                                                    <input type="checkbox" name='role_permission[{{$role->id}}][]' value="{{ $permission->id }}"
-                                                           @if(\Modules\Permission\Model\PermissionRole::checkRolePermission($permission->id, $role->id)) checked @endif
-                                                           @if(\Modules\Role\Model\Role::getAdminRole()->id === $role->id) disabled @endif
-                                                           class="checkbox-style select-all select-all-with-other-child" id="role-{{ $permission->id }}-{{ $role->id }}">
+                                                    <input type="checkbox" name='role_permission[{{$role->id}}][]'
+                                                           value="{{ $permission->id }}"
+                                                           @if(\Modules\Permission\Model\PermissionRole::checkRolePermission($permission->id, $role->id)) checked
+                                                           @endif
+                                                           @if(\Modules\Role\Model\Role::getAdminRole()->id === $role->id) disabled
+                                                           @endif
+                                                           class="checkbox-style select-all select-all-with-other-child"
+                                                           id="role-{{ $permission->id }}-{{ $role->id }}">
                                                 </td>
                                             @endforeach
                                         </tr>
@@ -53,13 +57,20 @@ use Modules\Permission\Model\PermissionRole;
                                             @foreach($permission->child as $child)
                                                 <tr>
                                                     <td>{{ $key++ }}</td>
-                                                    <td><div class="ml-2">- {{ trans($child->display_name) }}</div></td>
+                                                    <td>
+                                                        <div class="ml-2">- {{ trans($child->display_name) }}</div>
+                                                    </td>
                                                     @foreach($roles as $role)
                                                         <td>
-                                                            <input type="checkbox" name='role_permission[{{$role->id}}][]' value="{{ $child->id }}"
-                                                                   @if(\Modules\Permission\Model\PermissionRole::checkRolePermission($child->id, $role->id)) checked @endif
-                                                                   @if(\Modules\Role\Model\Role::getAdminRole()->id === $role->id) disabled @endif
-                                                                   class="checkbox-style checkbox-item role-{{ $permission->id }}-{{ $role->id }}" id="role-{{ $child->id }}-{{ $role->id }}">
+                                                            <input type="checkbox"
+                                                                   name='role_permission[{{$role->id}}][]'
+                                                                   value="{{ $child->id }}"
+                                                                   @if(\Modules\Permission\Model\PermissionRole::checkRolePermission($child->id, $role->id)) checked
+                                                                   @endif
+                                                                   @if(\Modules\Role\Model\Role::getAdminRole()->id === $role->id) disabled
+                                                                   @endif
+                                                                   class="checkbox-style checkbox-item role-{{ $permission->id }}-{{ $role->id }}"
+                                                                   id="role-{{ $child->id }}-{{ $role->id }}">
                                                         </td>
                                                     @endforeach
                                                 </tr>

@@ -2,7 +2,7 @@
 
 namespace App\AppHelpers;
 
-use App\Http\Mail\SendMail;
+use App\AppHelpers\Mail\SendMail;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Modules\Setting\Model\Setting;
