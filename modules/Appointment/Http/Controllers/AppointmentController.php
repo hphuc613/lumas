@@ -89,11 +89,13 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postCreate(AppointmentRequest $request){
-        $data            = $request->all();
-        $data['user_id'] = Auth::id();
-        $data['time']    = Carbon::parse($data['time'])
-                                 ->format('Y-m-d H:i');
-        $book            = new Appointment($data);
+        $data = $request->all();
+        if(!isset($data['user_id']) || empty($data['user_id'])){
+            $data['user_id'] = Auth::id();
+        }
+        $data['time'] = Carbon::parse($data['time'])
+                              ->format('Y-m-d H:i');
+        $book         = new Appointment($data);
         $book->save();
         $request->session()
                 ->flash('success',
