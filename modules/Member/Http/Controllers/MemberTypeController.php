@@ -35,7 +35,7 @@ class MemberTypeController extends Controller{
      * @return array|string
      */
     public function getCreate(Request $request){
-        $statuses = Status::STATUSES;
+        $statuses = Status::getStatuses();
 
         if(!$request->ajax()){
             return redirect()->back();
@@ -63,7 +63,7 @@ class MemberTypeController extends Controller{
      */
     public function getUpdate(Request $request, $id){
         $member_type = MemberType::find($id);
-        $statuses    = Status::STATUSES;
+        $statuses    = Status::getStatuses();
         if(!$request->ajax()){
             return redirect()->back();
         }

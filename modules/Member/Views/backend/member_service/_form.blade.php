@@ -5,12 +5,12 @@
             @if(isset($member_service))
                 <a href="{{ route('get.member_service.e_sign',$member_service->id) }}"
                    class="btn btn-info" data-toggle="modal" data-target="#form-modal"
-                   data-title="E-sign">
+                   data-title="{{ trans('E-sign') }}">
                     <i class="fas fa-file-signature"></i>
                 </a>
             @endif
             <a href="{{ route('get.voucher.create_popup') }}" class="btn btn-primary" data-toggle="modal"
-               data-target="#form-modal" data-title="Create Voucher">
+               data-target="#form-modal" data-title="{{ trans('Create Voucher') }}">
                 <i class="fa fa-plus"></i> &nbsp; {{ trans('Add Voucher') }}
             </a>
         </div>

@@ -14,7 +14,7 @@
             <div class="page-title"><h3>{{ trans('Role Listing') }}</h3></div>
             <div class="group-btn">
                 <a href="{{ route('get.role.create') }}" class="btn btn-primary" data-toggle="modal"
-                   data-target="#form-modal" data-title="Create Role">
+                   data-target="#form-modal" data-title="{{ trans('Create Role') }}">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
             </div>
@@ -56,9 +56,6 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th width="100px">
-                                    <input type="checkbox" class="checkbox-style select-all">
-                                </th>
                                 <th width="50px">#</th>
                                 <th>{{ trans('Name') }}</th>
                                 <th>{{ trans('Status') }}</th>
@@ -71,10 +68,6 @@
                             @php($key = ($roles->currentpage()-1)*$roles->perpage()+1)
                             @foreach($roles as $role)
                                 <tr>
-                                    <td>
-                                        <input type="checkbox" name='id[]' value="{{ $role->id }}"
-                                               class="checkbox-style checkbox-item">
-                                    </td>
                                     <td>{{$key++}}</td>
                                     <td>{{ trans($role->name) }}</td>
                                     <td>{{ \Modules\Base\Model\Status::getStatus($role->status) ?? null }}</td>
@@ -82,7 +75,8 @@
                                     <td>{{ \Carbon\Carbon::parse($role->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
                                         <a href="{{ route('get.role.update',$role->id) }}" class="btn btn-primary mr-2"
-                                           data-toggle="modal" data-title="Update Role" data-target="#form-modal">
+                                           data-toggle="modal" data-title="{{ trans('Update Role') }}"
+                                           data-target="#form-modal">
                                             <i class="fas fa-pencil-alt"></i></a>
                                         <a href="{{ route('get.role.delete',$role->id) }}"
                                            class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>

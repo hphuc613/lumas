@@ -3,7 +3,7 @@ return [
     'id'         => 'member',
     'name'       => trans('Client Management'),
     'route'      => '#',
-    'sort'       => 1,
+    'sort'       => 2,
     'active'     => true,
     'icon'       => 'fas fa-user-friends',
     'middleware' => [],

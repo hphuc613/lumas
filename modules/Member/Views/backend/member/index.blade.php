@@ -14,7 +14,7 @@
             <div class="page-title"><h3>{{ trans("Client Listing") }}</h3></div>
             <div class="group-btn">
                 <a href="{{route('get.member.import')}}" class="btn btn-info" data-toggle="modal"
-                   data-title="Import Client" data-target="#form-modal">
+                   data-title="{{ trans("Import Client") }}" data-target="#form-modal">
                     <i class="fa fa-plus"></i>
                     {{ trans("Import Client") }}
                 </a>
@@ -112,6 +112,7 @@
                                 <td>
                                     <input type="checkbox" class="checkbox-style checkbox-item member-status"
                                            data-id="{{ $member->id }}"
+                                           id="member-{{ $member->id }}"
                                            @if($member->status == \Modules\Base\Model\Status::STATUS_ACTIVE) checked
                                            @endif value="1">
                                 </td>

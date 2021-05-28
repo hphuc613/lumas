@@ -37,7 +37,7 @@ class MemberController extends Controller{
      */
     public function index(Request $request){
         $filter       = $request->all();
-        $statuses     = Status::STATUSES;
+        $statuses     = Status::getStatuses();
         $member_types = MemberType::getArray();
         $members      = Member::filter($filter)->orderBy('name')->paginate(20);
         return view("Member::backend.member.index", compact('members', 'filter', 'member_types', 'statuses'));
@@ -48,7 +48,7 @@ class MemberController extends Controller{
      * @return Application|Factory|View
      */
     public function getCreate(){
-        $statuses     = Status::STATUSES;
+        $statuses     = Status::getStatuses();
         $member_types = MemberType::getArray();
         return view('Member::backend.member.create', compact('member_types', 'statuses'));
     }
@@ -74,7 +74,7 @@ class MemberController extends Controller{
      */
     public function getUpdate($id){
         $member       = Member::find($id);
-        $statuses     = Status::STATUSES;
+        $statuses     = Status::getStatuses();
         $member_types = MemberType::getArray();
         return view('Member::backend.member.update', compact('member', 'member_types', 'statuses'));
     }

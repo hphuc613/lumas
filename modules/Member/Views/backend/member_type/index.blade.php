@@ -14,7 +14,7 @@
             <div class="page-title"><h3>{{ trans('Client Type Listing') }}</h3></div>
             <div class="group-btn">
                 <a href="{{ route('get.member_type.create') }}" class="btn btn-primary" data-toggle="modal"
-                   data-target="#form-modal" data-title="Create Client Type">
+                   data-target="#form-modal" data-title="{{ trans('Create Client Type') }}">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
             </div>
@@ -57,9 +57,6 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th width="100px">
-                                    <input type="checkbox" class="checkbox-style select-all">
-                                </th>
                                 <th width="50px">#</th>
                                 <th>{{ trans('Name') }}</th>
                                 <th>{{ trans('Status') }}</th>
@@ -72,10 +69,6 @@
                             @php($key = ($member_types->currentpage()-1)*$member_types->perpage()+1)
                             @foreach($member_types as $member_type)
                                 <tr>
-                                    <td>
-                                        <input type="checkbox" name='id[]' value="{{ $member_type->id }}"
-                                               class="checkbox-style checkbox-item">
-                                    </td>
                                     <td>{{$key++}}</td>
                                     <td>{{ trans($member_type->name) }}</td>
                                     <td>{{ \Modules\Base\Model\Status::getStatus($member_type->status) ?? null }}</td>
@@ -84,7 +77,7 @@
                                     <td class="link-action">
                                         <a href="{{ route('get.member_type.update',$member_type->id) }}"
                                            class="btn btn-primary mr-2"
-                                           data-toggle="modal" data-title="Update Client Type"
+                                           data-toggle="modal" data-title="{{ trans('Update Client Type') }}"
                                            data-target="#form-modal">
                                             <i class="fas fa-pencil-alt"></i></a>
                                         <a href="{{ route('get.member_type.delete',$member_type->id) }}"

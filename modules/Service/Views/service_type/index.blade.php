@@ -14,7 +14,7 @@
             <div class="page-title"><h3>{{ trans('Service Type Listing') }}</h3></div>
             <div class="group-btn">
                 <a href="{{ route('get.service_type.create') }}" class="btn btn-primary" data-toggle="modal"
-                   data-target="#form-modal" data-title="Create Service Type">
+                   data-target="#form-modal" data-title="{{ trans('Create Service Type') }}">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
             </div>
@@ -57,9 +57,6 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th width="100px">
-                                    <input type="checkbox" class="checkbox-style select-all">
-                                </th>
                                 <th width="50px">#</th>
                                 <th>{{ trans('Name') }}</th>
                                 <th>{{ trans('Status') }}</th>
@@ -72,10 +69,6 @@
                             @php($key = ($service_types->currentpage()-1)*$service_types->perpage()+1)
                             @foreach($service_types as $service_type)
                                 <tr>
-                                    <td>
-                                        <input type="checkbox" name='id[]' value="{{ $service_type->id }}"
-                                               class="checkbox-style checkbox-item">
-                                    </td>
                                     <td>{{$key++}}</td>
                                     <td>{{ trans($service_type->name) }}</td>
                                     <td>{{ \Modules\Base\Model\Status::getStatus($service_type->status) ?? null }}</td>
@@ -84,7 +77,7 @@
                                     <td class="link-action">
                                         <a href="{{ route('get.service_type.update',$service_type->id) }}"
                                            class="btn btn-primary mr-2"
-                                           data-toggle="modal" data-title="Update Service Type"
+                                           data-toggle="modal" data-title="{{ trans('Update Service Type') }}"
                                            data-target="#form-modal">
                                             <i class="fas fa-pencil-alt"></i></a>
                                         <a href="{{ route('get.service_type.delete',$service_type->id) }}"

@@ -31,11 +31,11 @@
                     <div class="group-btn">
                         <a href="{{ route('get.appointment.create') }}" id="create-booking" class="btn btn-primary"
                            data-toggle="modal"
-                           data-target="#form-modal" data-title="Create Appointment">
+                           data-target="#form-modal" data-title="{{ trans('Create Appointment') }}">
                             <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                         </a>
                         <a href="#" class="d-none" id="update-booking" data-toggle="modal"
-                           data-target="#form-modal"></a>
+                           data-target="#form-modal" data-title="{{ trans('Update Appointment') }}"></a>
                     </div>
                 </div>
                 <div id="fullcalendar"></div>

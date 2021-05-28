@@ -59,6 +59,7 @@ class MemberServiceController extends Controller{
         $member_service_check_exist = MemberService::query()
                                                    ->where('service_id', $service->id)
                                                    ->where('member_id', $member->id)
+                                                   ->where('voucher_id', $request->voucher_id)
                                                    ->first();
         if(!empty($member_service_check_exist)){
             $request->session()->flash('error', "This service has not been used yet. Update right here.");

@@ -39,7 +39,7 @@ class StoreController extends Controller{
      * @return Application|Factory|View
      */
     public function getCreate(){
-        $statuses = Status::STATUSES;
+        $statuses = Status::getStatuses();
 
         return view("Store::create", compact('statuses'));
     }
@@ -60,7 +60,7 @@ class StoreController extends Controller{
      * @return Application|Factory|View
      */
     public function getUpdate($id){
-        $statuses = Status::STATUSES;
+        $statuses = Status::getStatuses();
         $store    = Store::find($id);
 
         return view("Store::update", compact('statuses', 'store'));

@@ -4,7 +4,7 @@
         <input name="file" type="file" id="upload-file" class="upload-style w-100" accept=".xlsx, .xls, .csv, .ods">
         <label id="upload-display" class="d-block bg-info  w-100" for="upload-file">
             <i class="fas fa-upload"></i>
-            <span>Choose File...</span>
+            <span>{{ trans("Choose File...") }}</span>
         </label>
     </div>
     <div class="input-group mt-5">

@@ -119,7 +119,7 @@
                                                         class="fas fa-trash-alt"></i></a>
                                                 <a href="{{ route('get.member_service.e_sign',$value->id) }}"
                                                    class="btn btn-info" data-toggle="modal" data-target="#form-modal"
-                                                   data-title="E-sign">
+                                                   data-title="{{ trans('E-sign') }}">
                                                     <i class="fas fa-file-signature"></i>
                                                 </a>
                                             </td>
@@ -146,9 +146,9 @@
     <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
     <script>
         @if(isset($member_service))
-        $(".service").prop("disabled", true);
+        $(".select2").prop("disabled", true);
         $("#btn-add-service").click(function () {
-            $(".service").prop("disabled", false);
+            $(".select2").prop("disabled", false);
         })
         @endif
         /** Get service list by service type */

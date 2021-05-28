@@ -40,7 +40,7 @@ class ServiceController extends Controller{
      * @return Application|Factory|View
      */
     public function getcreate(){
-        $statuses      = Status::STATUSES;
+        $statuses      = Status::getStatuses();
         $service_types = ServiceType::getArray();
         return view("Service::service.create", compact('statuses', 'service_types'));
     }
@@ -62,7 +62,7 @@ class ServiceController extends Controller{
      */
     public function getUpdate($id){
         $service       = Service::find($id);
-        $statuses      = Status::STATUSES;
+        $statuses      = Status::getStatuses();
         $service_types = ServiceType::getArray();
         return view("Service::service.update", compact('service', 'statuses', 'service_types'));
     }

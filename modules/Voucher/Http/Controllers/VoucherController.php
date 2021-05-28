@@ -41,7 +41,7 @@ class VoucherController extends Controller{
      * @return Application|Factory|View
      */
     public function getCreate(){
-        $statuses      = Status::STATUSES;
+        $statuses      = Status::getStatuses();
         $service_types = ServiceType::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
         return view("Voucher::create", compact('statuses', 'service_types'));
     }
@@ -67,7 +67,7 @@ class VoucherController extends Controller{
      * @return array|string
      */
     public function getCreatePopUp(Request $request){
-        $statuses      = Status::STATUSES;
+        $statuses      = Status::getStatuses();
         $service_types = ServiceType::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
 
         if(!$request->ajax()){
@@ -93,7 +93,7 @@ class VoucherController extends Controller{
      * @return Application|Factory|View
      */
     public function getUpdate($id){
-        $statuses      = Status::STATUSES;
+        $statuses      = Status::getStatuses();
         $voucher       = Voucher::find($id);
         $service_types = ServiceType::query()->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
         $services      = Service::query()

@@ -426,22 +426,22 @@ input[type=file] {
 }
 
 .alert-fade-out {
-  background-color: white;
-  max-width: 300px;
-  position: fixed;
-  right: -300px;
-  top: 70px;
-  z-index: 100;
-  font-size: 16px;
+    max-width: 300px;
+    position: fixed;
+    right: -300px;
+    top: 70px;
+    z-index: 100;
+    font-size: 16px;
+    color: white;
 }
 
 .alert-danger.alert-fade-out {
-    color: #ff4e4e;
-    border: solid 0.15rem #ff4e4e;
+    background-color: rgba(255, 94, 103, 0.98);
+    border: solid 0.15rem #ff0000;
 }
 
 .alert-primary.alert-fade-out {
-    color: #19cc47;
+    background-color: #64d985;
     border: solid 0.15rem #19cc47;
 }
 

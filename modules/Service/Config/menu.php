@@ -2,7 +2,7 @@
 return [
     'id'         => 'service',
     'name'       => trans('Service Management'),
-    'sort'       => 1,
+    'sort'       => 3,
     'active'     => true,
     'icon'       => 'fas fa-cocktail',
     'middleware' => [],

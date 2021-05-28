@@ -30,7 +30,7 @@ class UserController extends Controller {
     public function index(Request $request) {
         $filter   = $request->all();
         $users    = User::filter($filter)->paginate(20);
-        $statuses = Status::STATUSES;
+        $statuses = Status::getStatuses();
 
         return view('User::index', compact('users', 'statuses', 'filter'));
     }
@@ -40,7 +40,7 @@ class UserController extends Controller {
      */
     public function getCreate() {
         $roles    = Role::getArray();
-        $statuses = Status::STATUSES;
+        $statuses = Status::getStatuses();
 
         return view('User::create', compact('roles', 'statuses'));
     }
@@ -71,7 +71,7 @@ class UserController extends Controller {
     public function getUpdate($id) {
         $roles    = Role::getArray();
         $user     = User::find($id);
-        $statuses = Status::STATUSES;
+        $statuses = Status::getStatuses();
 
         return view('User::update', compact('roles', 'user', 'statuses'));
     }
@@ -119,7 +119,7 @@ class UserController extends Controller {
         $id       = Auth::guard()->id();
         $roles    = Role::getArray();
         $user     = User::find($id);
-        $statuses = Status::STATUSES;
+        $statuses = Status::getStatuses();
 
         return view('User::update', compact('roles', 'user', 'statuses'));
     }

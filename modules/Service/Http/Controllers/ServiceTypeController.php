@@ -34,7 +34,7 @@ class ServiceTypeController extends Controller{
      * @return array|string
      */
     public function getCreate(Request $request){
-        $statuses = Status::STATUSES;
+        $statuses = Status::getStatuses();
 
         if(!$request->ajax()){
             return redirect()->back();
@@ -62,7 +62,7 @@ class ServiceTypeController extends Controller{
      */
     public function getUpdate(Request $request, $id){
         $service_type = ServiceType::find($id);
-        $statuses     = Status::STATUSES;
+        $statuses     = Status::getStatuses();
         if(!$request->ajax()){
             return redirect()->back();
         }

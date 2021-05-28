@@ -66,7 +66,7 @@ class AppointmentController extends Controller{
      * @return Application|Factory|RedirectResponse|View
      */
     public function getCreate(Request $request){
-        $statuses      = Status::STATUSES;
+        $statuses      = Status::getStatuses();
         $service_types = ServiceType::getArray(Status::STATUS_ACTIVE);
         $clients       = Member::getArray(Status::STATUS_ACTIVE);
         $stores        = Store::getArray(Status::STATUS_ACTIVE);
@@ -109,7 +109,7 @@ class AppointmentController extends Controller{
      * @return Application|Factory|RedirectResponse|View
      */
     public function getUpdate(Request $request, $id){
-        $statuses          = Status::STATUSES;
+        $statuses          = Status::getStatuses();
         $service_types     = ServiceType::getArray(Status::STATUS_ACTIVE);
         $clients           = Member::getArray(Status::STATUS_ACTIVE);
         $stores            = Store::getArray(Status::STATUS_ACTIVE);

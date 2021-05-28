@@ -81,6 +81,7 @@
                                         <td>
                                             <input type="checkbox" class="checkbox-style checkbox-item user-status"
                                                    data-id="{{ $user->id }}"
+                                                   id="user-{{ $user->id }}"
                                                    @if($user->status == \Modules\Base\Model\Status::STATUS_ACTIVE) checked
                                                    @endif value="1">
                                         </td>

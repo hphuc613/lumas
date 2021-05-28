@@ -38,12 +38,12 @@
                             <label>Radio</label>
                             <div class="row">
                                 <div class="col-md-6 radio">
-                                    <input type="radio" class="radio-style" name="sex" value="1"
+                                    <input type="radio" id="sex-male" class="radio-style" name="sex" value="1"
                                            @if(!empty($member) && $member->sex === 1) checked @endif>
                                     <span class="pl-2"> {{ trans('Male') }}</span>
                                 </div>
                                 <div class="col-md-6 radio">
-                                    <input type="radio" class="radio-style" name="sex" value="0"
+                                    <input type="radio" id="sex-female" class="radio-style" name="sex" value="0"
                                            @if(!empty($member) && $member->sex === 0) checked @endif>
                                     <span class="pl-2"> {{ trans('Female') }}</span>
                                 </div>
