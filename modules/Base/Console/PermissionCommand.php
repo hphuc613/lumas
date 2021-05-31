@@ -42,9 +42,9 @@ class PermissionCommand extends Command{
      * @return void
      */
     public function handle(){
-
         $permissions = Helper::config_permission_merge();
 
+//        DB::table('permissions')->delete();
         $statement = "ALTER TABLE permissions AUTO_INCREMENT = 1;";
         DB::unprepared($statement);
         /** Insert permission list */

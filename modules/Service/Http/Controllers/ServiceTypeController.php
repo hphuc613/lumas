@@ -24,7 +24,7 @@ class ServiceTypeController extends Controller{
 
     public function index(Request $request){
         $filter        = $request->all();
-        $service_types = ServiceType::filter($filter)->paginate(20);
+        $service_types = ServiceType::filter($filter)->paginate(15);
 
         return view('Service::service_type.index', compact('service_types', 'filter'));
     }

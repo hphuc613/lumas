@@ -39,7 +39,7 @@ class MemberController extends Controller{
         $filter       = $request->all();
         $statuses     = Status::getStatuses();
         $member_types = MemberType::getArray();
-        $members      = Member::filter($filter)->orderBy('name')->paginate(20);
+        $members      = Member::filter($filter)->orderBy('name')->paginate(15);
         return view("Member::backend.member.index", compact('members', 'filter', 'member_types', 'statuses'));
     }
 

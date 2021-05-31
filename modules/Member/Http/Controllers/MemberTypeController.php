@@ -25,7 +25,7 @@ class MemberTypeController extends Controller{
 
     public function index(Request $request){
         $filter       = $request->all();
-        $member_types = MemberType::filter($filter)->paginate(20);
+        $member_types = MemberType::filter($filter)->paginate(15);
 
         return view('Member::backend.member_type.index', compact('member_types', 'filter'));
     }

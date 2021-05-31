@@ -33,7 +33,7 @@ class VoucherController extends Controller{
         $vouchers = Voucher::filter($filter)
                            ->where('status', Status::STATUS_ACTIVE)
                            ->orderBy('start_at', 'DESC')
-                           ->paginate(20);
+                           ->paginate(15);
         return view("Voucher::index", compact('vouchers', 'services'));
     }
 

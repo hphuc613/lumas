@@ -29,7 +29,7 @@ class UserController extends Controller {
      */
     public function index(Request $request) {
         $filter   = $request->all();
-        $users    = User::filter($filter)->paginate(20);
+        $users    = User::filter($filter)->paginate(15);
         $statuses = Status::getStatuses();
 
         return view('User::index', compact('users', 'statuses', 'filter'));
