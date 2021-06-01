@@ -162,6 +162,15 @@ a {
     }
 }
 
+.nav-pills {
+    .nav-link {
+        &.active {
+            color: #fff;
+            background-color: $main-color;
+        }
+    }
+}
+
 .select2 {
     width: 100%;
 }

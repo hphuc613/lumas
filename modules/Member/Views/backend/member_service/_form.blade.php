@@ -3,11 +3,13 @@
         <h5>{{ !isset($member_service) ? trans("Add Service") : trans("Update Service") }}</h5>
         <div class="group-btn">
             @if(isset($member_service))
-                <a href="{{ route('get.member_service.e_sign',$member_service->id) }}"
-                   class="btn btn-info" data-toggle="modal" data-target="#form-modal"
-                   data-title="{{ trans('E-sign') }}">
-                    <i class="fas fa-file-signature"></i>
-                </a>
+                @if($member_service->getRemaining() > 0)
+                    <a href="{{ route('get.member_service.e_sign',$member_service->id) }}"
+                       class="btn btn-info" data-toggle="modal" data-target="#form-modal"
+                       data-title="{{ trans('E-sign') }}">
+                        <i class="fas fa-file-signature"></i>
+                    </a>
+                @endif
             @endif
             <a href="{{ route('get.voucher.create_popup') }}" class="btn btn-primary" data-toggle="modal"
                data-target="#form-modal" data-title="{{ trans('Create Voucher') }}">
@@ -41,7 +43,7 @@
                     <label for="service">{{ trans("Service") }}</label>
                     {!! Form::select('service_id', $prompt + $services, $member_service->service_id ?? null, [
                     'id' => 'service',
-                    'class' => 'select2 form-control service',
+                    'class' => 'select2 form-control service service-relate',
                     'style' => 'width: 100%']) !!}
                 </div>
                 <div class="form-group col-md-6">
@@ -53,34 +55,45 @@
                     @else
                         {!! Form::select('voucher_id', $prompt + $vouchers, $member_service->voucher_id ?? null, [
                         'id' => 'voucher',
-                        'class' => 'select2 form-control',
+                        'class' => 'select2 form-control service-relate',
                         'style' => 'width: 100%']) !!}
                     @endif
                 </div>
                 <div class="form-group col-md-6">
                     <label for="quantity">{{ trans("Quantity") }}</label>
                     <input type="number" name="quantity" id="quantity" class="form-control"
+                           @if(isset($member_service) && $member_service->getRemaining() == 0) readonly @endif
                            value="{{ $member_service->quantity ?? old('quantity') }}">
                 </div>
                 @if(isset($member_service))
                     <div class="form-group col-md-6">
                         <label for="remaining-quantity">{{ trans("Remaning Quantity") }}</label>
                         <h5 class="text-danger">
-                            {{ $member_service->quantity - $member_service->deduct_quantity }}
+                            {{ $member_service->getRemaining() }}
                         </h5>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="status">{{ trans("Status") }}</label>
+                        {!! Form::select('status', $statuses, $member_service->status ?? null, [
+                        'id' => 'status',
+                        'class' => 'select2 form-control',
+                        'style' => 'width: 100%']) !!}
                     </div>
                 @endif
                 <div class="form-group col-md-12">
                     <label for="remarks">{{ trans("Remarks") }}</label>
                     <textarea class="form-control" name="remarks" id="description"
+                              @if(isset($member_service) && $member_service->getRemaining() == 0) readonly @endif
                               rows="5">{{ $member_service->remarks ?? old('remarks') }}</textarea>
                 </div>
             </div>
-            <div class="input-group">
-                <button type="submit" class="btn btn-primary" id="btn-add-service">
-                    @if(isset($member_service)) {{ trans("Update") }} @else {{ trans("Add") }} @endif
-                </button>
-            </div>
+            @if(!isset($member_service) || $member_service->getRemaining() > 0)
+                <div class="input-group">
+                    <button type="submit" class="btn btn-primary" id="btn-add-service">
+                        @if(isset($member_service)) {{ trans("Update") }} @else {{ trans("Add") }} @endif
+                    </button>
+                </div>
+            @endif
         </form>
     </div>
 </div>

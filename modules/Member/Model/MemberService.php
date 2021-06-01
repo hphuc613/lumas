@@ -19,6 +19,10 @@ class MemberService extends BaseModel{
 
     public $timestamps = true;
 
+    const COMPLETED_STATUS = 1;
+
+    const PROGRESSING_STATUS = 0;
+
 
     /**
      * @param $filter
@@ -29,12 +33,52 @@ class MemberService extends BaseModel{
         $query = self::query();
         if(isset($filter['code'])){
             $query->where('code', $filter['code']);
+            $query->orWhereHas('service', function($sq) use ($filter){
+                $sq->where('name', 'LIKE', '%' . $filter['code'] . '%');
+            });
         }
         $query->where('member_id', $member_id)
               ->whereRaw('deduct_quantity < quantity')
               ->orderBy("created_at", "DESC");
 
         return $query;
+    }
+
+    /**
+     * @param $filter
+     * @param $member_id
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function filterCompleted($filter, $member_id){
+        $query = self::query();
+        if(isset($filter['code_completed'])){
+            $query->where('code', $filter['code_completed']);
+            $query->orWhereHas('service', function($sq) use ($filter){
+                $sq->where('name', 'LIKE', '%' . $filter['code_completed'] . '%');
+            });
+        }
+        $query->where('member_id', $member_id)
+              ->whereRaw('deduct_quantity = quantity')
+              ->orderBy("created_at", "DESC");
+
+        return $query;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getStatus(){
+        return [
+            self::COMPLETED_STATUS   => 'Completed',
+            self::PROGRESSING_STATUS => 'Progressing'
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRemaining(){
+        return $this->quantity - $this->deduct_quantity;
     }
 
     /**

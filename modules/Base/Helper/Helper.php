@@ -82,3 +82,26 @@ if(!function_exists('calculateTimeNotification')){
         return $time;
     }
 }
+
+if(!function_exists('summaryListing')){
+    /**
+     * @param $data
+     * @return string|null
+     */
+    function summaryListing($data): ?string{
+        $html = '';
+        $html .= '<span class="listing-information">';
+        $html .= trans('Showing');
+        $html .= '<b> ';
+        $html .= (count($data) > 0) ? ($data->currentpage() - 1) * $data->perpage() + 1 : 0;
+        $html .= '</b> ';
+        $html .= trans(' to ');
+        $html .= '<b> ';
+        $html .= ($data->currentpage() - 1) * $data->perpage() + $data->count();
+        $html .= ' </b>';
+        $html .= trans(' of ');
+        $html .= '<b>' . $data->total() . '</b> ' . trans('entries') . '</span>';
+
+        return $html;
+    }
+}

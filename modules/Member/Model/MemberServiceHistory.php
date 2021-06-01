@@ -27,7 +27,7 @@ class MemberServiceHistory extends BaseModel{
      */
     public static function filter($filter, $member_id, $service_id = null){
         $query = self::query()->with('memberService');
-        $query->whereHas('memberService', function($ms_query) use ($member_id, $filter){
+        $query->whereHas('memberService', function($ms_query) use ($member_id, $filter, $service_id){
             if(isset($filter['code_history'])){
                 $ms_query->where('code', $filter['code_history']);
             }

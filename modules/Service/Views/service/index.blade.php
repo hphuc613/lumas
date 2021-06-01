@@ -56,11 +56,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="sumary">
-                    <span class="listing-information">
-                        {{ trans('Showing') }} <b>{{($services->currentpage()-1)*$services->perpage()+1}}
-                            {{ trans('to') }} {{($services->currentpage()-1) * $services->perpage() + $services->count()}}</b>
-                        {{ trans('of') }}  <b>{{$services->total()}}</b> {{ trans('entries') }}
-                    </span>
+                    {!! summaryListing($services) !!}
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped">

@@ -19,6 +19,7 @@ class CreateMemberServicesTable extends Migration{
             $table->unsignedInteger('voucher_id')->nullable();
             $table->integer('quantity')->default(0);
             $table->integer('deduct_quantity')->default(0);
+            $table->smallInteger('status')->default(1);
             $table->text('remarks')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();

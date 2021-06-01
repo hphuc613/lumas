@@ -7,7 +7,8 @@
         </h5>
     </div>
     <div class="card-body">
-        <form action="{{ route('get.member_service.add', $member->id) }}" method="get" class="mb-3">
+        @php($route_form_search = !isset($member_service) ? route('get.member_service.add', $member->id) : route('get.member_service.edit', $member_service->id))
+        <form action="{{ $route_form_search }}" method="get" class="mb-3">
             <div class="input-group">
                 <input type="text" class="form-control" id="search-service-" name="code_history"
                        placeholder="{{ trans("Search Service") }}">
@@ -18,23 +19,14 @@
             </div>
         </form>
         <div class="sumary">
-            <span class="listing-information">
-                {{ trans('Showing') }}
-                <b>
-                    {{($histories->currentpage()-1)*$histories->perpage()+1}}
-                    {{ trans('to') }}
-                    {{($histories->currentpage()-1) * $histories->perpage() + $histories->count()}}
-                </b>
-                {{ trans('of') }}
-                <b>{{$histories->total()}}</b> {{ trans('entries') }}
-            </span>
+            {!! summaryListing($histories) !!}
         </div>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th width="50px">#</th>
-                    <th>{{ trans('Code order') }}</th>
+                    <th>{{ trans('Code') }}</th>
                     <th>{{ trans('Signature') }}</th>
                     <th>{{ trans('Service') }}
                     <th>{{ trans('Updated By') }}</th>
@@ -49,7 +41,7 @@
                         <td>
                             <a href="javascript:" class="tooltip-content"
                                data-tooltip="{{ generateQRCode($history->memberService->code)}}" title="">
-                                {{$value->code}}
+                                {{$history->memberService->code}}
                             </a>
                         </td>
                         <td>{{ $history->signature }}</td>

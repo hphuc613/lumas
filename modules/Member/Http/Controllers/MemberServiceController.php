@@ -36,14 +36,19 @@ class MemberServiceController extends Controller{
      * @return Application|Factory|View
      */
     public function getAdd(Request $request, $id){
-        $member          = Member::find($id);
-        $services        = Service::getArray(Status::STATUS_ACTIVE);
-        $member_services = MemberService::filter($request->all(), $member->id)
-                                        ->paginate(5, ['*'], 'service_page');
-        $histories       = MemberServiceHistory::filter($request->all(), $member->id)
-                                               ->paginate(10, ['*'], 'history_page');
+        $filter                    = $request->all();
+        $member                    = Member::find($id);
+        $services                  = Service::getArray(Status::STATUS_ACTIVE);
+        $member_services           = MemberService::filter($filter, $member->id)
+                                                  ->paginate(5, ['*'], 'service_page');
+        $completed_member_services = MemberService::filterCompleted($filter, $member->id)
+                                                  ->paginate(5, ['*'], 'service_page');
 
-        return view('Member::backend.member_service.index', compact('member', 'services', 'member_services', 'histories'));
+        $histories = MemberServiceHistory::filter($filter, $member->id)
+                                         ->paginate(10, ['*'], 'history_page');
+
+        return view('Member::backend.member_service.index', compact(
+            'member', 'services', 'member_services', 'histories', 'completed_member_services', 'filter'));
     }
 
     /**
@@ -79,21 +84,25 @@ class MemberServiceController extends Controller{
      * @return Application|Factory|View
      */
     public function getEdit(Request $request, $id){
-        $member_service  = MemberService::find($id);
-        $member_services = MemberService::filter($request->all(), $member_service->member_id)
-                                        ->paginate(5, ['*'], 'service_page');
-        $member          = Member::find($member_service->member_id);
-        $services        = Service::getArray(Status::STATUS_ACTIVE);
-        $vouchers        = Voucher::query()
-                                  ->where('service_id', $member_service->service_id)
-                                  ->where('status', Status::STATUS_ACTIVE)
-                                  ->pluck('code', 'id')->toArray();
+        $filter                    = $request->all();
+        $member_service            = MemberService::find($id);
+        $member_services           = MemberService::filter($filter, $member_service->member_id)
+                                                  ->paginate(5, ['*'], 'service_page');
+        $completed_member_services = MemberService::filterCompleted($filter, $member_service->member_id)
+                                                  ->paginate(5, ['*'], 'service_completed_page');
 
-        $histories = MemberServiceHistory::filter($request->all(), $member->id, $member_service->service_id)
+        $member   = Member::find($member_service->member_id);
+        $services = Service::getArray(Status::STATUS_ACTIVE);
+        $vouchers = Voucher::query()
+                           ->where('service_id', $member_service->service_id)
+                           ->where('status', Status::STATUS_ACTIVE)
+                           ->pluck('code', 'id')->toArray();
+
+        $histories = MemberServiceHistory::filter($filter, $member->id, $member_service->service_id)
                                          ->paginate(10, ['*'], 'history_page');
-
+        $statuses  = MemberService::getStatus();
         return view('Member::backend.member_service.index', compact(
-            'member', 'services', 'member_services', 'member_service', 'vouchers', 'histories'));
+            'member', 'services', 'member_services', 'member_service', 'vouchers', 'histories', 'completed_member_services', 'filter', 'statuses'));
     }
 
     /**
@@ -142,6 +151,7 @@ class MemberServiceController extends Controller{
 
             /**  Reduce the quantity of */
             $member_service->deduct_quantity += 1;
+            $member_service->status          = MemberService::COMPLETED_STATUS;
             $member_service->save();
 
             $request->session()->flash('success', "Signed successfully.");
