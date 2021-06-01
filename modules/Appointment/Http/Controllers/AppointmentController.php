@@ -112,9 +112,9 @@ class AppointmentController extends Controller{
 
         /** Get list id service/course*/
         if($data['type'] === Appointment::SERVICE_TYPE){
-            $data['service_ids'] = json_encode($data['product_ids']);
+            $data['service_ids'] = json_encode($data['product_ids'] ?? []);
         }else{
-            $data['course_ids'] = json_encode($data['product_ids']);
+            $data['course_ids'] = json_encode($data['product_ids'] ?? []);
         }
         unset($data['product_ids']);
 
@@ -127,6 +127,10 @@ class AppointmentController extends Controller{
         $book->save();
         $request->session()->flash('success', 'Appointment booked successfully.');
 
+        if($book->type = Appointment::COURSE_TYPE){
+            return redirect()->route('get.appointment.list', 'type=' . Appointment::COURSE_TYPE);
+
+        }
         return redirect()->back();
     }
 
@@ -171,17 +175,18 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postUpdate(AppointmentRequest $request, $id){
-        $data = $request->all();
+        $book         = Appointment::find($id);
+        $data         = $request->all();
+        $data['type'] = $book->type;
         /** Get list id service/course*/
         if($data['type'] === Appointment::SERVICE_TYPE){
-            $data['service_ids'] = json_encode($data['product_ids']);
+            $data['service_ids'] = json_encode($data['product_ids'] ?? []);
         }else{
-            $data['course_ids'] = json_encode($data['product_ids']);
+            $data['course_ids'] = json_encode($data['product_ids'] ?? []);
         }
         unset($data['product_ids']);
         $data['time'] = Carbon::parse($data['time'])
                               ->format('Y-m-d H:i');
-        $book         = Appointment::find($id);
         $book->update($data);
 
         $request->session()

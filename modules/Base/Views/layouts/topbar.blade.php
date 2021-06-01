@@ -25,11 +25,13 @@
     </div>
     <div class="notification-belling" data-toggle="collapse" href="#notification-list" aria-expanded="false">
         <a href="#" class="text-light">
-            <i class="fas fa-bell"></i>
-            <span class="number"></span>
+            <i class="fas fa-bell position-relative">
+                <span class="badge rounded-circle badge-danger position-absolute p-1"
+                      style="bottom: 10px; left: 10px; font-size: 11px">11</span>
+            </i>
         </a>
-        <div class="collapse border" id="notification-list">
-            <div class="card">
+        <div class="collapse" id="notification-list">
+            <div class="card border-0">
                 <div class="card-body p-2">
                     <h4>{{ trans('Notifications') }}</h4>
                     <div id="new-notification">

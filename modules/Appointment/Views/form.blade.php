@@ -75,7 +75,7 @@
                     <thead>
                     <tr>
                         <th>Service/Course Name</th>
-                        <th>Action</th>
+                        <th class="text-center">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -84,9 +84,10 @@
                             @foreach($appointment->service_ids as $item)
                                 <tr class="pl-2">
                                     <td>
-                                        <input type="hidden" name="service_ids[]" value="{{ $item->id }}">
-                                        <span class="text-option">{{ $item->name }}</span></td>
-                                    <td>
+                                        <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
+                                        <span class="text-option">{{ $item->name }}</span>
+                                    </td>
+                                    <td class="text-center">
                                         <button type="button" class="btn btn-danger delete-product"><i
                                                 class="fas fa-trash"></i></button>
                                     </td>
@@ -96,9 +97,10 @@
                             @foreach($appointment->course_ids as $item)
                                 <tr class="pl-2">
                                     <td>
-                                        <input type="hidden" name="course_ids[]" value="{{ $item->id }}">
-                                        <span class="text-option">{{ $item->name }}</span></td>
-                                    <td>
+                                        <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
+                                        <span class="text-option">{{ $item->name }}</span>
+                                    </td>
+                                    <td class="text-center">
                                         <button type="button" class="btn btn-danger delete-product"><i
                                                 class="fas fa-trash"></i></button>
                                     </td>
@@ -170,5 +172,6 @@
             $("#edit-btn").hide();
             $("#submit-btn").show();
         }
+        $('#appointment-form #type.select2').prop('disabled', true);
     }
 </script>

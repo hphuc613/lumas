@@ -82,6 +82,10 @@ function openElfinder(btn, url, soundPath, lang, csrf) {
 }
 
 $(document).ready(function () {
+    $(window).click(function () {
+        $('.topbar #notification-list').collapse('hide');
+        $('.topbar #list-menu').collapse('hide');
+    });
     //Select2
     $('select.select2').select2();
     /***** Action delete *****/

@@ -151,7 +151,7 @@
                     '<input type="hidden" name="product_ids[]" value="' + product.val() + '">' +
                     '<span class="text-option">' + product.children(':selected').text() + '</span>' +
                     '</td>' +
-                    '<td><button type="button" class="btn btn-danger delete-product"><i class="fas fa-trash"></i></button></td>' +
+                    '<td class="text-center"><button type="button" class="btn btn-danger delete-product"><i class="fas fa-trash"></i></button></td>' +
                     '</tr>';
                 $("#product-list tbody").append(html);
                 product.children(':selected').remove();

@@ -127,8 +127,11 @@ a {
             z-index: 100;
             background-color: #ffffff;
             right: -8rem;
-            top: 60px;
+            top: 52px;
             width: 28rem;
+            box-shadow: 0 6px 9px 0 $text-color;
+            border: none;
+            border-radius: 10px;
         }
     }
 }
