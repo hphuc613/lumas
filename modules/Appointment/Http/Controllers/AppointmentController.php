@@ -2,7 +2,9 @@
 
 namespace Modules\Appointment\Http\Controllers;
 
+use App\AppHelpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Notifications\Notification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -14,12 +16,14 @@ use Illuminate\View\View;
 use Modules\Appointment\Http\Requests\AppointmentRequest;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
+use Modules\Course\Model\Course;
 use Modules\Member\Model\Member;
 use Modules\Role\Model\Role;
 use Modules\Service\Model\Service;
-use Modules\Service\Model\ServiceType;
 use Modules\Store\Model\Store;
 use Modules\User\Model\User;
+use Pusher\Pusher;
+use Pusher\PusherException;
 
 class AppointmentController extends Controller{
 
@@ -36,16 +40,29 @@ class AppointmentController extends Controller{
      * @param Request $request
      * @return Application|Factory|View
      */
-    public function index(){
-        $appointments = Appointment::with('member')
-                                   ->with('service')
-                                   ->with('store')
-                                   ->with('user');
+    public function index(Request $request){
+        $filter            = $request->all();
+        $appointment_types = Appointment::getTypeList();
+        $appointments      = Appointment::with('member')
+                                        ->with('store')
+                                        ->with('user');
+
+        /** Created_by */
         if(!Auth::user()->isAdmin()){
             $appointments = $appointments->where('user_id', Auth::id());
         }
+
+        /** Type of appointment */
+        if(isset($filter['type'])){
+            $appointments = $appointments->where('type', $filter['type']);
+        }else{
+            $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
+        }
+
         $appointments = $appointments->get();
-        $events       = [];
+
+        /** Get event */
+        $events = [];
         foreach($appointments as $appointment){
             $title    = (Auth::user()
                              ->isAdmin()) ? $appointment->name . ' | ' . $appointment->user->name : $appointment->name;
@@ -58,7 +75,7 @@ class AppointmentController extends Controller{
             ];
         }
         $events = json_encode($events);
-        return view("Appointment::index", compact('events'));
+        return view("Appointment::index", compact('events', 'appointment_types', 'filter'));
     }
 
     /**
@@ -66,11 +83,13 @@ class AppointmentController extends Controller{
      * @return Application|Factory|RedirectResponse|View
      */
     public function getCreate(Request $request){
-        $statuses      = Status::getStatuses();
-        $service_types = ServiceType::getArray(Status::STATUS_ACTIVE);
-        $clients       = Member::getArray(Status::STATUS_ACTIVE);
-        $stores        = Store::getArray(Status::STATUS_ACTIVE);
-        $users         = [];
+        $statuses          = Appointment::getStatus();
+        $services          = Service::getArray(Status::STATUS_ACTIVE);
+        $courses           = Course::getArray(Status::STATUS_ACTIVE);
+        $appointment_types = Appointment::getTypeList();
+        $clients           = Member::getArray(Status::STATUS_ACTIVE);
+        $stores            = Store::getArray(Status::STATUS_ACTIVE);
+        $users             = [];
         if(Auth::user()->isAdmin()){
             $users = User::with('roles')
                          ->whereHas('roles', function($role_query){
@@ -81,7 +100,7 @@ class AppointmentController extends Controller{
         if(!$request->ajax()){
             return redirect()->back();
         }
-        return view("Appointment::form", compact('statuses', 'service_types', 'clients', 'stores', 'users'));
+        return view("Appointment::form", compact('statuses', 'appointment_types', 'services', 'courses', 'clients', 'stores', 'users'));
     }
 
     /**
@@ -90,6 +109,15 @@ class AppointmentController extends Controller{
      */
     public function postCreate(AppointmentRequest $request){
         $data = $request->all();
+
+        /** Get list id service/course*/
+        if($data['type'] === Appointment::SERVICE_TYPE){
+            $data['service_ids'] = json_encode($data['product_ids']);
+        }else{
+            $data['course_ids'] = json_encode($data['product_ids']);
+        }
+        unset($data['product_ids']);
+
         if(!isset($data['user_id']) || empty($data['user_id'])){
             $data['user_id'] = Auth::id();
         }
@@ -97,9 +125,7 @@ class AppointmentController extends Controller{
                               ->format('Y-m-d H:i');
         $book         = new Appointment($data);
         $book->save();
-        $request->session()
-                ->flash('success',
-                    'Appointment booked successfully.');
+        $request->session()->flash('success', 'Appointment booked successfully.');
 
         return redirect()->back();
     }
@@ -110,11 +136,11 @@ class AppointmentController extends Controller{
      */
     public function getUpdate(Request $request, $id){
         $statuses          = Status::getStatuses();
-        $service_types     = ServiceType::getArray(Status::STATUS_ACTIVE);
         $clients           = Member::getArray(Status::STATUS_ACTIVE);
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
+        $appointment_types = Appointment::getTypeList();
+
         $appointment       = Appointment::with('member')
-                                        ->with('service')
                                         ->with('store')
                                         ->with('user')
                                         ->find($id);
@@ -128,18 +154,16 @@ class AppointmentController extends Controller{
                          })
                          ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
         }
-
-        $services = Service::with("type")
-                           ->where("status", Status::STATUS_ACTIVE)
-                           ->where('type_id', $appointment->service->type_id)
-                           ->pluck('name', 'id')
-                           ->toArray();
+        $services                 = Service::getArray(Status::STATUS_ACTIVE, null, Helper::isJson($appointment->service_ids, 1));
+        $courses                  = Course::getArray(Status::STATUS_ACTIVE, null, Helper::isJson($appointment->course_ids, 1));
+        $appointment->service_ids = $appointment->getServiceList();
+        $appointment->course_ids  = $appointment->getCourseList();
 
         if(!$request->ajax()){
             return redirect()->back();
         }
 
-        return view("Appointment::form", compact('statuses', 'service_types', 'clients', 'stores', 'appointment', 'services', 'users'));
+        return view("Appointment::form", compact('statuses', 'appointment_types', 'services', 'courses', 'clients', 'stores', 'appointment', 'services', 'users'));
     }
 
     /**
@@ -147,7 +171,14 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postUpdate(AppointmentRequest $request, $id){
-        $data         = $request->all();
+        $data = $request->all();
+        /** Get list id service/course*/
+        if($data['type'] === Appointment::SERVICE_TYPE){
+            $data['service_ids'] = json_encode($data['product_ids']);
+        }else{
+            $data['course_ids'] = json_encode($data['product_ids']);
+        }
+        unset($data['product_ids']);
         $data['time'] = Carbon::parse($data['time'])
                               ->format('Y-m-d H:i');
         $book         = Appointment::find($id);
@@ -196,5 +227,38 @@ class AppointmentController extends Controller{
                 'message' => (string)$e->getMessage()
             ];
         }
+    }
+
+    public function getNotification(){
+        return view("Appointment::notification");
+    }
+
+    public function postNotification(Request $request){
+        $user = Auth::user();
+        $data = $request->only([
+            'title',
+            'content',
+        ]);
+        $user->notify(new Notification($data));
+
+        $options = [
+            'cluster'   => 'ap1',
+            'encrypted' => true
+        ];
+        try{
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options
+            );
+        }catch(PusherException $e){
+            $request->session()->flash('error', $e->getMessage());
+        }
+
+        $pusher->trigger('NotificationEvent', 'send-message', $data);
+
+
+        return true;
     }
 }

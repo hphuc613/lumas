@@ -110,6 +110,27 @@ a {
             z-index: 9999;
         }
     }
+
+    .notification-belling {
+        color: $text-color;
+        position: relative;
+        height: 60px;
+        border-left: 1px solid white;
+        padding: 1.5rem;
+
+        i {
+            font-size: 20px;
+        }
+
+        #notification-list {
+            position: absolute;
+            z-index: 100;
+            background-color: #ffffff;
+            right: -8rem;
+            top: 60px;
+            width: 28rem;
+        }
+    }
 }
 
 .title {
@@ -142,7 +163,7 @@ a {
 }
 
 .select2 {
-    width: 100% !important;
+    width: 100%;
 }
 
 .select2-container {

@@ -2,9 +2,11 @@
 
 namespace Modules\Appointment\Model;
 
+use App\AppHelpers\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Course\Model\Course;
 use Modules\Member\Model\Member;
 use Modules\Service\Model\Service;
 use Modules\Store\Model\Store;
@@ -23,18 +25,72 @@ class Appointment extends Model{
 
     public $timestamps = true;
 
+    const SERVICE_TYPE = "service";
+
+    const COURSE_TYPE = "course";
+
+    const ABORT_STATUS       = -1;
+    const WAITING_STATUS     = 0;
+    const PROGRESSING_STATUS = 1;
+    const COMPLETED_STATUS   = 2;
+
     /**
-     * @return BelongsTo
+     * @return string[]
      */
-    public function store(){
-        return $this->belongsTo(Store::class, 'store_id');
+    public static function getTypeList(){
+        return [
+            self::SERVICE_TYPE => trans('Service'),
+            self::COURSE_TYPE  => trans('Course')
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatus(): array{
+        return [
+            self::WAITING_STATUS     => trans('Waiting'),
+            self::PROGRESSING_STATUS => trans('Progressing'),
+            self::COMPLETED_STATUS   => trans('Completed'),
+            self::ABORT_STATUS       => trans('Abort')
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getServiceList(){
+        $data = Helper::isJson($this->service_ids, 1);
+        $list = [];
+        if($data){
+            foreach($data as $id){
+                $list[] = Service::find($id);
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCourseList(){
+        $data = Helper::isJson($this->course_ids, 1);
+        $list = [];
+        if($data){
+            foreach($data as $id){
+                $list[] = Course::find($id);
+            }
+        }
+
+        return $list;
     }
 
     /**
      * @return BelongsTo
      */
-    public function service(){
-        return $this->belongsTo(Service::class, 'service_id');
+    public function store(){
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
     /**
@@ -50,5 +106,4 @@ class Appointment extends Model{
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
-
 }

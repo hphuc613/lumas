@@ -3,11 +3,11 @@
 namespace Modules\Course\Model;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Base\Model\BaseModel;
 
-class Course extends Model{
+class Course extends BaseModel{
     use SoftDeletes;
 
     protected $table = "courses";

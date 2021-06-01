@@ -17,10 +17,12 @@ class CreateApponintmentsTable extends Migration{
             $table->string('location', 400)->nullable();
             $table->timestamp('time')->nullable();
             $table->unsignedInteger('store_id');
-            $table->unsignedInteger('service_id');
+            $table->string('service_ids')->nullable();
+            $table->string('course_ids')->nullable();
             $table->unsignedInteger('member_id');
             $table->unsignedInteger('user_id');
             $table->integer('status')->default(1);
+            $table->string('type')->default('service');
             $table->text('description')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();

@@ -13,9 +13,12 @@ Route::middleware(['admin'])->prefix("admin")->group(function(){
             Route::get("/update/{id}", "AppointmentController@getUpdate")->name("get.appointment.update");
             Route::post("/update/{id}", "AppointmentController@postUpdate")->name("post.appointment.update");
             Route::post("/update-time/{id}",
-                        "AppointmentController@postChangeTime")->name("post.appointment.update_time");
+                "AppointmentController@postChangeTime")->name("post.appointment.update_time");
         });
         Route::get("/delete/{id}",
-                   "AppointmentController@delete")->name("get.appointment.delete")->middleware('can:appointment-delete');
+            "AppointmentController@delete")->name("get.appointment.delete")->middleware('can:appointment-delete');
     });
 });
+
+Route::get('notification', 'AppointmentController@getNotification')->name('notification.getNotification');
+Route::post('notification', 'AppointmentController@postNotification')->name('notification.postNotification');

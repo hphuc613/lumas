@@ -51,6 +51,7 @@
 <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script src="https://js.pusher.com/4.4/pusher.min.js"></script>
 <script src="{{ asset('vendor/barryvdh/elfinder/js/elfinder.full.js') }}"></script>
 <script src="{{ asset("vendor/barryvdh/elfinder/js/i18n/elfinder.zh_TW.js") }}"></script>
 <script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
@@ -65,7 +66,11 @@
         if ($('.alert-primary').html() !== undefined) {
             $('.alert-danger').css('top', '120px');
         }
+
+        /** Show alert */
         slideAlert($('.alert-fade-out'));
+
+        /** Show file manager */
         $(".btn-elfinder").click(function () {
             @php
                 $locale = session()->get('locale');
@@ -75,7 +80,10 @@
             @endphp
             openElfinder($(this), '{{ route("elfinder.connector") }}', '{{ asset("packages/barryvdh/elfinder/sounds") }}', "{{ $locale }}", '{{ csrf_token() }}');
         })
+
+        pusherNotification("{{ env('PUSHER_APP_KEY') }}");
     });
+
 </script>
 @stack('js')
 </html>

@@ -49,3 +49,36 @@ if(!function_exists('generateQRCode')){
         return QrCode::format($format)->generate($data);
     }
 }
+
+if(!function_exists('calculateTimeNotification')){
+    /**
+     * @param $data
+     * @param null $format
+     * @return string|null
+     */
+    function calculateTimeNotification($data): ?string{
+        $time_ago = time() - strtotime($data);
+
+        $day    = (int)formatDate($time_ago, 'd');
+        $hour   = (int)formatDate($time_ago, 'H');
+        $minute = (int)formatDate($time_ago, 'i');
+
+        if($day == 1){
+            if($hour < 24){
+                if($hour < 2){
+                    if($minute < 60){
+                        $time = ($minute <= 1) ? 'a minute' : $minute . ' minutes';
+                    }else{
+                        $time = $hour . ' hour';
+                    }
+                }else{
+                    $time = $hour . ' hours';
+                }
+            }
+        }else{
+            $time = ($day == 2) ? $day - 1 . ' day' : $day - 1 . ' days';
+        }
+
+        return $time;
+    }
+}

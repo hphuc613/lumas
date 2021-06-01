@@ -23,7 +23,6 @@ class AppointmentRequest extends FormRequest{
         return [
             'name'       => 'required',
             'member_id'  => 'required|check_exist:members,id',
-            'service_id' => 'required|check_exist:services,id',
             'store_id'   => 'required|check_exist:stores,id',
             'time'       => 'required|check_past',
         ];
@@ -41,7 +40,6 @@ class AppointmentRequest extends FormRequest{
         return [
             'name'       => trans('Subject'),
             'member_id'  => trans('Client'),
-            'service_id' => trans('Service'),
             'store_id'   => trans('Store'),
             'time'       => trans('Time'),
         ];

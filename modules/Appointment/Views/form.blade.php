@@ -5,6 +5,24 @@
 <form action="" method="post" id="appointment-form">
     @csrf
     <div class="row">
+        <div class="col-md-4 form-group">
+            <label for="type">{{ trans('Appointment Type') }}</label>
+            {!! Form::select('type', $appointment_types, $appointment->type ?? null, [
+                'id' => 'type',
+                'class' => 'select2 form-control',
+                'style' => 'width: 100%']) !!}
+        </div>
+        <div class="col-md-4 form-group">
+            <label for="booking-time">{{ trans('Time') }}</label>
+            <input type="text" class="form-control datetime" id="booking-time" name="time"
+                   placeholder="dd-mm-yyyy hh:ii"
+                   value="{{ $appointment->time ?? old('name') }}">
+        </div>
+        <div class="col-md-4 form-group">
+            <label for="status">{{ trans('Status') }}</label>
+            {!! Form::select('status', $statuses, $appointment->status ?? null,
+            ['id' => 'status', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
+        </div>
         <div class="col-md-6 form-group">
             <label for="name">{{ trans('Subject') }}</label>
             <input type="text" class="form-control" id="name" name="name"
@@ -18,42 +36,11 @@
                 'style' => 'width: 100%']) !!}
         </div>
         <div class="col-md-6 form-group">
-            <label for="service-type">{{ trans('Service Type') }}</label>
-            {!! Form::select('', $prompt + $service_types, $appointment->service->type_id ?? null, [
-                'id' => 'service-type',
-                'class' => 'select2 form-control',
-                'style' => 'width: 100%']) !!}
-        </div>
-        <div class="col-md-6 form-group">
-            <label for="service">{{ trans('Service') }}</label>
-            @if(isset($services))
-                {!! Form::select('service_id', $prompt + $services, $appointment->service_id ?? null, [
-                'id' => 'service',
-                'class' => 'select2 form-control',
-                'style' => 'width: 100%']) !!}
-            @else
-                <select name="service_id" id="service" class="select2 form-control" style="width: 100%">
-                    <option value="">{{ trans("Please Select Service Type") }}</option>
-                </select>
-            @endif
-        </div>
-        <div class="col-md-6 form-group">
             <label for="store">{{ trans('Store') }}</label>
             {!! Form::select('store_id', $prompt + $stores, $appointment->store_id ?? null, [
                 'id' => 'store',
                 'class' => 'select2 form-control',
                 'style' => 'width: 100%']) !!}
-        </div>
-        <div class="col-md-6 form-group">
-            <label for="booking-time">{{ trans('Time') }}</label>
-            <input type="text" class="form-control datetime" id="booking-time" name="time"
-                   placeholder="dd-mm-yyyy hh:ii"
-                   value="{{ $appointment->time ?? old('name') }}">
-        </div>
-        <div class="col-md-6 form-group">
-            <label for="status">{{ trans('Status') }}</label>
-            {!! Form::select('status', $statuses, $appointment->status ?? null,
-            ['id' => 'status', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
         </div>
         @if(Auth::user()->isAdmin())
             <div class="col-md-6 form-group">
@@ -65,7 +52,63 @@
         <div class="col-md-12 form-group">
             <label for="description">{{ trans('Description') }}</label>
             <textarea name="description" id="description" class="form-control"
-                      rows="5">{{ $appointment->description ?? null }}</textarea>
+                      rows="4">{{ $appointment->description ?? null }}</textarea>
+        </div>
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <div class="d-flex justify-content-between p-2">
+                    <h4>Listing</h4>
+                    <div class="select-course w-50">
+                        {!! Form::select('course_ids', [null => "Select Course"] + $courses, null, [
+                        'id' => 'course-select',
+                        'class' => 'select2 form-control select-product',
+                        'style' => 'width: 100%']) !!}
+                    </div>
+                    <div class="select-service w-50">
+                        {!! Form::select('service_ids', [null => "Select Service"] + $services, null, [
+                        'id' => 'service-select',
+                        'class' => 'select2 form-control select-product',
+                        'style' => 'width: 100%']) !!}
+                    </div>
+                </div>
+                <table class="table table-striped" id="product-list">
+                    <thead>
+                    <tr>
+                        <th>Service/Course Name</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @if(isset($appointment))
+                        @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
+                            @foreach($appointment->service_ids as $item)
+                                <tr class="pl-2">
+                                    <td>
+                                        <input type="hidden" name="service_ids[]" value="{{ $item->id }}">
+                                        <span class="text-option">{{ $item->name }}</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger delete-product"><i
+                                                class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            @foreach($appointment->course_ids as $item)
+                                <tr class="pl-2">
+                                    <td>
+                                        <input type="hidden" name="course_ids[]" value="{{ $item->id }}">
+                                        <span class="text-option">{{ $item->name }}</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger delete-product"><i
+                                                class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="col-md-12 mt-5 d-flex justify-content-between">
             <div>
@@ -83,31 +126,27 @@
             @endif
         </div>
     </div>
+
 </form>
 {!! JsValidator::formRequest('Modules\Appointment\Http\Requests\AppointmentRequest') !!}
 <script>
     $(document).ready(function () {
+        if ($("#appointment-form #type").val() === "{{ \Modules\Appointment\Model\Appointment::SERVICE_TYPE }}") {
+            $('.select-course').hide();
+            $('.select-service').show();
+        } else {
+            $('.select-course').show();
+            $('.select-service').hide();
+        }
         if ($('input#booking-time').val() !== "") {
-            /*Read only*/
-            $("input").prop('disabled', true);
-            $('.select2').prop('disabled', true);
-            $("textarea").prop('disabled', true);
-            $("#edit-btn").show();
-            $("#submit-btn").hide();
-
-            /*Edit*/
+            editAble(true) //Read only
             $(document).on("click", "#edit-btn", function () {
-                $("input").prop('disabled', false);
-                $('select').prop('disabled', false);
-                $("textarea").prop('disabled', false);
-                $("#edit-btn").hide();
-                $("#submit-btn").show();
+                editAble(false) //Edit
             });
         } else {
             /*add booking time is current if new record*/
             $('input#booking-time').val($('input#get-date').val());
         }
-
         /*Datetimepicker*/
         $('input.datetime').datetimepicker({
             format: 'dd-mm-yyyy hh:ii',
@@ -117,17 +156,19 @@
             fontAwesome: true,
             startDate: "{{  \Carbon\Carbon::createFromTimestamp(time()) }}"
         });
+    });
 
-        /*Get service list by service type*/
-        $(document).on('change', '#service-type', function () {
-            var service_type = $(this);
-            var type_id = service_type.val();
-            $.ajax({
-                url: "{{ route("get.service.get_list_service_by_type", '') }}/" + type_id,
-                method: "get"
-            }).done(function (response) {
-                service_type.parents('form').find('#service').html(response);
-            });
-        });
-    })
+    /** Edit able */
+    function editAble(status) {
+        $("input").prop('disabled', status);
+        $('#appointment-form .select2').prop('disabled', status);
+        $("textarea").prop('disabled', status);
+        if (status === true) {
+            $("#edit-btn").show();
+            $("#submit-btn").hide();
+        } else {
+            $("#edit-btn").hide();
+            $("#submit-btn").show();
+        }
+    }
 </script>

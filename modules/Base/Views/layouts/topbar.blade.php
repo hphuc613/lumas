@@ -23,6 +23,55 @@
             </option>
         </select>
     </div>
+    <div class="notification-belling" data-toggle="collapse" href="#notification-list" aria-expanded="false">
+        <a href="#" class="text-light">
+            <i class="fas fa-bell"></i>
+            <span class="number"></span>
+        </a>
+        <div class="collapse border" id="notification-list">
+            <div class="card">
+                <div class="card-body p-2">
+                    <h4>{{ trans('Notifications') }}</h4>
+                    <div id="new-notification">
+                        <h5>{{ trans('New') }}</h5>
+                        <ul class="list-unstyled">
+                            @php($notifications =  array_slice(Auth::user()->notifications->toArray(), 0, 3))
+                            @foreach ($notifications as $notification)
+                                @php($data =  $notification['data'])
+
+                                <li>
+                                    <a class="dropdown-item" href="">
+                                        <span>{{ $data['title'] }}</span><br>
+                                        <small class="timestamp">
+                                            About {{ calculateTimeNotification($notification['created_at']) }} ago
+                                        </small>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div id="before-notification">
+                        <h5>{{ trans('Before') }}</h5>
+                        <ul class="list-unstyled">
+                            @php($notifications =  array_slice(Auth::user()->notifications->toArray(), 3))
+                            @foreach ($notifications as $notification)
+                                @php($data =  $notification['data'])
+                                <li>
+                                    <a class="dropdown-item" href="">
+                                        <span>{{ $data['title'] }}</span><br>
+                                        @php($minutes = time()-strtotime($notification['created_at']))
+                                        <small class="timestamp">
+                                            About {{ calculateTimeNotification($notification['created_at']) }} ago
+                                        </small>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="right-sidebar float-right" data-toggle="collapse" href="#list-menu" aria-expanded="false">
         <a href="#" class="text-light">{{ \Illuminate\Support\Facades\Auth::user()->name ?? null }}</a>
         <ul class="collapse list-unstyled border menu-sidebar" id="list-menu">

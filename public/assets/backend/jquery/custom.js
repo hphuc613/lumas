@@ -36,3 +36,35 @@ function formatDateTime(date) {
 // prints date & time in YYYY-MM-DD HH:MM:SS format
     return day + "-" + month + "-" + year + " " + hours + ":" + minutes;
 }
+
+function calendarStyleView() {
+    switch ($(".fc-button-active")[0].innerHTML) {
+        case 'day':
+            window.localStorage.setItem('calendarStyle', 'timeGridDay');
+            break;
+        case 'week':
+            window.localStorage.setItem('calendarStyle', 'timeGridWeek');
+            break;
+        case 'list':
+            window.localStorage.setItem('calendarStyle', 'listMonth');
+            break;
+        default:
+            window.localStorage.setItem('calendarStyle', 'dayGridMonth');
+    }
+}
+
+function pusherNotification(key) {
+    var pusher = new Pusher(key, {
+        encrypted: true,
+        cluster: "ap1"
+    });
+
+    var channel = pusher.subscribe('NotificationEvent');
+    channel.bind('send-message', function (data) {
+        var html = '<li><a class="dropdown-item" href="#">'
+            + '<span class="font-weight-bold">' + data.title + '</span><br>'
+            + '<small class="timestamp">About a minute ago</small>'
+            + '</a></li>';
+        $('#new-notification ul').prepend(html);
+    });
+}

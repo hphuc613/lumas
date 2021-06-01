@@ -332,15 +332,16 @@ class Helper{
 
     /**
      * @param $string
-     * @return bool
+     * @param false $associative
+     * @return false|mixed
      */
-    public static function isJson($string){
+    public static function isJson($string, $associative = false){
         try{
-            json_decode($string);
+            $string = json_decode($string, $associative);
+            return $string;
         }catch(Exception $e){
             return false;
         }
-        return true;
     }
 
     /**

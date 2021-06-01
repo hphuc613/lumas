@@ -34,9 +34,11 @@ class Store extends BaseModel{
 
     /**
      * @param null $status
+     * @param false $in
+     * @param false $not_in
      * @return array
      */
-    public static function getArray($status = null){
+    public static function getArray($status = null, $in = false, $not_in = false){
         $query = self::select('id', 'name', 'address');
         if(!empty($status)){
             $query = $query->where('status', $status);
