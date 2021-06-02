@@ -27,15 +27,15 @@ if(!function_exists('gg_trans')){
 }
 if(!function_exists('formatDate')){
     /**
-     * @param $string
+     * @param $timestamp
+     * @param null $format
      * @return string|null
-     * @throws ErrorException
      */
-    function formatDate($data, $format = null): ?string{
+    function formatDate($timestamp, $format = null): ?string{
         if(!empty($format)){
-            return Carbon::parse($data)->format($format);
+            return Carbon::createFromTimestamp($timestamp)->format($format);
         }
-        return Carbon::parse($data)->format("d-m-Y");
+        return Carbon::createFromTimestamp($timestamp)->format("d-m-Y");
     }
 }
 

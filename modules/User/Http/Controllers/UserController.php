@@ -198,6 +198,8 @@ class UserController extends Controller{
                 'title' => $title,
                 'start' => Carbon::parse($appointment->time)
                                  ->format('Y-m-d H:i'),
+                'end'   => (!empty($appointment->end_time)) ? Carbon::parse($appointment->end_time)
+                                                                    ->format('Y-m-d H:i') : null,
                 'color' => $appointment->getColorStatus()
             ];
         }

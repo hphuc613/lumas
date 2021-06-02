@@ -96,7 +96,7 @@ class Member extends BaseMember{
     public function checkServiceInProgressing(){
         foreach($this->memberServices as $service){
             if($service->status === MemberService::PROGRESSING_STATUS){
-                return true;
+                return $service;
             }
         }
 

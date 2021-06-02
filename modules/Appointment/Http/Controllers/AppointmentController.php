@@ -4,7 +4,6 @@ namespace Modules\Appointment\Http\Controllers;
 
 use App\AppHelpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Notifications\Notification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -22,8 +21,6 @@ use Modules\Role\Model\Role;
 use Modules\Service\Model\Service;
 use Modules\Store\Model\Store;
 use Modules\User\Model\User;
-use Pusher\Pusher;
-use Pusher\PusherException;
 
 class AppointmentController extends Controller{
 
@@ -76,6 +73,8 @@ class AppointmentController extends Controller{
                 'title' => $title,
                 'start' => Carbon::parse($appointment->time)
                                  ->format('Y-m-d H:i'),
+                'end'   => (!empty($appointment->end_time)) ? Carbon::parse($appointment->end_time)
+                                                                    ->format('Y-m-d H:i') : null,
                 'color' => $appointment->getColorStatus()
             ];
         }
@@ -179,6 +178,11 @@ class AppointmentController extends Controller{
      */
     public function postUpdate(AppointmentRequest $request, $id){
         $book = Appointment::find($id);
+        if($book->member->checkServiceInProgressing()){
+            $request->session()->flash('error', trans("There are services in progressing."));
+
+            return redirect()->back();
+        }
         $data = $request->all();
         /** Get list id service/course*/
         if($data['type'] === Appointment::SERVICE_TYPE){
@@ -247,17 +251,25 @@ class AppointmentController extends Controller{
                                       ->where('member_id', $member_id);
         $check_appointment_progressing = $check_appointment_progressing->first();
         if(!empty($check_appointment_progressing)){
-            $request->session()->flash('success', trans("There is an appointment in progressing."));
+            $request->session()->flash('error', trans("There is an appointment in progressing."));
 
             return redirect()->route('get.member_service.add', $check_appointment_progressing->member_id);
         }
+        $check_user_progressing = clone $appointment;
+        $appointment            = $appointment->find($id);
+        $check_user_progressing->where('status', Appointment::PROGRESSING_STATUS)
+                               ->where('user_id', $appointment->user_id);
+        $check_user_progressing = $check_user_progressing->first();
+        if(!empty($check_user_progressing)){
+            $request->session()->flash('error', trans("Staff of this appointment is in progressing."));
 
-        $appointment         = $appointment->find($id);
+            return redirect()->route('get.member_service.add', $check_user_progressing->member_id);
+        }
         $appointment->status = Appointment::PROGRESSING_STATUS;
         $appointment->save();
         $request->session()->flash('success', trans("This appointment in progressing."));
 
-        return redirect()->route('get.member_service.add', $appointment->member_id);
+        return redirect()->route('get.member_service.add', $appointment->member_id . '?appointment_id=' . $appointment->id);
     }
 
     /**
@@ -273,46 +285,11 @@ class AppointmentController extends Controller{
 
             return redirect()->back();
         }
-        $appointment->status = Appointment::COMPLETED_STATUS;
+        $appointment->status   = Appointment::COMPLETED_STATUS;
+        $appointment->end_time = formatDate(time(), 'Y-m-d H:i:s');
         $appointment->save();
         $request->session()->flash('success', trans("This appointment is completed."));
 
         return redirect()->route('get.member.appointment', $appointment->member_id);
-    }
-
-    /**
-     * @return Application|Factory|View
-     */
-    public function getNotification(){
-        return view("Appointment::notification");
-    }
-
-    public function postNotification(Request $request){
-        $user = Auth::user();
-        $data = $request->only([
-            'title',
-            'content',
-        ]);
-        $user->notify(new Notification($data));
-
-        $options = [
-            'cluster'   => 'ap1',
-            'encrypted' => true
-        ];
-        try{
-            $pusher = new Pusher(
-                env('PUSHER_APP_KEY'),
-                env('PUSHER_APP_SECRET'),
-                env('PUSHER_APP_ID'),
-                $options
-            );
-        }catch(PusherException $e){
-            $request->session()->flash('error', $e->getMessage());
-        }
-
-        $pusher->trigger('NotificationEvent', 'send-message', $data);
-
-
-        return true;
     }
 }
