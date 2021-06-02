@@ -87,10 +87,12 @@
                                     <td class="link-action">
                                         <a href="{{ route('get.user.update',$user->id) }}" class="btn btn-primary mr-2">
                                             <i class="fas fa-pencil-alt"></i></a>
-                                        @if(Auth::user()->id !== $user->id && ($user->getRoleAttribute()->id ?? NULL)!== \Modules\Role\Model\Role::getAdminRole()->id)
+                                        @if(Auth::user()->id !== $user->id && ($user->getRoleAttribute()->id ?? null)!== \Modules\Role\Model\Role::getAdminRole()->id)
                                             <a href="{{ route('get.user.delete',$user->id) }}"
                                                class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
                                         @endif
+                                        <a href="{{ route('get.user.appointment',$user->id) }}"
+                                           class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
                                     </td>
                                 </tr>
                             @endforeach

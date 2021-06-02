@@ -66,7 +66,7 @@
         $(document).ready(function () {
             $('#appointment_type').change(function () {
                 calendarStyleView();
-                location.href = "{{  route(\Illuminate\Support\Facades\Route::currentRouteName(),$member->id ?? null) }}?type=" + $(this).val();
+                location.href = "{{  route(\Illuminate\Support\Facades\Route::currentRouteName(),$member->id ?? $user->id ?? null) }}?type=" + $(this).val();
             });
 
             var initialView;

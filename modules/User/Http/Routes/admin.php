@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['admin'])->prefix('admin')->group(function(){
     Route::prefix('user')->group(function(){
         Route::get('/', 'UserController@index')->name('get.user.list')->middleware('can:users');
+        Route::get('/appointment/{id}', 'UserController@getAppointment')->name('get.user.appointment')
+             ->middleware('can:users');
         Route::group(['middleware' => 'can:user-create'], function(){
             Route::get('/create', 'UserController@getCreate')->name('get.user.create');
             Route::post('/create', 'UserController@postCreate')->name('post.user.create');
