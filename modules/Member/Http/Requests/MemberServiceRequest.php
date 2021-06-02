@@ -2,6 +2,7 @@
 
 namespace Modules\Member\Http\Requests;
 
+use App\AppHelpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MemberServiceRequest extends FormRequest{
@@ -21,12 +22,23 @@ class MemberServiceRequest extends FormRequest{
      * @return array
      */
     public function rules(){
-        return [
-            'service_id' => 'required|check_exist:services,id',
-            'member_id'  => 'required|check_exist:members,id',
-            'voucher_id' => 'nullable|check_exist:vouchers,id',
-            'quantity'   => 'required|numeric',
-        ];
+        $method = Helper::segment(2);
+        switch($method){
+            default:
+                return [
+                    'service_id' => 'required|check_exist:services,id',
+                    'member_id'  => 'required|check_exist:members,id',
+                    'voucher_id' => 'nullable|check_exist:vouchers,id',
+                    'quantity'   => 'required|numeric',
+                ];
+            case "edit-service":
+                return [
+                    'service_id' => 'required|check_exist:services,id',
+                    'member_id'  => 'required|check_exist:members,id',
+                    'voucher_id' => 'nullable|check_exist:vouchers,id',
+                    'quantity'   => 'nullable|numeric',
+                ];
+        }
     }
 
     public function messages(){

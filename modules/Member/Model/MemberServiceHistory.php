@@ -5,6 +5,7 @@ namespace Modules\Member\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\BaseModel;
 use Modules\User\Model\User;
 
@@ -49,6 +50,13 @@ class MemberServiceHistory extends BaseModel{
      */
     public function memberService(){
         return $this->belongsTo(MemberService::class, "member_service_id");
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function appointment(){
+        return $this->belongsTo(Appointment::class, "appointment_id");
     }
 
     /**

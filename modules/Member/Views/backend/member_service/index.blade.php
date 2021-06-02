@@ -18,6 +18,15 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Add Service For Client") }}</h3></div>
             <div class="group-btn">
+                @if($member->checkAppointmentInProgressing())
+                    <a href="{{ route('get.appointment.check_out', $member->id) }}" class="btn btn-warning text-light">
+                        &nbsp; {{ trans('Check Out Appointment') }}
+                    </a>
+                @else
+                    <a href="{{ route('get.member.appointment', $member->id) }}" class="btn btn-danger text-light">
+                        &nbsp; {{ trans('Check In Appointment Here') }}
+                    </a>
+                @endif
                 <a href="{{ route('get.member_service.add', $member->id) }}" class="btn btn-primary">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
@@ -27,6 +36,7 @@
 
     <div id="member_service" class="card">
         <div class="card-body">
+            @include('Member::backend.member_service.service_progressing')
             <div class="row">
                 <div class="col-md-4">
                     @include('Member::backend.member_service._form')
@@ -47,6 +57,7 @@
             </div>
         </div>
     </div>
+    {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'size' => 'modal-lg'])  !!}
 @endsection
 @push('js')
     {!! JsValidator::formRequest('Modules\Member\Http\Requests\MemberServiceRequest') !!}
@@ -59,7 +70,7 @@
         })
         @endif
         /** Get service list by service type */
-        $(document).on('change', '#service', function () {
+        $(document).on('change', '#service-form', function () {
             var service = $(this);
             var service_id = service.val();
             $.ajax({
@@ -78,5 +89,9 @@
                 at: "center top-10", // the position of that anchor point relative to selected element
             }
         });
+
+        $('#form-modal').on('hidden.bs.modal', function () {
+            location.reload();
+        })
     </script>
 @endpush

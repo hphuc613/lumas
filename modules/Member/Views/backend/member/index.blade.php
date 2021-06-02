@@ -1,4 +1,4 @@
-@extends("Base::layouts.master")
+    @extends("Base::layouts.master")
 
 @section("content")
     <div id="member-module">
@@ -88,9 +88,9 @@
                             <th>{{ trans('Phone Number') }}</th>
                             <th>{{ trans('Client Type') }}</th>
                             <th width="200px">{{ trans('Status') }}</th>
-                            <th width="200px">{{ trans('Created At') }}</th>
-                            <th width="200px">{{ trans('Updated At') }}</th>
-                            <th width="200px" class="action">{{ trans('Action') }}</th>
+                            <th>{{ trans('Created At') }}</th>
+                            <th>{{ trans('Updated At') }}</th>
+                            <th class="action text-center" style="width: 200px">{{ trans('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -112,8 +112,10 @@
                                 <td>{{ \Carbon\Carbon::parse($member->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($member->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">
+                                    <a href="{{ route('get.member.appointment',$member->id) }}"
+                                       class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
                                     <a href="{{ route('get.member_service.add',$member->id) }}"
-                                       class="btn btn-info"><i class="fas fa-plus"></i></a>
+                                       class="btn btn-outline-info"><i class="fas fa-plus"></i></a>
                                     <a href="{{ route('get.member.update',$member->id) }}" class="btn btn-primary">
                                         <i class="fas fa-pencil-alt"></i></a>
                                     <a href="{{ route('get.member.delete',$member->id) }}"

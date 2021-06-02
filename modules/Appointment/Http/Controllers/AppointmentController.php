@@ -41,6 +41,10 @@ class AppointmentController extends Controller{
      * @return Application|Factory|View
      */
     public function index(Request $request){
+        if($request->session()->has('member_display_id')){
+            $request->session()->forget('member_display_id');
+            $request->session()->save();
+        }
         $filter            = $request->all();
         $appointment_types = Appointment::getTypeList();
         $appointments      = Appointment::with('member')
@@ -64,14 +68,15 @@ class AppointmentController extends Controller{
         /** Get event */
         $events = [];
         foreach($appointments as $appointment){
-            $title    = (Auth::user()
-                             ->isAdmin()) ? $appointment->name . ' | ' . $appointment->user->name : $appointment->name;
+            $title    = (Auth::user()->isAdmin())
+                ? $appointment->member->name . ' | ' . $appointment->user->name
+                : $appointment->member->name . ' | ' . $appointment->name;
             $events[] = [
                 'id'    => $appointment->id,
                 'title' => $title,
                 'start' => Carbon::parse($appointment->time)
                                  ->format('Y-m-d H:i'),
-                'color' => (strtotime($appointment->time) < time()) ? '#aaa' : '#16c8ee'
+                'color' => $appointment->getColorStatus()
             ];
         }
         $events = json_encode($events);
@@ -83,11 +88,11 @@ class AppointmentController extends Controller{
      * @return Application|Factory|RedirectResponse|View
      */
     public function getCreate(Request $request){
-        $statuses          = Appointment::getStatus();
+        $statuses          = Appointment::getStatuses();
         $services          = Service::getArray(Status::STATUS_ACTIVE);
         $courses           = Course::getArray(Status::STATUS_ACTIVE);
         $appointment_types = Appointment::getTypeList();
-        $clients           = Member::getArray(Status::STATUS_ACTIVE);
+        $members           = Member::getArray(Status::STATUS_ACTIVE);
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
         $users             = [];
         if(Auth::user()->isAdmin()){
@@ -100,7 +105,7 @@ class AppointmentController extends Controller{
         if(!$request->ajax()){
             return redirect()->back();
         }
-        return view("Appointment::form", compact('statuses', 'appointment_types', 'services', 'courses', 'clients', 'stores', 'users'));
+        return view("Appointment::form", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'users'));
     }
 
     /**
@@ -127,10 +132,6 @@ class AppointmentController extends Controller{
         $book->save();
         $request->session()->flash('success', 'Appointment booked successfully.');
 
-        if($book->type = Appointment::COURSE_TYPE){
-            return redirect()->route('get.appointment.list', 'type=' . Appointment::COURSE_TYPE);
-
-        }
         return redirect()->back();
     }
 
@@ -139,9 +140,10 @@ class AppointmentController extends Controller{
      * @return Application|Factory|RedirectResponse|View
      */
     public function getUpdate(Request $request, $id){
-        $statuses          = Status::getStatuses();
-        $clients           = Member::getArray(Status::STATUS_ACTIVE);
-        $stores            = Store::getArray(Status::STATUS_ACTIVE);
+        $statuses = Appointment::getStatuses();
+        $members  = Member::getArray(Status::STATUS_ACTIVE);
+        $stores   = Store::getArray(Status::STATUS_ACTIVE);
+
         $appointment_types = Appointment::getTypeList();
 
         $appointment       = Appointment::with('member')
@@ -150,7 +152,8 @@ class AppointmentController extends Controller{
                                         ->find($id);
         $appointment->time = Carbon::parse($appointment->time)
                                    ->format('d-m-Y H:i');
-        $users             = [];
+
+        $users = [];
         if(Auth::user()->isAdmin()){
             $users = User::with('roles')
                          ->whereHas('roles', function($role_query){
@@ -158,8 +161,8 @@ class AppointmentController extends Controller{
                          })
                          ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
         }
-        $services                 = Service::getArray(Status::STATUS_ACTIVE, null, Helper::isJson($appointment->service_ids, 1));
-        $courses                  = Course::getArray(Status::STATUS_ACTIVE, null, Helper::isJson($appointment->course_ids, 1));
+        $services                 = Service::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->service_ids, 1));
+        $courses                  = Course::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->course_ids, 1));
         $appointment->service_ids = $appointment->getServiceList();
         $appointment->course_ids  = $appointment->getCourseList();
 
@@ -167,7 +170,7 @@ class AppointmentController extends Controller{
             return redirect()->back();
         }
 
-        return view("Appointment::form", compact('statuses', 'appointment_types', 'services', 'courses', 'clients', 'stores', 'appointment', 'services', 'users'));
+        return view("Appointment::form", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users'));
     }
 
     /**
@@ -175,9 +178,8 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postUpdate(AppointmentRequest $request, $id){
-        $book         = Appointment::find($id);
-        $data         = $request->all();
-        $data['type'] = $book->type;
+        $book = Appointment::find($id);
+        $data = $request->all();
         /** Get list id service/course*/
         if($data['type'] === Appointment::SERVICE_TYPE){
             $data['service_ids'] = json_encode($data['product_ids'] ?? []);
@@ -207,7 +209,7 @@ class AppointmentController extends Controller{
                 ->flash('success',
                     'Appointment deleted successfully.');
 
-        return redirect()->route('get.appointment.list');
+        return redirect()->back();
     }
 
     /**
@@ -234,6 +236,53 @@ class AppointmentController extends Controller{
         }
     }
 
+    /**
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function checkIn(Request $request, $id, $member_id){
+        $appointment                   = Appointment::query();
+        $check_appointment_progressing = clone $appointment;
+        $check_appointment_progressing->where('status', Appointment::PROGRESSING_STATUS)
+                                      ->where('member_id', $member_id);
+        $check_appointment_progressing = $check_appointment_progressing->first();
+        if(!empty($check_appointment_progressing)){
+            $request->session()->flash('success', trans("There is an appointment in progressing."));
+
+            return redirect()->route('get.member_service.add', $check_appointment_progressing->member_id);
+        }
+
+        $appointment         = $appointment->find($id);
+        $appointment->status = Appointment::PROGRESSING_STATUS;
+        $appointment->save();
+        $request->session()->flash('success', trans("This appointment in progressing."));
+
+        return redirect()->route('get.member_service.add', $appointment->member_id);
+    }
+
+    /**
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function checkOut(Request $request, $id){
+        $appointment = Appointment::where('member_id', $id)->where('status', Appointment::PROGRESSING_STATUS)
+                                  ->first();
+
+        if($appointment->member->checkServiceInProgressing()){
+            $request->session()->flash('error', trans("There are services in progressing."));
+
+            return redirect()->back();
+        }
+        $appointment->status = Appointment::COMPLETED_STATUS;
+        $appointment->save();
+        $request->session()->flash('success', trans("This appointment is completed."));
+
+        return redirect()->route('get.member.appointment', $appointment->member_id);
+    }
+
+    /**
+     * @return Application|Factory|View
+     */
     public function getNotification(){
         return view("Appointment::notification");
     }

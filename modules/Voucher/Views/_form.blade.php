@@ -75,7 +75,7 @@ $segment = Helper::segment(2)
 
     <div class="input-group">
         <button type="submit" class="btn btn-primary mr-2">{{ trans("Save") }}</button>
-        <button type="reset" class="btn btn-default">{{ trans("Cancel") }}</button>
+        <button type="reset" class="btn btn-default">{{ trans("Reset") }}</button>
     </div>
 </form>
 @if(\App\AppHelpers\Helper::segment(2) !== 'create')

@@ -19,6 +19,8 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
                     <li class="breadcrumb-item"><a href="#">{{ trans("Appointment") }}</a></li>
+                    @if(isset($member))
+                        <li class="breadcrumb-item"><a href="#">{{ $member->name }}</a></li> @endif
                 </ol>
             </nav>
         </div>
@@ -27,7 +29,13 @@
         <div class="card">
             <div class="card-body">
                 <div id="head-page" class="d-flex justify-content-between">
-                    <div class="page-title"><h3>{{ trans("Appointment Listing") }}</h3></div>
+                    <div class="page-title">
+                        <h3>
+                            {{ trans("Appointment Listing") }}
+                            @if(isset($member)) {{ trans("of") }} <span class="text-info"
+                                                                        style="font-size: inherit">{{ $member->name }}</span> @endif
+                        </h3>
+                    </div>
                     <div class="group-btn">
                         <div class="d-inline-block" style="width: 150px">
                             {!! Form::select('type', $appointment_types, $filter['type'] ?? null,
@@ -58,7 +66,7 @@
         $(document).ready(function () {
             $('#appointment_type').change(function () {
                 calendarStyleView();
-                location.href = "{{ route('get.appointment.list') }}?type=" + $(this).val();
+                location.href = "{{  route(\Illuminate\Support\Facades\Route::currentRouteName(),$member->id ?? null) }}?type=" + $(this).val();
             });
 
             var initialView;
@@ -127,10 +135,11 @@
             });
             calendar.render();
 
-            selectService()
+            selectService() //Form Handle
         })
 
 
+        /** Form Handle */
         function selectService() {
             $(document).on('change', '#appointment-form #type', function () {
                 if ($(this).val() === "{{ \Modules\Appointment\Model\Appointment::SERVICE_TYPE }}") {
@@ -141,7 +150,6 @@
                     $("#appointment-form .select-course").show();
                 }
             });
-
 
             $(document).on('change', '.select-product', function () {
                 var product = $(this);
@@ -157,6 +165,7 @@
                 product.children(':selected').remove();
             });
 
+            /** Delete product*/
             $(document).on('click', '.delete-product', function () {
                 var tr_parent = $(this).parents('tr');
                 var value = tr_parent.attr('id');

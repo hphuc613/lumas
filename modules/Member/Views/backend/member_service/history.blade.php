@@ -28,6 +28,7 @@
                     <th width="50px">#</th>
                     <th>{{ trans('Code') }}</th>
                     <th>{{ trans('Signature') }}</th>
+                    <th>{{ trans('Appointment') }}</th>
                     <th>{{ trans('Service') }}
                     <th>{{ trans('Updated By') }}</th>
                     <th>{{ trans('Created At') }}</th>
@@ -45,6 +46,10 @@
                             </a>
                         </td>
                         <td>{{ $history->signature }}</td>
+                        <td><a href="{{ route("get.appointment.update",$history->appointment->id) }}"
+                               id="update-booking" data-toggle="modal"
+                               data-target="#form-modal"
+                               data-title="{{ trans('View Appointment') }}">{{ $history->appointment->name }}</a></td>
                         <td>{{ $history->memberService->service->name }}</td>
                         <td>{{ $history->user->name }}</td>
                         <td>{{ \Carbon\Carbon::parse($history->created_at)->format('d/m/Y H:i:s')}}</td>

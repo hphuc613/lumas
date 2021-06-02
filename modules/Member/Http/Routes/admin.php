@@ -18,6 +18,8 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
     });
     Route::prefix("member")->group(function(){
         Route::get("/", "MemberController@index")->name("get.member.list")->middleware('can:member');
+        Route::get("/appointment/{id}", "MemberController@getAppointment")->name("get.member.appointment")
+             ->middleware('can:member');
         Route::group(['middleware' => 'can:member-create'], function(){
             Route::get('/create', 'MemberController@getCreate')->name('get.member.create');
             Route::post('/create', 'MemberController@postCreate')->name('post.member.create');
@@ -44,6 +46,12 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
             /** E sign */
             Route::get('/e-sign/{id}', 'MemberServiceController@eSign')->name('get.member_service.e_sign');
             Route::post('/e-sign/{id}', 'MemberServiceController@eSign')->name('get.member_service.e_sign');
+
+            /** Progress Handle */
+            Route::get('/into-progress/{id}', 'MemberServiceController@intoProgress')
+                 ->name('get.member_service.into_progress');
+            Route::get('/out-progress/{id}', 'MemberServiceController@outProgress')
+                 ->name('get.member_service.out_progress');
         });
 
     });

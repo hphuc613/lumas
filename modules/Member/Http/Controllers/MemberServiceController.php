@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 use Modules\Member\Http\Requests\MemberServiceRequest;
 use Modules\Member\Model\Member;
@@ -44,11 +45,13 @@ class MemberServiceController extends Controller{
         $completed_member_services = MemberService::filterCompleted($filter, $member->id)
                                                   ->paginate(5, ['*'], 'service_page');
 
-        $histories = MemberServiceHistory::filter($filter, $member->id)
-                                         ->paginate(10, ['*'], 'history_page');
+        $search_services           = MemberService::getArrayByMember($member->id);
+        $completed_search_services = MemberService::getArrayByMember($member->id, 1);
+        $histories                 = MemberServiceHistory::filter($filter, $member->id)
+                                                         ->paginate(10, ['*'], 'history_page');
 
         return view('Member::backend.member_service.index', compact(
-            'member', 'services', 'member_services', 'histories', 'completed_member_services', 'filter'));
+            'member', 'services', 'member_services', 'histories', 'completed_member_services', 'filter', 'search_services', 'completed_search_services'));
     }
 
     /**
@@ -98,11 +101,13 @@ class MemberServiceController extends Controller{
                            ->where('status', Status::STATUS_ACTIVE)
                            ->pluck('code', 'id')->toArray();
 
-        $histories = MemberServiceHistory::filter($filter, $member->id, $member_service->service_id)
-                                         ->paginate(10, ['*'], 'history_page');
-        $statuses  = MemberService::getStatus();
+        $histories                 = MemberServiceHistory::filter($filter, $member->id, $member_service->service_id)
+                                                         ->paginate(10, ['*'], 'history_page');
+        $statuses                  = MemberService::getStatus();
+        $search_services           = MemberService::getArrayByMember($member->id);
+        $completed_search_services = MemberService::getArrayByMember($member->id, 1);
         return view('Member::backend.member_service.index', compact(
-            'member', 'services', 'member_services', 'member_service', 'vouchers', 'histories', 'completed_member_services', 'filter', 'statuses'));
+            'member', 'services', 'member_services', 'member_service', 'vouchers', 'histories', 'completed_member_services', 'filter', 'statuses', 'search_services', 'completed_search_services'));
     }
 
     /**
@@ -111,8 +116,11 @@ class MemberServiceController extends Controller{
      * @return RedirectResponse
      */
     public function postEdit(MemberServiceRequest $request, $id){
-        $member_service = MemberService::find($id);
-        $member_service->update($request->all());
+        $data             = $request->all();
+        $member_service   = MemberService::find($id);
+        $data['quantity'] = $member_service->quantity + (int)$data['add_more_quantity'];
+        unset($data['add_more_quantity']);
+        $member_service->update($data);
 
         $request->session()->flash('success', "Service edited successfully.");
         return redirect()->back();
@@ -140,11 +148,17 @@ class MemberServiceController extends Controller{
         $member_service = MemberService::find($id);
 
         if($request->post()){
-            $data = $request->all();
+            $data        = $request->all();
+            $appointment = Appointment::query()
+                                      ->where('member_id', $member_service->member_id)
+                                      ->where('status', Appointment::PROGRESSING_STATUS)
+                                      ->first();
+
             if(empty($data['signature'])){
                 $data['signature'] = Auth::user()->name;
             }
             $data['member_service_id'] = $id;
+            $data['appointment_id']    = $appointment->id;
             $data['updated_by']        = Auth::id();
             $history                   = new MemberServiceHistory($data);
             $history->save();
@@ -163,5 +177,38 @@ class MemberServiceController extends Controller{
         }
 
         return $this->renderAjax('Member::backend.member_service.e_sign', compact('member_service'));
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function intoProgress(Request $request, $id){
+        $member_service = MemberService::find($id);
+        if(!$member_service->member->checkAppointmentInProgressing()){
+            $request->session()->flash('error', "Please check in an appointment.");
+
+            return redirect()->back();
+        }
+        $member_service->status = MemberService::PROGRESSING_STATUS;
+        $member_service->save();
+        $request->session()->flash('success', "Client using this service.");
+
+        return redirect()->back();
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function outProgress(Request $request, $id){
+        $member_service         = MemberService::find($id);
+        $member_service->status = MemberService::COMPLETED_STATUS;
+        $member_service->save();
+        $request->session()->flash('success', "Client using this service.");
+
+        return redirect()->back();
     }
 }

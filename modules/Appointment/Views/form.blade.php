@@ -1,6 +1,8 @@
 @php
-    use App\AppHelpers\Helper;$prompt = [null => trans('Select')];
-    $segment = Helper::segment(2)
+    use App\AppHelpers\Helper;
+    $prompt = [null => trans('Select')];
+    $segment = Helper::segment(2);
+    $member_display_id = session()->get('member_display_id');
 @endphp
 <form action="" method="post" id="appointment-form">
     @csrf
@@ -29,9 +31,9 @@
                    value="{{ $appointment->name ?? old('name') }}">
         </div>
         <div class="col-md-6 form-group">
-            <label for="client">{{ trans('Client') }}</label>
-            {!! Form::select('member_id', $prompt + $clients, $appointment->member_id ?? null, [
-                'id' => 'client',
+            <label for="member">{{ trans('Client') }}</label>
+            {!! Form::select('member_id', $prompt + $members, !empty($member_display_id) ? $member_display_id : $appointment->member_id ?? null, [
+                'id' => 'member',
                 'class' => 'select2 form-control',
                 'style' => 'width: 100%']) !!}
         </div>
@@ -57,15 +59,15 @@
         <div class="col-md-12">
             <div class="table-responsive">
                 <div class="d-flex justify-content-between p-2">
-                    <h4>Listing</h4>
+                    <h4>{{ trans('Service Listing') }}</h4>
                     <div class="select-course w-50">
-                        {!! Form::select('course_ids', [null => "Select Course"] + $courses, null, [
+                        {!! Form::select('course_ids', [null => trans("Select Course")] + $courses, null, [
                         'id' => 'course-select',
                         'class' => 'select2 form-control select-product',
                         'style' => 'width: 100%']) !!}
                     </div>
                     <div class="select-service w-50">
-                        {!! Form::select('service_ids', [null => "Select Service"] + $services, null, [
+                        {!! Form::select('service_ids', [null => trans("Select Service")] + $services, null, [
                         'id' => 'service-select',
                         'class' => 'select2 form-control select-product',
                         'style' => 'width: 100%']) !!}
@@ -74,8 +76,8 @@
                 <table class="table table-striped" id="product-list">
                     <thead>
                     <tr>
-                        <th>Service/Course Name</th>
-                        <th class="text-center">Action</th>
+                        <th>{{ trans('Service/Course Name') }}</th>
+                        <th class="text-center">{{ trans('Action') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -122,6 +124,10 @@
             </div>
             @if(isset($appointment))
                 <div>
+                    <a href="{{ route("get.appointment.check_in", [$appointment->id, $appointment->member_id]) }}"
+                       class="btn btn-outline-info">
+                        {{ trans('Check In') }}
+                    </a>
                     <a href="{{ route("get.appointment.delete", $appointment->id) }}"
                        class="btn btn-danger btn-delete">{{ trans('Delete') }}</a>
                 </div>
@@ -144,6 +150,10 @@
             editAble(true) //Read only
             $(document).on("click", "#edit-btn", function () {
                 editAble(false) //Edit
+            });
+            $(document).on("submit", "#appointment-form", function () {
+                $('#appointment-form #member.select2').prop('disabled', false);
+                $('#appointment-form #type.select2').prop('disabled', false);
             });
         } else {
             /*add booking time is current if new record*/
@@ -173,5 +183,6 @@
             $("#submit-btn").show();
         }
         $('#appointment-form #type.select2').prop('disabled', true);
+        $('#appointment-form #member.select2').prop('disabled', true);
     }
 </script>

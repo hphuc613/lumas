@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\File;
+use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 
 class Member extends BaseMember{
@@ -57,20 +58,6 @@ class Member extends BaseMember{
     }
 
     /**
-     * @return BelongsTo
-     */
-    public function type(){
-        return $this->belongsTo(MemberType::class, 'type_id');
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function memberService(){
-        return $this->hasMany(MemberService::class);
-    }
-
-    /**
      * @param null $status
      * @return array
      */
@@ -88,6 +75,53 @@ class Member extends BaseMember{
         }
 
         return $data;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkAppointmentInProgressing(){
+        foreach($this->appointments as $appointment){
+            if($appointment->status === Appointment::PROGRESSING_STATUS){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkServiceInProgressing(){
+        foreach($this->memberServices as $service){
+            if($service->status === MemberService::PROGRESSING_STATUS){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function type(){
+        return $this->belongsTo(MemberType::class, 'type_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function appointments(){
+        return $this->hasMany(Appointment::class, 'member_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function memberServices(){
+        return $this->hasMany(MemberService::class);
     }
 
 }

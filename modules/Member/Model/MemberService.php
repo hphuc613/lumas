@@ -2,6 +2,7 @@
 
 namespace Modules\Member\Model;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Base\Model\BaseModel;
@@ -27,15 +28,15 @@ class MemberService extends BaseModel{
     /**
      * @param $filter
      * @param $member_id
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public static function filter($filter, $member_id){
         $query = self::query();
         if(isset($filter['code'])){
-            $query->where('code', $filter['code']);
-            $query->orWhereHas('service', function($sq) use ($filter){
-                $sq->where('name', 'LIKE', '%' . $filter['code'] . '%');
-            });
+            $query->where('code', 'LIKE', '%' . $filter['code'] . '%');
+        }
+        if(isset($filter['service_search'])){
+            $query->where('service_id', $filter['service_search']);
         }
         $query->where('member_id', $member_id)
               ->whereRaw('deduct_quantity < quantity')
@@ -47,15 +48,15 @@ class MemberService extends BaseModel{
     /**
      * @param $filter
      * @param $member_id
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public static function filterCompleted($filter, $member_id){
         $query = self::query();
         if(isset($filter['code_completed'])){
             $query->where('code', $filter['code_completed']);
-            $query->orWhereHas('service', function($sq) use ($filter){
-                $sq->where('name', 'LIKE', '%' . $filter['code_completed'] . '%');
-            });
+        }
+        if(isset($filter['service_search_completed'])){
+            $query->where('service_id', $filter['service_search_completed']);
         }
         $query->where('member_id', $member_id)
               ->whereRaw('deduct_quantity = quantity')
@@ -72,6 +73,27 @@ class MemberService extends BaseModel{
             self::COMPLETED_STATUS   => 'Completed',
             self::PROGRESSING_STATUS => 'Progressing'
         ];
+    }
+
+    /**
+     * @param $member_id
+     * @param false $search_history
+     * @return array
+     */
+    public static function getArrayByMember($member_id, $search_history = false){
+        $query = self::query()->where('member_id', $member_id);
+        if($search_history){
+            $query->whereRaw('deduct_quantity = quantity');
+        }else{
+            $query->whereRaw('deduct_quantity < quantity');
+        }
+        $query = $query->get();
+        $data  = [];
+        foreach($query as $value){
+            $data[$value->service_id] = $value->service->name;
+        }
+
+        return $data;
     }
 
     /**

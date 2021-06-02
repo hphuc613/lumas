@@ -2,6 +2,7 @@
 
 namespace Modules\Appointment\Http\Requests;
 
+use App\AppHelpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AppointmentRequest extends FormRequest{
@@ -20,12 +21,22 @@ class AppointmentRequest extends FormRequest{
      * @return array
      */
     public function rules(){
-        return [
-            'name'       => 'required',
-            'member_id'  => 'required|check_exist:members,id',
-            'store_id'   => 'required|check_exist:stores,id',
-            'time'       => 'required|check_past',
-        ];
+        $method = Helper::segment(2);
+        switch($method){
+            default:
+                return [
+                    'name'      => 'required',
+                    'member_id' => 'required|check_exist:members,id',
+                    'store_id'  => 'required|check_exist:stores,id',
+                    'time'      => 'required|check_past',
+                ];
+            case 'update':
+                return [
+                    'name'      => 'required',
+                    'member_id' => 'required|check_exist:members,id',
+                    'store_id'  => 'required|check_exist:stores,id',
+                ];
+        }
     }
 
     public function messages(){
@@ -38,10 +49,10 @@ class AppointmentRequest extends FormRequest{
 
     public function attributes(){
         return [
-            'name'       => trans('Subject'),
-            'member_id'  => trans('Client'),
-            'store_id'   => trans('Store'),
-            'time'       => trans('Time'),
+            'name'      => trans('Subject'),
+            'member_id' => trans('Client'),
+            'store_id'  => trans('Store'),
+            'time'      => trans('Time'),
         ];
     }
 }

@@ -3,7 +3,7 @@
         <h5>{{ !isset($member_service) ? trans("Add Service") : trans("Update Service") }}</h5>
         <div class="group-btn">
             @if(isset($member_service))
-                @if($member_service->getRemaining() > 0)
+                @if($member_service->getRemaining() > 0 && $member_service->status === \Modules\Member\Model\MemberService::PROGRESSING_STATUS)
                     <a href="{{ route('get.member_service.e_sign',$member_service->id) }}"
                        class="btn btn-info" data-toggle="modal" data-target="#form-modal"
                        data-title="{{ trans('E-sign') }}">
@@ -40,9 +40,9 @@
                     @endif
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="service">{{ trans("Service") }}</label>
+                    <label for="service-form">{{ trans("Service") }}</label>
                     {!! Form::select('service_id', $prompt + $services, $member_service->service_id ?? null, [
-                    'id' => 'service',
+                    'id' => 'service-form',
                     'class' => 'select2 form-control service service-relate',
                     'style' => 'width: 100%']) !!}
                 </div>
@@ -59,13 +59,13 @@
                         'style' => 'width: 100%']) !!}
                     @endif
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="quantity">{{ trans("Quantity") }}</label>
-                    <input type="number" name="quantity" id="quantity" class="form-control"
-                           @if(isset($member_service) && $member_service->getRemaining() == 0) readonly @endif
-                           value="{{ $member_service->quantity ?? old('quantity') }}">
-                </div>
                 @if(isset($member_service))
+                    <div class="form-group col-md-6">
+                        <label for="remaining-quantity">{{ trans("Total Quantity") }}</label>
+                        <h5 class="text-danger">
+                            {{ $member_service->quantity }}
+                        </h5>
+                    </div>
                     <div class="form-group col-md-6">
                         <label for="remaining-quantity">{{ trans("Remaning Quantity") }}</label>
                         <h5 class="text-danger">
@@ -80,6 +80,17 @@
                         'style' => 'width: 100%']) !!}
                     </div>
                 @endif
+                <div class="form-group col-md-6">
+                    @if(isset($member_service))
+                        <label for="add-more-quantity">{{ trans("Add More Quantity") }}</label>
+                        <input type="number" name="add_more_quantity" id="add-more-quantity" class="form-control"
+                               @if(isset($member_service) && $member_service->getRemaining() == 0) readonly @endif>
+                    @else
+                        <label for="quantity">{{ trans("Quantity") }} </label>
+                        <input type="number" name="quantity" id="quantity" class="form-control">
+                    @endif
+
+                </div>
                 <div class="form-group col-md-12">
                     <label for="remarks">{{ trans("Remarks") }}</label>
                     <textarea class="form-control" name="remarks" id="description"
@@ -97,4 +108,3 @@
         </form>
     </div>
 </div>
-{!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'size' => 'modal-lg'])  !!}

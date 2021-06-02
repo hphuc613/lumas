@@ -10,9 +10,11 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
+use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 use Modules\Member\Http\Requests\MemberRequest;
 use Modules\Member\Model\Member;
@@ -195,5 +197,50 @@ class MemberController extends Controller{
         $request->session()->flash('success', trans('Client deleted successfully.'));
 
         return redirect()->back();
+    }
+
+    /**
+     * @param $id
+     * @return Application|Factory|View
+     */
+    public function getAppointment(Request $request, $id){
+        $filter            = $request->all();
+        $appointment_types = Appointment::getTypeList();
+        $appointments      = Appointment::with('member')
+                                        ->with('store')
+                                        ->with('user');
+        $appointments      = $appointments->where('member_id', $id);
+        $member            = Member::find($id);
+        /** Created_by */
+        if(!Auth::user()->isAdmin()){
+            $appointments = $appointments->where('user_id', Auth::id());
+        }
+
+        /** Type of appointment */
+        if(isset($filter['type'])){
+            $appointments = $appointments->where('type', $filter['type']);
+        }else{
+            $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
+        }
+
+        $appointments = $appointments->get();
+
+        /** Get event */
+        $events = [];
+        foreach($appointments as $appointment){
+            $title    = (Auth::user()->isAdmin())
+                ? $appointment->member->name . ' | ' . $appointment->user->name
+                : $appointment->member->name . ' | ' . $appointment->name;
+            $events[] = [
+                'id'    => $appointment->id,
+                'title' => $title,
+                'start' => Carbon::parse($appointment->time)
+                                 ->format('Y-m-d H:i'),
+                'color' => $appointment->getColorStatus()
+            ];
+        }
+        $events = json_encode($events);
+        $request->session()->put('member_display_id', $member->id);
+        return view("Appointment::index", compact('events', 'appointment_types', 'filter', 'member'));
     }
 }
