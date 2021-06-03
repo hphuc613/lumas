@@ -29,6 +29,12 @@
                         <div>{{ trans('To configuration the website') }}</div>
                     </a>
                 </div>
+                <div class="col-md-6 mb-2">
+                    <a href="{{ route("get.setting.appointmentConfig") }}" class="btn btn-light btn-setting">
+                        <span>{{ trans('Appointment Setting') }} </span>
+                        <div>{{ trans('To configuration appointments') }}</div>
+                    </a>
+                </div>
                 @env('local')
                     <div class="col-md-6 mb-2">
                         <a href="{{ route("get.setting.langManagement") }}" class="btn btn-light btn-setting">
@@ -38,7 +44,7 @@
                         </span>
                             <div>{{ trans('To manage system language') }}</div>
                         </a>
-                </div>
+                    </div>
                 @endenv
             </div>
         </div>

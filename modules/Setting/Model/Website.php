@@ -20,7 +20,7 @@ class Website extends Setting{
      * @return array
      */
     public static function getWebsiteConfig(){
-        $setting = [];
+        $mail_config = [];
         foreach(self::WEBSITE_CONFIG as $item){
             $mail_config[$item] = self::getValueByKey($item);
         }

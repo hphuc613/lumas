@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Modules\Setting\Model\AppointmentSetting;
 use Modules\Setting\Model\Language;
 use Modules\Setting\Model\MailConfig;
 use Modules\Setting\Model\Website;
@@ -59,7 +60,7 @@ class SettingController extends Controller {
             return redirect()->back();
         }
 
-        return view("Setting::email", compact('mail_config'));
+        return view("Setting::setting.email", compact('mail_config'));
     }
 
     /**
@@ -75,7 +76,7 @@ class SettingController extends Controller {
             return redirect()->back();
         }
 
-        return view("Setting::language", compact('lang'));
+        return view("Setting::setting.language", compact('lang'));
     }
 
     /**
@@ -121,6 +122,37 @@ class SettingController extends Controller {
             return redirect()->back();
         }
 
-        return view("Setting::website", compact('setting'));
+        return view("Setting::setting.website", compact('setting'));
+    }
+
+    /**
+     * @param Request $request
+     * @return Application|Factory|RedirectResponse|View
+     */
+    public function appointmentConfig(Request $request)
+    {
+        $post    = $request->post();
+        $setting = new AppointmentSetting();
+        if ($post) {
+            unset($post['_token']);
+            foreach ($post as $key => $value) {
+                $setting = AppointmentSetting::where('key', $key)->first();
+                if (!empty($setting)) {
+                    $setting->update(['value' => $value]);
+                }
+                else {
+                    $setting        = new AppointmentSetting();
+                    $setting->key   = $key;
+                    $setting->value = $value;
+                    $setting->save();
+                }
+            }
+
+            $request->session()->flash('success', 'Appointment Config updated successfully.');
+
+            return redirect()->back();
+        }
+
+        return view("Setting::setting.appointment", compact('setting'));
     }
 }

@@ -22,6 +22,3 @@ Route::middleware(['admin'])->prefix("admin")->group(function(){
             "AppointmentController@delete")->name("get.appointment.delete")->middleware('can:appointment-delete');
     });
 });
-
-Route::get('notification', 'AppointmentController@getNotification')->name('notification.getNotification');
-Route::post('notification', 'AppointmentController@postNotification')->name('notification.postNotification');

@@ -4,8 +4,13 @@ namespace App\AppHelpers;
 
 use App\AppHelpers\Mail\SendMail;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Request;
 use Modules\Setting\Model\Setting;
+use Pusher\ApiErrorException;
+use Pusher\Pusher;
+use Pusher\PusherException;
 
 class Helper{
 
@@ -261,12 +266,12 @@ class Helper{
 
         //Ghép cài đặt do người dùng yêu cầu với cài đặt mặc định của hàm
         $options = array_merge([
-                                   'delimiter'     => '-',
-                                   'transliterate' => true,
-                                   'replacements'  => [],
-                                   'lowercase'     => true,
-                                   'encoding'      => 'UTF-8'
-                               ], $options);
+            'delimiter'     => '-',
+            'transliterate' => true,
+            'replacements'  => [],
+            'lowercase'     => true,
+            'encoding'      => 'UTF-8'
+        ], $options);
 
         //Chuyển ngữ các ký tự theo bản đồ chuyển ngữ
         if($options['transliterate']){
@@ -283,7 +288,7 @@ class Helper{
 
         //Chỉ giữ lại một ký tự phân cách giữa 2 từ
         $string = preg_replace('/(' . preg_quote($options['delimiter'], '/') . '){2,}/', '$1',
-                               trim($string, $options['delimiter']));
+            trim($string, $options['delimiter']));
 
         //Chuyển sang chữ thường nếu có yêu cầu
         if($options['lowercase']){
@@ -318,7 +323,7 @@ class Helper{
         if(empty($template)){
             $template = 'Base::mail.send_test_mail';
         }
-        $mail = new SendMail();
+        $mail = new SendMail;
         $mail->to($mail_to)->subject($subject)->title($title)->body($body)->view($template);
 
         try{
@@ -351,5 +356,33 @@ class Helper{
     public static function getSetting($key){
         $data = Setting::where('key', $key)->first();
         return !empty($data) ? $data->value : null;
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     * @throws ApiErrorException
+     * @throws GuzzleException
+     * @throws PusherException
+     */
+    public static function dataPusher($data){
+        $request = new Request;
+        $options = [
+            'cluster'   => 'ap1',
+            'encrypted' => true
+        ];
+        try{
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options
+            );
+        }catch(PusherException $e){
+            $request->session()->flash('error', $e->getMessage());
+        }
+        $pusher->trigger('NotificationEvent', 'send-message', $data);
+
+        return true;
     }
 }

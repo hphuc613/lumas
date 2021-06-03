@@ -2,7 +2,7 @@
     use App\AppHelpers\Helper;
     $prompt = [null => trans('Select')];
     $segment = Helper::segment(2);
-    $member_display_id = session()->get('member_display_id');
+    $member_display_id = session()->get('member_display_id')
 @endphp
 <form action="" method="post" id="appointment-form">
     @csrf
@@ -116,9 +116,6 @@
         </div>
         <div class="col-md-12 mt-5 d-flex justify-content-between">
             <div>
-                @if(isset($appointment))
-                    <button type="button" id="edit-btn" class="btn btn-primary mr-2">{{ trans('Edit') }}</button>
-                @endif
                 <button type="submit" id="submit-btn" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
                 <button type="reset" class="btn btn-default" data-dismiss="modal">{{ trans('Cancel') }}</button>
             </div>
@@ -134,8 +131,112 @@
             @endif
         </div>
     </div>
-
 </form>
+
+
+@if(isset($appointment))
+    <div id="appointment-info">
+        <div class="row">
+            <div class="col-md-4 form-group">
+                <label for="type">{{ trans('Appointment Type') }}</label>
+                <div class="w-100">{{ $appointment_types[$appointment->type] }} </div>
+            </div>
+            <div class="col-md-4 form-group">
+                <label for="booking-time">{{ trans('Time') }}</label>
+                <div class="w-100">{{ $appointment->time }} </div>
+            </div>
+            <div class="col-md-4 form-group">
+                <label for="status">{{ trans('Status') }}</label>
+                <div class="w-100"
+                     style="color: {{ $appointment->getColorStatus() }}">{{ $statuses[$appointment->status] }} </div>
+            </div>
+            <div class="col-md-12">
+                <hr>
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="name">{{ trans('Subject') }}</label>
+                <div class="w-100">{{ $appointment->name }} </div>
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="member">{{ trans('Client') }}</label>
+                <div class="w-100">{{ $members[$appointment->member_id] }} </div>
+            </div>
+            <div class="col-md-12">
+                <hr>
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="store">{{ trans('Store') }}</label>
+                <div class="w-100">{{ $stores[$appointment->store_id] }} </div>
+            </div>
+            @if(Auth::user()->isAdmin())
+                <div class="col-md-6 form-group">
+                    <label for="user-id">{{ trans('Staff') }}</label>
+                    <div class="w-100">{{ $appointment->user->name }} </div>
+                </div>
+            @endif
+            <div class="col-md-12">
+                <hr>
+            </div>
+            <div class="col-md-12 form-group">
+                <label for="description">{{ trans('Description') }}</label>
+                <textarea name="description" id="description" class="form-control" readonly=""
+                          rows="4">{{ $appointment->description }}</textarea>
+            </div>
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <div class="d-flex justify-content-between p-2">
+                        <h4>{{ trans('Service Listing') }}</h4>
+                    </div>
+                    <table class="table table-striped" id="product-list">
+                        <thead>
+                        <tr>
+                            <th>{{ trans('Service/Course Name') }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if(isset($appointment))
+                            @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
+                                @foreach($appointment->service_ids as $item)
+                                    <tr class="pl-2">
+                                        <td>
+                                            <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
+                                            <span class="text-option">{{ $item->name }}</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                @foreach($appointment->course_ids as $item)
+                                    <tr class="pl-2">
+                                        <td>
+                                            <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
+                                            <span class="text-option">{{ $item->name }}</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-12 mt-5 d-flex justify-content-between">
+                <div>
+                    <button type="button" id="edit-btn" class="btn btn-primary mr-2">{{ trans('Edit') }}</button>
+                </div>
+                <div>
+                    <a href="{{ route("get.appointment.check_in", [$appointment->id, $appointment->member_id]) }}"
+                       class="btn btn-outline-info">
+                        {{ trans('Check In') }}
+                    </a>
+                    <a href="{{ route("get.appointment.delete", $appointment->id) }}"
+                       class="btn btn-danger btn-delete">{{ trans('Delete') }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
+
 {!! JsValidator::formRequest('Modules\Appointment\Http\Requests\AppointmentRequest') !!}
 <script>
     $(document).ready(function () {
@@ -172,16 +273,14 @@
 
     /** Edit able */
     function editAble(status) {
-        $("input").prop('disabled', status);
-        $('#appointment-form .select2').prop('disabled', status);
-        $("textarea").prop('disabled', status);
         if (status === true) {
-            $("#edit-btn").show();
-            $("#submit-btn").hide();
+            $("#appointment-form").hide();
+            $("#appointment-info").show();
         } else {
-            $("#edit-btn").hide();
-            $("#submit-btn").show();
+            $("#appointment-form").show();
+            $("#appointment-info").hide();
         }
+
         $('#appointment-form #type.select2').prop('disabled', true);
         $('#appointment-form #member.select2').prop('disabled', true);
     }

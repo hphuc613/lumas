@@ -94,15 +94,15 @@ $(document).ready(function () {
         var action = $(this).attr('href');
         var lang = $('html').attr('lang');
         var title = (lang === 'zh-TW') ? "你確定嗎?" : "Are you sure?";
-        var button_group = (lang === 'zh-TW') ? ['取消', '刪除'] : ['Cancel', 'Delete'];
 
-        swal({
+        swal.fire({
             title: title,
             icon: "warning",
-            buttons: button_group,
             dangerMode: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: (lang === 'zh-TW') ? '刪除' : 'Delete'
         }).then((willDelete) => {
-            if (willDelete) {
+            if (willDelete.isConfirmed) {
                 window.location.replace(action);
             }
         });

@@ -31,9 +31,16 @@
                 <div id="head-page" class="d-flex justify-content-between">
                     <div class="page-title">
                         <h3>
+                            @if(isset($filter['type']) && $filter['type'] == \Modules\Appointment\Model\Appointment::COURSE_TYPE)
+                                {{ trans("Course") }}
+                            @else
+                                {{ trans("Service") }}
+                            @endif
                             {{ trans("Appointment Listing") }}
-                            @if(isset($member)) {{ trans("of") }} <span class="text-info"
-                                                                        style="font-size: inherit">{{ $member->name }}</span> @endif
+                            @if(isset($member))
+                                {{ trans("of") }}
+                                <span class="text-info" style="font-size: inherit">{{ $member->name }}</span>
+                            @endif
                         </h3>
                     </div>
                     <div class="group-btn">
@@ -106,9 +113,10 @@
                             info.revert();
                         } else {
                             calendarStyleView();
-                            swal({
-                                title: "Change success",
+                            swal.fire({
+                                title: "{{ trans('Change success') }}",
                                 icon: "success",
+                                allowOutsideClick: false,
                                 button: "OK"
                             }).then((done) => {
                                 if (done) {
