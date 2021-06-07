@@ -45,6 +45,9 @@
                     'id' => 'service-form',
                     'class' => 'select2 form-control service service-relate',
                     'style' => 'width: 100%']) !!}
+                    @if(isset($member_service))
+                        <input type="hidden" name="service_id" value="{{ $member_service->service_id }}">
+                    @endif
                 </div>
                 <div class="form-group col-md-6">
                     <label for="voucher">{{ trans("Voucher") }}</label>
@@ -57,6 +60,9 @@
                         'id' => 'voucher',
                         'class' => 'select2 form-control service-relate',
                         'style' => 'width: 100%']) !!}
+                        @if(isset($member_service))
+                            <input type="hidden" name="voucher_id" value="{{ $member_service->voucher_id }}">
+                        @endif
                     @endif
                 </div>
                 @if(isset($member_service))
@@ -76,7 +82,7 @@
                         <label for="status">{{ trans("Status") }}</label>
                         {!! Form::select('status', $statuses, $member_service->status ?? null, [
                         'id' => 'status',
-                        'class' => 'select2 form-control',
+                        'class' => 'select2 form-control service-relate',
                         'style' => 'width: 100%']) !!}
                     </div>
                 @endif
@@ -108,3 +114,11 @@
         </form>
     </div>
 </div>
+
+@if(isset($member_service))
+    @push('js')
+        <script>
+            $(".service-relate").prop("disabled", true);
+        </script>
+    @endpush
+@endif

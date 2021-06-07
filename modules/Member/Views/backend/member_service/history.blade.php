@@ -29,7 +29,9 @@
                     <th>{{ trans('Code') }}</th>
                     <th>{{ trans('Signature') }}</th>
                     <th>{{ trans('Appointment') }}</th>
-                    <th>{{ trans('Service') }}
+                    <th>{{ trans('Service') }}</th>
+                    <th>{{ trans('Start At') }}</th>
+                    <th>{{ trans('End At') }}</th>
                     <th>{{ trans('Updated By') }}</th>
                     <th>{{ trans('Created At') }}</th>
                 </tr>
@@ -51,8 +53,10 @@
                                data-target="#form-modal"
                                data-title="{{ trans('View Appointment') }}">{{ $history->appointment->name }}</a></td>
                         <td>{{ $history->memberService->service->name }}</td>
+                        <td>{{ formatDate(strtotime($history->start), 'd/m/Y H:i:s')}}</td>
+                        <td>{{ formatDate(strtotime($history->end), 'd/m/Y H:i:s')}}</td>
                         <td>{{ $history->user->name }}</td>
-                        <td>{{ \Carbon\Carbon::parse($history->created_at)->format('d/m/Y H:i:s')}}</td>
+                        <td>{{ formatDate(strtotime($history->created_at), 'd/m/Y H:i:s')}}</td>
                     </tr>
                 @endforeach
                 </tbody>

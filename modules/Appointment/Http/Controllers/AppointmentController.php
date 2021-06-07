@@ -174,21 +174,23 @@ class AppointmentController extends Controller{
      */
     public function postUpdate(AppointmentRequest $request, $id){
         $book = Appointment::find($id);
-        if($book->member->checkServiceInProgressing()){
+        if ($book->member->checkServiceInProgressing()) {
             $request->session()->flash('error', trans("There are services in progressing."));
 
             return redirect()->back();
         }
         $data = $request->all();
+        dd($data);
+
         /** Get list id service/course*/
-        if($data['type'] === Appointment::SERVICE_TYPE){
+        if ($data['type'] === Appointment::SERVICE_TYPE) {
             $data['service_ids'] = json_encode($data['product_ids'] ?? []);
-        }else{
+        }
+        else {
             $data['course_ids'] = json_encode($data['product_ids'] ?? []);
         }
         unset($data['product_ids']);
-        $data['time'] = Carbon::parse($data['time'])
-                              ->format('Y-m-d H:i');
+        $data['time'] = Carbon::parse($data['time'])->format('Y-m-d H:i');
         $book->update($data);
 
         $request->session()

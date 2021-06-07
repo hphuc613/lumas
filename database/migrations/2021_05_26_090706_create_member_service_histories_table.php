@@ -17,6 +17,8 @@ class CreateMemberServiceHistoriesTable extends Migration{
             $table->unsignedInteger('member_service_id');
             $table->unsignedInteger('appointment_id');
             $table->unsignedInteger('updated_by');
+            $table->timestamp('start')->nullable();
+            $table->timestamp('end')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });

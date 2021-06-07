@@ -4,7 +4,7 @@
         <div class="form-group col-md-6">
             <label for="">{{ trans("Client") }}</label>
             <h5 class="text-success">
-                <a href="{{ route('get.member.update',$member_service->member->id) }}">
+                <a href="{{ route('get.member.update',$member_service->member->id) }}" target="_blank">
                     {{ $member_service->member->name }} | {{ $member_service->member->phone }}
                     | {{ $member_service->member->email }}
                 </a>

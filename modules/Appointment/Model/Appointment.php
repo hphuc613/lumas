@@ -119,8 +119,7 @@ class Appointment extends BaseModel
     /**
      * @return array
      */
-    public static function getStatuses()
-    : array {
+    public static function getStatuses() {
         return [
             self::WAITING_STATUS   => trans('Waiting'), self::PROGRESSING_STATUS => trans('Progressing'),
             self::COMPLETED_STATUS => trans('Completed'), self::ABORT_STATUS => trans('Abort')
@@ -176,6 +175,17 @@ class Appointment extends BaseModel
         }
 
         return $color;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkProgressing() {
+        if ($this->status === self::PROGRESSING_STATUS) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

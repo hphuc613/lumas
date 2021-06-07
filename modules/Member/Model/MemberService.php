@@ -5,6 +5,7 @@ namespace Modules\Member\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Modules\Base\Model\BaseModel;
 use Modules\Service\Model\Service;
 use Modules\Voucher\Model\Voucher;
@@ -106,14 +107,32 @@ class MemberService extends BaseModel{
     /**
      * @return string
      */
-    public function generateCode(){
+    public function generateCode() {
         return 'LMC' . $this->member->id . 'SV' . $this->service->id . 'T' . time();
+    }
+
+    /**
+     * @param $data
+     * @param $appointment
+     */
+    public function eSign($data, $appointment) {
+        if (empty($data['signature'])) {
+            $data['signature'] = Auth::user()->name;
+        }
+
+        $data['start']             = $this->updated_at;
+        $data['end']               = formatDate(time(), 'Y-m-d H:i:s');
+        $data['member_service_id'] = $this->id;
+        $data['appointment_id']    = $appointment->id;
+        $data['updated_by']        = Auth::id();
+        $history                   = new MemberServiceHistory($data);
+        $history->save();
     }
 
     /**
      * @return BelongsTo
      */
-    public function member(){
+    public function member() {
         return $this->belongsTo(Member::class, "member_id");
     }
 

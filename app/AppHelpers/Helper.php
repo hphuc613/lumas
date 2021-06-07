@@ -12,21 +12,21 @@ use Pusher\ApiErrorException;
 use Pusher\Pusher;
 use Pusher\PusherException;
 
-class Helper{
+class Helper {
 
     /**
      * @param $path
      *
      * @return array
      */
-    public static function get_directories($path){
+    public static function get_directories($path) {
         $directories = [];
         $items       = scandir($path);
-        foreach($items as $item){
-            if($item == '..' || $item == '.'){
+        foreach ($items as $item) {
+            if ($item == '..' || $item == '.') {
                 continue;
             }
-            if(is_dir($path . '/' . $item)){
+            if (is_dir($path . '/' . $item)) {
                 $directories[] = $item;
             }
         }
@@ -37,12 +37,12 @@ class Helper{
     /**
      * @return array
      */
-    public static function config_menu_merge(){
+    public static function config_menu_merge() {
         $modules    = self::get_directories(base_path('modules'));
         $activeMenu = [];
-        foreach($modules as $key => $value){
+        foreach ($modules as $key => $value) {
             $urlPath = $value . '/Config/menu.php';
-            if(file_exists(base_path('modules') . '/' . $urlPath)){
+            if (file_exists(base_path('modules') . '/' . $urlPath)) {
                 $activeMenu[] = require(base_path('modules') . '/' . $urlPath);
             }
         }
@@ -54,21 +54,21 @@ class Helper{
     /**
      * @return array
      */
-    public static function config_permission_merge(){
+    public static function config_permission_merge() {
         $modules = self::get_directories(base_path('modules'));
         $files   = [];
         $i       = 0;
-        foreach($modules as $key => $value){
+        foreach ($modules as $key => $value) {
             $urlPath = $value . '/Config/permission.php';
             $file    = base_path('modules') . '/' . $urlPath;
-            if(file_exists($file)){
+            if (file_exists($file)) {
                 $files[(int)filemtime($file) + $i] = $file;
                 $i++;
             }
         }
         ksort($files);
         $permissions = [];
-        foreach($files as $file){
+        foreach ($files as $file) {
             $permissions[] = require($file);
         }
 
@@ -81,16 +81,18 @@ class Helper{
      *
      * @return string
      */
-    public static function getModal($array = []){
-        if(!empty($array)){
+    public static function getModal($array = []) {
+        if (!empty($array)) {
             $class    = $array['class'] ?? null;
             $id       = $array['id'] ?? 'form-modal';
             $tabindex = $array['tabindex'] ?? '-1';
             $size     = $array['size'] ?? null;
             $title    = $array['title'] ?? 'Title';
-            if($tabindex !== false){
-                $html = '<div class="modal fade ' . $class . '" id="' . $id . '" tabindex="' . $tabindex . '" role="dialog" aria-hidden="true">';
-            }else{
+            if ($tabindex !== false) {
+                $html = '<div class="modal fade ' . $class . '" id="' . $id . '" tabindex="' . $tabindex
+                        . '" role="dialog" aria-hidden="true">';
+            }
+            else {
                 $html = '<div class="modal fade ' . $class . '" id="' . $id . '" role="dialog" aria-hidden="true">';
             }
             $html .= '<div class="modal-dialog ' . $size . ' ">';
@@ -102,7 +104,8 @@ class Helper{
             $html .= '</div>';
             $html .= '</div>';
             $html .= '</div>';
-        }else{
+        }
+        else {
             $html = '<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="form-modal" aria-hidden="true">';
             $html .= '<div class="modal-dialog">';
             $html .= '<div class="modal-content">';
@@ -125,17 +128,10 @@ class Helper{
      *
      * @return bool|false|string|string[]|null
      */
-    public static function slug($string, $options = []){
+    public static function slug($string, $options = []) {
         //Bản đồ chuyển ngữ
         $slugTransliterationMap = [
-            'á' => 'a',
-            'à' => 'a',
-            'ả' => 'a',
-            'ã' => 'a',
-            'ạ' => 'a',
-            'â' => 'a',
-            'ă' => 'a',
-            'Á' => 'A',
+            'á' => 'a', 'à' => 'a', 'ả' => 'a', 'ã' => 'a', 'ạ' => 'a', 'â' => 'a', 'ă' => 'a', 'Á' => 'A',
             'À' => 'A',
             'Ả' => 'A',
             'Ã' => 'A',
@@ -274,12 +270,12 @@ class Helper{
         ], $options);
 
         //Chuyển ngữ các ký tự theo bản đồ chuyển ngữ
-        if($options['transliterate']){
+        if ($options['transliterate']) {
             $string = str_replace(array_keys($slugTransliterationMap), $slugTransliterationMap, $string);
         }
 
         //Nếu có bản đồ chuyển ngữ do người dùng cung cấp thì thực hiện chuyển ngữ
-        if(is_array($options['replacements']) && !empty($options['replacements'])){
+        if (is_array($options['replacements']) && !empty($options['replacements'])) {
             $string = str_replace(array_keys($options['replacements']), $options['replacements'], $string);
         }
 
@@ -291,7 +287,7 @@ class Helper{
             trim($string, $options['delimiter']));
 
         //Chuyển sang chữ thường nếu có yêu cầu
-        if($options['lowercase']){
+        if ($options['lowercase']) {
             $string = mb_strtolower($string, $options['encoding']);
         }
 
@@ -301,13 +297,17 @@ class Helper{
 
     /**
      * @param $index
-     * @return mixed|string
+     * @return mixed
      */
-    public static function segment($index){
-        $path     = request()->path();
-        $path_arr = explode('/', $path);
+    public static function segment($index) {
+        return request()->segments()[$index] ?? '/';
+    }
 
-        return $path_arr[$index] ?? '/';
+    /**
+     * @return mixed
+     */
+    public static function getRoutePrevious() {
+        return app('router')->getRoutes(url()->previous())->match(app('request')->create(url()->previous()))->getName();
     }
 
     /**
@@ -318,17 +318,17 @@ class Helper{
      * @param null $template
      * @return bool
      */
-    public static function sendMail($mail_to, $subject, $title, $body, $template = null){
+    public static function sendMail($mail_to, $subject, $title, $body, $template = null) {
         /** Send email */
-        if(empty($template)){
+        if (empty($template)) {
             $template = 'Base::mail.send_test_mail';
         }
         $mail = new SendMail;
         $mail->to($mail_to)->subject($subject)->title($title)->body($body)->view($template);
 
-        try{
+        try {
             Mail::send($mail);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return false;
         }
 
@@ -340,11 +340,11 @@ class Helper{
      * @param false $associative
      * @return false|mixed
      */
-    public static function isJson($string, $associative = false){
-        try{
+    public static function isJson($string, $associative = false) {
+        try {
             $string = json_decode($string, $associative);
             return $string;
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -353,7 +353,7 @@ class Helper{
      * @param $key
      * @return null
      */
-    public static function getSetting($key){
+    public static function getSetting($key) {
         $data = Setting::where('key', $key)->first();
         return !empty($data) ? $data->value : null;
     }
@@ -365,20 +365,14 @@ class Helper{
      * @throws GuzzleException
      * @throws PusherException
      */
-    public static function dataPusher($data){
+    public static function dataPusher($data) {
         $request = new Request;
         $options = [
-            'cluster'   => 'ap1',
-            'encrypted' => true
+            'cluster' => 'ap1', 'encrypted' => true
         ];
-        try{
-            $pusher = new Pusher(
-                env('PUSHER_APP_KEY'),
-                env('PUSHER_APP_SECRET'),
-                env('PUSHER_APP_ID'),
-                $options
-            );
-        }catch(PusherException $e){
+        try {
+            $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
+        } catch (PusherException $e) {
             $request->session()->flash('error', $e->getMessage());
         }
         $pusher->trigger('NotificationEvent', 'send-message', $data);

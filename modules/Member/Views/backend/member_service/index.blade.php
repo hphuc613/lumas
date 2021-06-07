@@ -18,9 +18,13 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Add Service For Client") }}</h3></div>
             <div class="group-btn">
-                @if($member->checkAppointmentInProgressing())
-                    <a href="{{ route('get.appointment.check_out', $member->id) }}" class="btn btn-warning text-light">
-                        &nbsp; {{ trans('Check Out Appointment') }}
+                @if($member->getAppointmentInProgressing())
+                    <a href="{{ route('get.appointment.update', $member->getAppointmentInProgressing()->id) }}"
+                       class="btn btn-warning text-light"
+                       id="update-booking" data-toggle="modal"
+                       data-target="#form-modal"
+                       data-title="{{ trans('View Appointment') }}">
+                        &nbsp; {{ trans('Appointment Progressing') }}
                     </a>
                 @else
                     <a href="{{ route('get.member.appointment', $member->id) }}" class="btn btn-danger text-light">
@@ -63,12 +67,6 @@
     {!! JsValidator::formRequest('Modules\Member\Http\Requests\MemberServiceRequest') !!}
     <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
     <script>
-        @if(isset($member_service))
-        $(".service-relate").prop("disabled", true);
-        $("#btn-add-service").click(function () {
-            $(".service-relate").prop("disabled", false);
-        })
-        @endif
         /** Get service list by service type */
         $(document).on('change', '#service-form', function () {
             var service = $(this);
@@ -89,9 +87,5 @@
                 at: "center top-10", // the position of that anchor point relative to selected element
             }
         });
-
-        $('#form-modal').on('hidden.bs.modal', function () {
-            location.reload();
-        })
     </script>
 @endpush
