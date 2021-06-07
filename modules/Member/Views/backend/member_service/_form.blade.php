@@ -11,7 +11,8 @@
                     </a>
                 @endif
             @endif
-            <a href="{{ route('get.voucher.create_popup') }}" class="btn btn-primary" data-toggle="modal"
+            <a href="{{ route('get.voucher.create_popup',["type" => 'service']) }}" class="btn btn-primary"
+               data-toggle="modal"
                data-target="#form-modal" data-title="{{ trans('Create Voucher') }}">
                 <i class="fa fa-plus"></i> &nbsp; {{ trans('Add Voucher') }}
             </a>
@@ -114,11 +115,21 @@
         </form>
     </div>
 </div>
-
-@if(isset($member_service))
-    @push('js')
-        <script>
-            $(".service-relate").prop("disabled", true);
-        </script>
-    @endpush
-@endif
+@push('js')
+    <script>
+        /** Get service list by service type */
+        $(document).on('change', '#service-form', function () {
+            var service = $(this);
+            var service_id = service.val();
+            $.ajax({
+                url: "{{ route('get.voucher.get_list_by_service',["",""]) }}/" + service_id + '/service',
+                method: "get"
+            }).done(function (response) {
+                service.parents('form').find('#voucher').html(response);
+            });
+        });
+        @if(isset($member_service))
+        $(".service-relate").prop("disabled", true);
+        @endif
+    </script>
+@endpush

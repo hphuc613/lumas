@@ -31,7 +31,17 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="code">{{ trans("Code") }}</label>
-                                <input type="text" class="form-control" id="code" name="code" value="">
+                                <input type="text" class="form-control" id="code" name="code"
+                                       value="{{ $filter['code'] ?? NULL }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="code">{{ trans("Type") }}</label>
+                                {!! Form::select('type', ["" => trans("Select")] + $types, $filter['type'] ?? NULL, [
+                                    'id' => 'type',
+                                    'class' => 'select2 form-control',
+                                    'style' => 'width: 100%']) !!}
                             </div>
                         </div>
                     </div>
@@ -57,7 +67,8 @@
                             <th>{{ trans('Code') }}</th>
                             <th>{{ trans('Price') }}</th>
                             <th>{{ trans('Start day') }}</th>
-                            <th>{{ trans('Service') }}</th>
+                            <th>{{ trans('Service/Course') }}</th>
+                            <th>{{ trans('Type') }}</th>
                             <th width="200px">{{ trans('Created At') }}</th>
                             <th width="200px">{{ trans('Updated At') }}</th>
                             <th width="200px" class="action">{{ trans('Action') }}</th>
@@ -66,12 +77,17 @@
                         <tbody>
                         @php($key = ($vouchers->currentpage()-1)*$vouchers->perpage()+1)
                         @foreach($vouchers as $voucher)
+                            @if((($voucher->type === \Modules\Voucher\Model\Voucher::COURSE_TYPE) && empty($voucher->course)) ||
+                                (($voucher->type === \Modules\Voucher\Model\Voucher::SERVICE_TYPE) && empty($voucher->service)))
+                                @continue
+                            @endif
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $voucher->code }}</td>
                                 <td>{{ $voucher->price }}</td>
                                 <td>{{ formatDate($voucher->start_at) }}</td>
-                                <td>{{ $voucher->service->name }}</td>
+                                <td>{{ ($voucher->type === \Modules\Voucher\Model\Voucher::COURSE_TYPE) ? $voucher->course->name : $voucher->service->name }}</td>
+                                <td>{{ $types[$voucher->type] }}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">

@@ -2,31 +2,33 @@
 
 use App\AppHelpers\Helper;
 
-$prompt  = [null => trans('Select')];
-$segment = Helper::segment(2)
+$prompt       = [null => trans('Select')];
+$segment      = Helper::segment(2);
+$request_type = request()->type;
 ?>
-<form action="" method="post">
+<form action="" method="post" id="voucher-form">
     @csrf
     <div class="row">
         <div class="col-md-6 form-group">
-            <label for="service-type">{{ trans('Service Type') }}</label>
-            {!! Form::select('', $prompt + $service_types, $voucher->service->type_id ?? null, [
-                'id' => 'service-type',
+            <label for="service-type">{{ trans('Type') }}</label>
+            {!! Form::select('type', $types, $request_type ?? $voucher->type ?? null, [
+                'id' => 'type',
                 'class' => 'select2 form-control',
                 'style' => 'width: 100%']) !!}
         </div>
-        <div class="col-md-6 form-group">
+        <div class="col-md-6 form-group service">
             <label for="service">{{ trans('Service') }}</label>
-            @if(isset($services))
-                {!! Form::select('service_id', $prompt + $services, $voucher->service_id ?? null, [
-                'id' => 'service',
-                'class' => 'select2 form-control',
-                'style' => 'width: 100%']) !!}
-            @else
-                <select name="service_id" id="service" class="select2 form-control" style="width: 100%">
-                    <option value="">{{ trans("Please Select Service Type") }}</option>
-                </select>
-            @endif
+            {!! Form::select('parent_id', $prompt + $services, $voucher->parent_id ?? null, [
+            'id' => 'service',
+            'class' => 'select2 form-control',
+            'style' => 'width: 100%']) !!}
+        </div>
+        <div class="col-md-6 form-group course">
+            <label for="service">{{ trans('Course') }}</label>
+            {!! Form::select('parent_id', $prompt + $courses, $voucher->parent_id ?? null, [
+            'id' => 'course',
+            'class' => 'select2 form-control',
+            'style' => 'width: 100%']) !!}
         </div>
         <div class="form-group col-md-6">
             <label for="code">{{ trans("Code") }}</label>
@@ -78,20 +80,32 @@ $segment = Helper::segment(2)
         <button type="reset" class="btn btn-default">{{ trans("Reset") }}</button>
     </div>
 </form>
-@if(\App\AppHelpers\Helper::segment(2) !== 'create')
+@if($segment === "create-popup")
     {!! JsValidator::formRequest('Modules\Voucher\Http\Requests\VoucherRequest') !!}
     <script>
-        /*Get service list by service type*/
-        $(document).on('change', '#service-type', function () {
-            var service_type = $(this);
-            var type_id = service_type.val();
-            $.ajax({
-                url: "{{ route("get.service.get_list_service_by_type", '') }}/" + type_id,
-                method: "get"
-            }).done(function (response) {
-                service_type.parents('form').find('#service').html(response);
-            });
-        });
+        $('#voucher-form #type').prop('disabled', true);
+        @if($request_type === \Modules\Voucher\Model\Voucher::COURSE_TYPE)
+        $(".service").hide();
+        $('#voucher-form #service').prop('disabled', true);
+        @else
+        $(".course").hide();
+        $('#voucher-form #course').prop('disabled', true);
+        @endif
+        $(document).on("change", '#type', function () {
+            if ($(this).val() === "{{ \Modules\Voucher\Model\Voucher::COURSE_TYPE }}") {
+                $('#voucher-form #course').prop('disabled', false);
+                $('#voucher-form #service').prop('disabled', true);
+                $(".course").show();
+                $(".service").hide();
+            } else {
+                $('#voucher-form #course').prop('disabled', true);
+                $('#voucher-form #service').prop('disabled', false);
+                $(".service").show();
+                $(".course").hide();
+            }
+        })
+
+
         $(".btn-elfinder").click(function () {
             @php
                 $locale = session()->get('locale');
@@ -106,17 +120,27 @@ $segment = Helper::segment(2)
     @push('js')
         {!! JsValidator::formRequest('Modules\Voucher\Http\Requests\VoucherRequest') !!}
         <script>
-            /*Get service list by service type*/
-            $(document).on('change', '#service-type', function () {
-                var service_type = $(this);
-                var type_id = service_type.val();
-                $.ajax({
-                    url: "{{ route("get.service.get_list_service_by_type", '') }}/" + type_id,
-                    method: "get"
-                }).done(function (response) {
-                    service_type.parents('form').find('#service').html(response);
-                });
-            });
+            @if(isset($voucher) && $voucher->type === \Modules\Voucher\Model\Voucher::COURSE_TYPE)
+            $(".service").hide();
+            $('#voucher-form #service').prop('disabled', true);
+            @else
+            $(".course").hide();
+            $('#voucher-form #course').prop('disabled', true);
+            @endif
+
+            $(document).on("change", '#type', function () {
+                if ($(this).val() === "{{ \Modules\Voucher\Model\Voucher::COURSE_TYPE }}") {
+                    $('#voucher-form #course').prop('disabled', false);
+                    $('#voucher-form #service').prop('disabled', true);
+                    $(".course").show();
+                    $(".service").hide();
+                } else {
+                    $('#voucher-form #course').prop('disabled', true);
+                    $('#voucher-form #service').prop('disabled', false);
+                    $(".service").show();
+                    $(".course").hide();
+                }
+            })
         </script>
     @endpush
 @endif

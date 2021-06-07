@@ -4,13 +4,13 @@ namespace Modules\Course\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CourseRequest extends FormRequest{
+class CourseRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(){
+    public function authorize() {
         return true;
     }
 
@@ -19,16 +19,17 @@ class CourseRequest extends FormRequest{
      *
      * @return array
      */
-    public function rules(){
+    public function rules() {
         return [
             'name'        => 'required',
             'category_id' => 'required|check_exist:course_categories,id',
-            'status'      => 'required'
+            'status'      => 'required',
+            'price'       => 'required'
         ];
     }
 
     public
-    function messages(){
+    function messages() {
         return [
             'required'    => ':attribute' . trans(' can not be null.'),
             'check_exist' => ':attribute' . trans(' does not exist.'),
@@ -36,11 +37,12 @@ class CourseRequest extends FormRequest{
     }
 
     public
-    function attributes(){
+    function attributes() {
         return [
             'name'        => trans('Course name'),
             'status'      => trans('Status'),
-            'category_id' => trans('Course Category')
+            'category_id' => trans('Course Category'),
+            'price'       => trans('Price')
         ];
     }
 }

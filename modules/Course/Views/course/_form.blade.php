@@ -9,8 +9,13 @@
                            value="{{ $course->name ?? old('name') }}">
                 </div>
                 <div class="col-md-6 form-group">
+                    <label for="price">{{ trans('Price') }}</label>
+                    <input type="text" id="price" class="form-control" name="price"
+                           value="{{ $course->price ?? old('price') }}">
+                </div>
+                <div class="col-md-6 form-group">
                     <label for="category-id">{{ trans('Course Category') }}</label>
-                    {!! Form::select('category_id',[null => 'Please Select'] + $course_categories, $course->category_id ?? null,
+                    {!! Form::select('category_id',[null => trans('Select')] + $course_categories, $course->category_id ?? null,
                         ['id' => 'category-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
                 </div>
                 <div class="col-md-6 form-group">

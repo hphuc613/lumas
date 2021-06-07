@@ -56,6 +56,7 @@
                             <tr>
                                 <th width="50px">#</th>
                                 <th>{{ trans('Name') }}</th>
+                                <th>{{ trans('Price') }}</th>
                                 <th>{{ trans('Status') }}</th>
                                 <th width="200px">{{ trans('Created At') }}</th>
                                 <th width="200px">{{ trans('Updated At') }}</th>
@@ -68,6 +69,7 @@
                                 <tr>
                                     <td>{{$key++}}</td>
                                     <td>{{ trans($course->name) }}</td>
+                                    <td>{{ trans($course->price) }}</td>
                                     <td>{{ \Modules\Base\Model\Status::getStatus($course->status) ?? null }}</td>
                                     <td>{{ \Carbon\Carbon::parse($course->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($course->updated_at)->format('d/m/Y H:i:s')}}</td>

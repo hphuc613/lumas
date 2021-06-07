@@ -67,17 +67,6 @@
     {!! JsValidator::formRequest('Modules\Member\Http\Requests\MemberServiceRequest') !!}
     <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
     <script>
-        /** Get service list by service type */
-        $(document).on('change', '#service-form', function () {
-            var service = $(this);
-            var service_id = service.val();
-            $.ajax({
-                url: "{{ route('get.voucher.get_list_by_service', '') }}/" + service_id,
-                method: "get"
-            }).done(function (response) {
-                service.parents('form').find('#voucher').html(response);
-            });
-        });
         $(".tooltip-content").tooltip({
             content: function () {
                 return $(this).attr('data-tooltip');
