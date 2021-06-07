@@ -38,10 +38,6 @@ class AppointmentController extends Controller{
      * @return Application|Factory|View
      */
     public function index(Request $request){
-        if($request->session()->has('member_display_id')){
-            $request->session()->forget('member_display_id');
-            $request->session()->save();
-        }
         $filter            = $request->all();
         $appointment_types = Appointment::getTypeList();
         $appointments      = Appointment::with('member')
@@ -269,18 +265,19 @@ class AppointmentController extends Controller{
         $appointment->save();
         $request->session()->flash('success', trans("This appointment in progressing."));
 
-        return redirect()->route('get.member_service.add', $appointment->member_id . '?appointment_id=' . $appointment->id);
+        return redirect()->route('get.member_service.add', $appointment->member_id);
     }
 
     /**
      * @param $id
      * @return RedirectResponse
      */
-    public function checkOut(Request $request, $id){
-        $appointment = Appointment::where('member_id', $id)->where('status', Appointment::PROGRESSING_STATUS)
+    public function checkOut(Request $request, $id) {
+        $appointment = Appointment::where('member_id', $id)
+                                  ->where('status', Appointment::PROGRESSING_STATUS)
                                   ->first();
 
-        if($appointment->member->checkServiceInProgressing()){
+        if ($appointment->member->checkServiceInProgressing()) {
             $request->session()->flash('error', trans("There are services in progressing."));
 
             return redirect()->back();
@@ -290,6 +287,6 @@ class AppointmentController extends Controller{
         $appointment->save();
         $request->session()->flash('success', trans("This appointment is completed."));
 
-        return redirect()->route('get.member.appointment', $appointment->member_id);
+        return redirect()->route('get.member.appointment', [$appointment->member_id, 'type' => $appointment->type]);
     }
 }

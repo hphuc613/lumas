@@ -2,7 +2,7 @@
     use App\AppHelpers\Helper;
     $prompt = [null => trans('Select')];
     $segment = Helper::segment(2);
-    $member_display_id = session()->get('member_display_id')
+    $member_display_id = (int)request()->get('member_id');
 @endphp
 <form action="" method="post" id="appointment-form">
     @csrf
@@ -133,7 +133,7 @@
     </div>
 </form>
 
-
+{{-- View Appointment --}}
 @if(isset($appointment))
     <div id="appointment-info">
         <div class="row">
@@ -240,6 +240,9 @@
 {!! JsValidator::formRequest('Modules\Appointment\Http\Requests\AppointmentRequest') !!}
 <script>
     $(document).ready(function () {
+        if ("{{ $member_display_id }}" !== "0") {
+            $('#appointment-form #member.select2').prop('disabled', true);
+        }
         if ($("#appointment-form #type").val() === "{{ \Modules\Appointment\Model\Appointment::SERVICE_TYPE }}") {
             $('.select-course').hide();
             $('.select-service').show();

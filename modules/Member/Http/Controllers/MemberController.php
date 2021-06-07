@@ -242,7 +242,6 @@ class MemberController extends Controller{
             ];
         }
         $events = json_encode($events);
-        $request->session()->put('member_display_id', $member->id);
         return view("Appointment::index", compact('events', 'appointment_types', 'filter', 'member'));
     }
 }

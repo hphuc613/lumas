@@ -48,7 +48,8 @@
                             {!! Form::select('type', $appointment_types, $filter['type'] ?? null,
                             ['id' => 'appointment_type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
                         </div>
-                        <a href="{{ route('get.appointment.create') }}" id="create-booking" class="btn btn-primary"
+                        <a href="{{ route('get.appointment.create',['member_id' => $member->id ?? NULL]) }}"
+                           id="create-booking" class="btn btn-primary"
                            data-toggle="modal"
                            data-target="#form-modal" data-title="{{ trans('Create Appointment') }}">
                             <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
@@ -136,7 +137,7 @@
                 },
                 eventClick: function (info) {
                     var eventObj = info.event;
-                    $("#update-booking").attr("href", "{{ route("get.appointment.update",'') }}/" + eventObj.id);
+                    $("#update-booking").attr("href", "{{ route("get.appointment.update",'') }}/" + eventObj.id + "?member_id={{ $member->id ?? NULL }}");
                     $("#update-booking").click();
                     calendarStyleView();
                 }
