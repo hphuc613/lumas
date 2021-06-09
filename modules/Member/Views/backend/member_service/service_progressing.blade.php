@@ -1,15 +1,4 @@
-<?php
-
-use Modules\Member\Model\MemberService;
-
-$check_service_progressing = false;
-foreach($member_services as $val){
-    if($val->status == MemberService::PROGRESSING_STATUS){
-        $check_service_progressing = true;
-    }
-}
-?>
-@if($check_service_progressing)
+@if(!empty($progressing_services))
     <div class="card mb-2">
         <div class="card-header">
             <h4>Service Progressing</h4>
@@ -33,7 +22,7 @@ foreach($member_services as $val){
                     </thead>
                     <tbody>
                     @php($key = 1)
-                    @foreach($member_services as $value)
+                    @foreach($progressing_services as $value)
                         @if($value->status === \Modules\Member\Model\MemberService::PROGRESSING_STATUS)
                             @php($total_price = !empty($value->voucher)
                                     ? $value->voucher->price * $value->quantity

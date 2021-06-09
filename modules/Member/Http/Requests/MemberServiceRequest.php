@@ -28,14 +28,14 @@ class MemberServiceRequest extends FormRequest{
                 return [
                     'service_id' => 'required|check_exist:services,id',
                     'member_id'  => 'required|check_exist:members,id',
-                    'voucher_id' => 'nullable|check_exist:vouchers,id',
+                    'voucher_id' => 'nullable|check_exist:service_vouchers,id',
                     'quantity'   => 'required|numeric',
                 ];
             case "edit-service":
                 return [
                     'service_id' => 'required|check_exist:services,id',
                     'member_id'  => 'required|check_exist:members,id',
-                    'voucher_id' => 'nullable|check_exist:vouchers,id',
+                    'voucher_id' => 'nullable|check_exist:service_vouchers,id',
                     'quantity'   => 'nullable|numeric',
                 ];
         }

@@ -2,7 +2,6 @@
 
 namespace Modules\Appointment\Http\Requests;
 
-use App\AppHelpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AppointmentRequest extends FormRequest{
@@ -21,29 +20,17 @@ class AppointmentRequest extends FormRequest{
      * @return array
      */
     public function rules(){
-        $method = Helper::segment(2);
-        switch($method){
-            default:
-                return [
-                    'name'      => 'required',
-                    'member_id' => 'required|check_exist:members,id',
-                    'store_id'  => 'required|check_exist:stores,id',
-                    'time'      => 'required|check_past',
-                ];
-            case 'update':
-                return [
-                    'name'      => 'required',
-                    'member_id' => 'required|check_exist:members,id',
-                    'store_id'  => 'required|check_exist:stores,id',
-                ];
-        }
+        return [
+            'name'      => 'required',
+            'member_id' => 'required|check_exist:members,id',
+            'store_id'  => 'required|check_exist:stores,id',
+        ];
     }
 
     public function messages(){
         return [
             'required'    => ':attribute' . trans(' cannot be null.'),
-            'check_exist' => ':attribute' . trans(' does not exist.'),
-            'check_past'  => ':attribute' . trans(' is not in the past.'),
+            'check_exist' => ':attribute' . trans(' does not exist.')
         ];
     }
 
@@ -51,8 +38,7 @@ class AppointmentRequest extends FormRequest{
         return [
             'name'      => trans('Subject'),
             'member_id' => trans('Client'),
-            'store_id'  => trans('Store'),
-            'time'      => trans('Time'),
+            'store_id' => trans('Store')
         ];
     }
 }

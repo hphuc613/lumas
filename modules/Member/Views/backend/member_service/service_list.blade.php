@@ -129,7 +129,7 @@
                                placeholder="{{ trans("Search Code") }}">
                     </div>
                     <div class="form-group col-md-4">
-                        {!! Form::select('service_search_completed', [null => trans('Search Service')] + $completed_search_services, null, [
+                        {!! Form::select('service_search_completed', [null => trans('Search Service')] + $search_completed_services, null, [
                             'class' => 'select2 form-control',
                             'style' => 'width: 100%']) !!}
                     </div>
