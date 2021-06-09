@@ -114,8 +114,6 @@
                                 <td class="link-action">
                                     <a href="{{ route('get.member.appointment',$member->id) }}"
                                        class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
-                                    <a href="{{ route('get.member_service.add',$member->id) }}"
-                                       class="btn btn-outline-info"><i class="fas fa-plus"></i></a>
                                     <a href="{{ route('get.member.update',$member->id) }}" class="btn btn-primary">
                                         <i class="fas fa-pencil-alt"></i></a>
                                     <a href="{{ route('get.member.delete',$member->id) }}"

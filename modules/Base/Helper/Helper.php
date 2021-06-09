@@ -110,19 +110,17 @@ if (!function_exists('notificationList')) {
      * @param false $is_new
      * @return string
      */
-    function notificationList($url, $notifications, $is_new = FALSE)
-    : string {
-        if ($is_new) {
+    function notificationList($notifications, $is_new = FALSE): string{
+        if($is_new){
             $notifications = array_slice($notifications, 0, 3);
-        }
-        else {
+        }else{
             $notifications = array_slice($notifications, 3);
         }
         $html = '';
-        foreach ($notifications as $notification) {
+        foreach($notifications as $notification){
             $data = $notification['data'];
-            $url  = $url . '/' . $notification['id'];
             if ($data['status'] == Status::STATUS_ACTIVE) {
+                $url = route("read_notification", $notification['id']);
                 /** Notify content */
                 $notify = !empty($notification['read_at'])
                     ? '<span>' . trans(" will be at the store in a few minutes.") . '</span>'
@@ -138,7 +136,7 @@ if (!function_exists('notificationList')) {
                       . trans(" ago.") . '</small>';
 
                 /** Notify item */
-                $html = '<li class="mb-2">
+                $html .= '<li class="mb-2">
                             <a href="' . $url . '" class="media notification-link">
                                 <div class="mr-3 img-notification rounded-circle bg-info p-2">
                                     <img class="w-100"

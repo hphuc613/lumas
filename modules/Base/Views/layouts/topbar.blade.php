@@ -5,7 +5,6 @@ use Modules\Base\Model\Status;
 
 $logo          = Helper::getSetting('LOGO');
 $notifications = Auth::user()->notifications->sortByDesc('updated_at')->toArray();
-
 $notification_unread = 0;
 foreach (Auth::user()->unreadNotifications as $unread) {
     $data = $unread['data'];
@@ -51,13 +50,13 @@ foreach (Auth::user()->unreadNotifications as $unread) {
                         <div id="new-notification">
                             <h5>{{ trans('New') }}</h5>
                             <ul class="notification-list list-unstyled">
-                                {!! notificationList(route("read_notification",""), $notifications, 1) !!}
+                                {!! notificationList($notifications, 1) !!}
                             </ul>
                         </div>
                         <div id="before-notification">
                             <h5>{{ trans('Before') }}</h5>
                             <ul class="notification-list list-unstyled">
-                                {!! notificationList(route("read_notification",""), $notifications, 0) !!}
+                                {!! notificationList($notifications, 0) !!}
                             </ul>
                         </div>
                     </div>

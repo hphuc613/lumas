@@ -14,7 +14,6 @@ use Modules\Course\Model\Course;
 use Modules\Voucher\Http\Requests\CourseVoucherRequest;
 use Modules\Voucher\Http\Requests\ServiceVoucherRequest;
 use Modules\Voucher\Model\CourseVoucher;
-use Modules\Voucher\Model\ServiceVoucher;
 
 
 class CourseVoucherController extends Controller{
@@ -137,13 +136,13 @@ class CourseVoucherController extends Controller{
      * @param $type
      * @return string
      */
-    public function getListVoucherByServiceID($id){
-        $services = ServiceVoucher::where('status', Status::STATUS_ACTIVE)
-                                  ->where('service_id', $id)
-                                  ->orderBy('start_at', 'desc')->pluck('code', 'id')->toArray();
+    public function getListVoucherByCourseID($id){
+        $vouchers = CourseVoucher::where('status', Status::STATUS_ACTIVE)
+                                 ->where('course_id', $id)
+                                 ->orderBy('start_at', 'desc')->pluck('code', 'id')->toArray();
         $html     = "<option value=''>Select</option>";
-        foreach($services as $key => $service){
-            $html .= "<option value='$key'>$service</option>";
+        foreach($vouchers as $key => $voucher){
+            $html .= "<option value='$key'>$voucher</option>";
         }
 
         return $html;

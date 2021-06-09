@@ -7,7 +7,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
     Route::prefix("service-voucher")->group(function(){
         Route::get("/", "ServiceVoucherController@index")->name("get.service_voucher.list")
              ->middleware('can:service-voucher');
-        Route::get("/get-voucher-list/{id}/{type}", "ServiceVoucherController@getListVoucherByServiceID")
+        Route::get("/get-voucher-list/{id}", "ServiceVoucherController@getListVoucherByServiceID")
              ->name("get.service_voucher.get_list_by_service");
         Route::middleware('can:service-voucher-create')->group(function(){
             Route::get("/create", "ServiceVoucherController@getCreate")->name("get.service_voucher.create");
@@ -30,7 +30,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
     Route::prefix("course-voucher")->group(function(){
         Route::get("/", "CourseVoucherController@index")->name("get.course_voucher.list")
              ->middleware('can:course-voucher');
-        Route::get("/get-course-voucher-list/{id}/{type}", "CourseVoucherController@getListVoucherByCourseID")
+        Route::get("/get-course-voucher-list/{id}", "CourseVoucherController@getListVoucherByCourseID")
              ->name("get.course_voucher.get_list_by_course");
         Route::middleware('can:course-voucher-create')->group(function(){
             Route::get("/create", "CourseVoucherController@getCreate")->name("get.course_voucher.create");

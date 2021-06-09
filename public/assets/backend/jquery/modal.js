@@ -14,6 +14,7 @@ $(document).ready(function () {
     function getFormView(modal, title, url) {
         if ($(modal).hasClass('modal-ajax')) {
             $.ajax({
+                async: true,
                 url: url,
                 type: 'GET',
             }).done(function (response) {

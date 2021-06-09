@@ -11,12 +11,12 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans('Home') }}</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('get.member.list') }}">{{ trans('Client') }}</a></li>
-                    <li class="breadcrumb-item active">{{ trans('Add Service') }}</li>
+                    <li class="breadcrumb-item active">{{ trans('Add Course') }}</li>
                 </ol>
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Add Service For Client") }}</h3></div>
+            <div class="page-title"><h3>{{ trans("Add Course For Client") }}</h3></div>
             <div class="group-btn">
                 @if($member->getAppointmentInProgressing())
                     <a href="{{ route('get.appointment.update', $member->getAppointmentInProgressing()->id) }}"
@@ -27,36 +27,37 @@
                         &nbsp; {{ trans('Appointment Progressing') }}
                     </a>
                 @else
-                    <a href="{{ route('get.member.appointment', $member->id) }}" class="btn btn-danger text-light">
+                    <a href="{{ route('get.member.appointment', $member->id) }}?type=course"
+                       class="btn btn-danger text-light">
                         &nbsp; {{ trans('Check In Appointment Here') }}
                     </a>
                 @endif
-                <a href="{{ route('get.member_service.add', $member->id) }}" class="btn btn-primary">
+                <a href="{{ route('get.member_course.add', $member->id) }}" class="btn btn-primary">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
             </div>
         </div>
     </div>
 
-    <div id="member_service" class="card">
+    <div id="member_course" class="card">
         <div class="card-body">
-            @include('Member::backend.member_service.service_progressing')
+            @include('Member::backend.member_course.progressing')
             <div class="row">
                 <div class="col-md-4">
-                    @include('Member::backend.member_service._form')
+                    @include('Member::backend.member_course._form')
                 </div>
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">
-                            <h5>{{ trans('Service Listing') }}</h5>
+                            <h5>{{ trans('course Listing') }}</h5>
                         </div>
                         <div class="card-body">
-                            @include('Member::backend.member_service.service_list')
+                            @include('Member::backend.member_course.list')
                         </div>
                     </div>
                 </div>
                 <div class="col-md-12 mt-5">
-                    @include('Member::backend.member_service.history')
+                    @include('Member::backend.member_course.history')
                 </div>
             </div>
         </div>

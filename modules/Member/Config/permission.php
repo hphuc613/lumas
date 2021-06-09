@@ -18,7 +18,11 @@ return [
             ],
             [
                 'name'         => 'member-add-service',
-                'display_name' => trans('Add Product For Member'),
+                'display_name' => trans('Add Service For Member'),
+            ],
+            [
+                'name'         => 'member-add-course',
+                'display_name' => trans('Add Course For Member'),
             ],
         ]
     ],

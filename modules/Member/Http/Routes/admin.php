@@ -44,15 +44,33 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
             Route::get('/delete-service/{id}', 'MemberServiceController@delete')->name('get.member_service.delete');
 
             /** E sign */
-            Route::get('/e-sign/{id}', 'MemberServiceController@eSign')->name('get.member_service.e_sign');
-            Route::post('/e-sign/{id}', 'MemberServiceController@eSign')->name('get.member_service.e_sign');
+            Route::get('/service-e-sign/{id}', 'MemberServiceController@eSign')->name('get.member_service.e_sign');
+            Route::post('/service-e-sign/{id}', 'MemberServiceController@eSign')->name('get.member_service.e_sign');
 
             /** Progress Handle */
-            Route::get('/into-progress/{id}', 'MemberServiceController@intoProgress')
+            Route::get('/service-into-progress/{id}', 'MemberServiceController@intoProgress')
                  ->name('get.member_service.into_progress');
-            Route::get('/out-progress/{id}', 'MemberServiceController@outProgress')
+            Route::get('/service-out-progress/{id}', 'MemberServiceController@outProgress')
                  ->name('get.member_service.out_progress');
         });
 
+        /** ADD Course For Client */
+        Route::middleware('can:member-add-course')->group(function(){
+            Route::get('/add-course/{id}', 'MemberCourseController@getAdd')->name('get.member_course.add');
+            Route::post('/add-course/{id}', 'MemberCourseController@postAdd')->name('post.member_course.add');
+            Route::get('/edit-course/{id}', 'MemberCourseController@getEdit')->name('get.member_course.edit');
+            Route::post('/edit-course/{id}', 'MemberCourseController@postEdit')->name('post.member_course.edit');
+            Route::get('/delete-course/{id}', 'MemberCourseController@delete')->name('get.member_course.delete');
+
+            /** E sign */
+            Route::get('/course-e-sign/{id}', 'MemberCourseController@eSign')->name('get.member_course.e_sign');
+            Route::post('/course-e-sign/{id}', 'MemberCourseController@eSign')->name('get.member_course.e_sign');
+
+            /** Progress Handle */
+            Route::get('/course-into-progress/{id}', 'MemberCourseController@intoProgress')
+                 ->name('get.member_course.into_progress');
+            Route::get('/course-out-progress/{id}', 'MemberCourseController@outProgress')
+                 ->name('get.member_course.out_progress');
+        });
     });
 });

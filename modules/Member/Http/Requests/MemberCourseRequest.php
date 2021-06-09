@@ -5,7 +5,7 @@ namespace Modules\Member\Http\Requests;
 use App\AppHelpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MemberServiceRequest extends FormRequest{
+class MemberCourseRequest extends FormRequest{
 
     /**
      * Determine if the user is authorized to make this request.
@@ -26,16 +26,16 @@ class MemberServiceRequest extends FormRequest{
         switch($method){
             default:
                 return [
-                    'service_id' => 'required|check_exist:services,id',
+                    'course_id'  => 'required|check_exist:courses,id',
                     'member_id'  => 'required|check_exist:members,id',
-                    'voucher_id' => 'nullable|check_exist:service_vouchers,id',
+                    'voucher_id' => 'nullable|check_exist:course_vouchers,id',
                     'quantity'   => 'required|numeric',
                 ];
-            case "edit-service":
+            case "edit-course":
                 return [
-                    'service_id' => 'required|check_exist:services,id',
+                    'course_id'  => 'required|check_exist:courses,id',
                     'member_id'  => 'required|check_exist:members,id',
-                    'voucher_id' => 'nullable|check_exist:service_vouchers,id',
+                    'voucher_id' => 'nullable|check_exist:course_vouchers,id',
                     'quantity'   => 'nullable|numeric',
                 ];
         }
@@ -51,7 +51,7 @@ class MemberServiceRequest extends FormRequest{
 
     public function attributes(){
         return [
-            'service_id' => trans('Service'),
+            'course_id'  => trans('Course'),
             'quantity'   => trans('Quantity'),
             'voucher_id' => trans('Voucher'),
             'member_id'  => trans('Client')

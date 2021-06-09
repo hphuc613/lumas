@@ -137,12 +137,12 @@ class ServiceVoucherController extends Controller{
      * @return string
      */
     public function getListVoucherByServiceID($id){
-        $services = ServiceVoucher::where('status', Status::STATUS_ACTIVE)
+        $vouchers = ServiceVoucher::where('status', Status::STATUS_ACTIVE)
                                   ->where('service_id', $id)
                                   ->orderBy('start_at', 'desc')->pluck('code', 'id')->toArray();
         $html     = "<option value=''>Select</option>";
-        foreach($services as $key => $service){
-            $html .= "<option value='$key'>$service</option>";
+        foreach($vouchers as $key => $voucher){
+            $html .= "<option value='$key'>$voucher</option>";
         }
 
         return $html;

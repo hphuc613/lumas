@@ -2,11 +2,15 @@
 
 use App\AppHelpers\Helper;
 
-$route_previous          = Helper::getRoutePrevious();
-$route_is_service_member = $route_previous === "get.member_service.edit"
-                           || $route_previous === "get.member_service.add";
-$member_display_id       = (int)request()->get('member_id');
 $prompt                  = [null => trans('Select')];
+$route_previous          = Helper::getRoutePrevious();
+$route_is_member_product = $route_previous === "get.member_service.edit"
+    || $route_previous === "get.member_service.add"
+    || $route_previous === "get.member_course.edit"
+    || $route_previous === "get.member_course.add";
+$member_display_id       = (int)request()->get('member_id');
+$type                    = request()->get('type');
+$segment                 = Helper::segment(2);
 ?>
 {{-- Appointment Form --}}
 <div>
@@ -15,8 +19,9 @@ $prompt                  = [null => trans('Select')];
         <div class="row">
             <div class="col-md-4 form-group">
                 <label for="type">{{ trans('Appointment Type') }}</label>
-                {!! Form::select('type', $appointment_types, $appointment->type ?? null, [
-                    'id' => 'type',
+                {!! Form::select('type', $appointment_types, $appointment->type
+                                    ?? (!empty($type) ? $type : \Modules\Appointment\Model\Appointment::SERVICE_TYPE),
+                    ['id'   => 'type',
                     'class' => 'select2 form-control',
                     'style' => 'width: 100%']) !!}
                 @if(isset($appointment))
@@ -27,7 +32,7 @@ $prompt                  = [null => trans('Select')];
                 <label for="booking-time">{{ trans('Time') }}</label>
                 <input type="text" class="form-control datetime" id="booking-time" name="time"
                        placeholder="dd-mm-yyyy hh:ii"
-                       value="{{ $appointment->time ?? old('name') }}">
+                       value="{{ $appointment->time ?? old('time') }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="status">{{ trans('Status') }}</label>
@@ -108,7 +113,7 @@ $prompt                  = [null => trans('Select')];
                                         </td>
                                         <td class="text-center">
                                             <button type="button" class="btn btn-danger delete-product"><i
-                                                    class="fas fa-trash"></i></button>
+                                                        class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -121,7 +126,7 @@ $prompt                  = [null => trans('Select')];
                                         </td>
                                         <td class="text-center">
                                             <button type="button" class="btn btn-danger delete-product"><i
-                                                    class="fas fa-trash"></i></button>
+                                                        class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -132,7 +137,7 @@ $prompt                  = [null => trans('Select')];
                 </div>
             </div>
             <div class="col-md-12 mt-5 d-flex justify-content-between">
-                @if(!$route_is_service_member)
+                @if(!$route_is_member_product)
                     <div>
                         <button type="submit" id="submit-btn" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
                         <button type="reset" class="btn btn-default" data-dismiss="modal">{{ trans('Cancel') }}</button>
@@ -243,12 +248,12 @@ $prompt                  = [null => trans('Select')];
                 </div>
             </div>
             <div class="col-md-12 mt-5 d-flex justify-content-between">
-                @if(!$route_is_service_member)
+                @if(!$route_is_member_product)
                     <div>
                         <button type="button" id="edit-btn" class="btn btn-primary mr-2">{{ trans('Edit') }}</button>
                     </div>
                 @endif
-                @if($appointment->checkProgressing() && $route_is_service_member)
+                @if($appointment->checkProgressing() && $route_is_member_product)
                     <div class="w-100">
                         <a href="{{ route("get.appointment.check_out", $appointment->member_id) }}"
                            class="btn btn-warning w-100 text-light">
@@ -273,9 +278,9 @@ $prompt                  = [null => trans('Select')];
 {!! JsValidator::formRequest('Modules\Appointment\Http\Requests\AppointmentRequest') !!}
 <script>
     $(document).ready(function () {
+        $('#appointment-form #type').prop('disabled', true);
         /** Show View/Edit form appointment */
         @if(isset($appointment))
-        $('#appointment-form #type').prop('disabled', true);
         $('#appointment-form #member').prop('disabled', true);
         editAble(true) //View
         $(document).on("click", "#edit-btn", function () {
@@ -304,11 +309,10 @@ $prompt                  = [null => trans('Select')];
         /** Datetimepicker */
         $('input.datetime').datetimepicker({
             format: 'dd-mm-yyyy hh:ii',
-            language: "{{ App::getLocale() }}",
+            language: $('html').attr('lang'),
             todayBtn: true,
             autoclose: true,
             fontAwesome: true,
-            startDate: "{{  \Carbon\Carbon::createFromTimestamp(time()) }}"
         });
     });
 

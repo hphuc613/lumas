@@ -40,29 +40,8 @@ function formatDateTime(date) {
     return day + "-" + month + "-" + year + " " + hours + ":" + minutes;
 }
 
-/** localStorage view calendar appointment */
-function calendarStyleView() {
-    switch ($(".fc-button-active")[0].innerHTML) {
-        case 'day':
-        case '天':
-            window.localStorage.setItem('calendarStyle', 'timeGridDay');
-            break;
-        case 'week':
-        case '週':
-            window.localStorage.setItem('calendarStyle', 'timeGridWeek');
-            break;
-        case 'list':
-        case '活動列表':
-            window.localStorage.setItem('calendarStyle', 'listMonth');
-            break;
-        default:
-            window.localStorage.setItem('calendarStyle', 'dayGridMonth');
-    }
-}
-
 /** Handle Notification */
 function pusherNotification(key, user_id, url) {
-
     /** Show Notification Popup */
     var pusher = new Pusher(key, {
         encrypted: true,

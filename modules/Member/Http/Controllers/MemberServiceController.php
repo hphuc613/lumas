@@ -92,14 +92,14 @@ class MemberServiceController extends Controller{
                                                    ->where('member_id', $member->id)
                                                    ->where('voucher_id', $request->voucher_id)->first();
         if(!empty($member_service_check_exist)){
-            $request->session()->flash('error', "This service has not been used yet. Update right here.");
+            $request->session()->flash('error', trans("This service has not been used yet. Update right here."));
             return redirect()->route("get.member_service.edit", $member_service_check_exist->id);
         }
 
         $member_service       = new MemberService($data);
         $member_service->code = $member_service->generateCode();
         $member_service->save();
-        $request->session()->flash('success', "Service added successfully.");
+        $request->session()->flash('success', trans("Service added successfully."));
         return redirect()->back();
     }
 
@@ -170,7 +170,7 @@ class MemberServiceController extends Controller{
         unset($data['add_more_quantity']);
         $member_service->update($data);
 
-        $request->session()->flash('success', "Service edited successfully.");
+        $request->session()->flash('success', trans("Service edited successfully."));
         return redirect()->back();
     }
 
@@ -181,10 +181,11 @@ class MemberServiceController extends Controller{
      */
     public function delete(Request $request, $id){
         $member_service = MemberService::find($id);
+        $member_id      = $member_service->member_id;
         $member_service->delete();
 
-        $request->session()->flash('success', "Service deleted successfully.");
-        return redirect()->back();
+        $request->session()->flash('success', trans("Service deleted successfully."));
+        return redirect()->route('get.member_service.add', $member_id);
     }
 
     /**
@@ -210,7 +211,7 @@ class MemberServiceController extends Controller{
             $member_service->status          = MemberService::COMPLETED_STATUS;
             $member_service->save();
 
-            $request->session()->flash('success', "Signed successfully.");
+            $request->session()->flash('success', trans("Signed successfully."));
             return redirect()->back();
         }
 
@@ -229,13 +230,13 @@ class MemberServiceController extends Controller{
     public function intoProgress(Request $request, $id){
         $member_service = MemberService::find($id);
         if(!$member_service->member->getAppointmentInProgressing()){
-            $request->session()->flash('error', "Please check in an appointment.");
+            $request->session()->flash('error', trans("Please check in an appointment."));
 
             return redirect()->back();
         }
         $member_service->status = MemberService::PROGRESSING_STATUS;
         $member_service->save();
-        $request->session()->flash('success', "Client using this service.");
+        $request->session()->flash('success', trans("Client using this service."));
 
         return redirect()->back();
     }
@@ -249,7 +250,7 @@ class MemberServiceController extends Controller{
         $member_service         = MemberService::find($id);
         $member_service->status = MemberService::COMPLETED_STATUS;
         $member_service->save();
-        $request->session()->flash('success', "Service has been removed from Service progressing list.");
+        $request->session()->flash('success', trans("Service has been removed from Service progressing list."));
 
         return redirect()->back();
     }

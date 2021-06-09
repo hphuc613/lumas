@@ -125,7 +125,7 @@ class AppointmentController extends Controller{
                               ->format('Y-m-d H:i');
         $book         = new Appointment($data);
         $book->save();
-        $request->session()->flash('success', 'Appointment booked successfully.');
+        $request->session()->flash('success', trans('Appointment booked successfully.'));
 
         return redirect()->back();
     }
@@ -194,7 +194,7 @@ class AppointmentController extends Controller{
 
         $request->session()
                 ->flash('success',
-                    'Appointment updated successfully.');
+                    trans('Appointment updated successfully.'));
 
         return redirect()->back();
     }
@@ -208,7 +208,7 @@ class AppointmentController extends Controller{
         $appointment->delete();
         $request->session()
                 ->flash('success',
-                    'Appointment deleted successfully.');
+                    trans('Appointment deleted successfully.'));
 
         return redirect()->back();
     }
@@ -277,6 +277,9 @@ class AppointmentController extends Controller{
 
         $request->session()->flash('success', trans("This appointment in progressing."));
 
+        if($appointment->type === Appointment::COURSE_TYPE){
+            return redirect()->route('get.member_course.add', $appointment->member_id);
+        }
         return redirect()->route('get.member_service.add', $appointment->member_id);
     }
 
