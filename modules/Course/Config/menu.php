@@ -19,6 +19,12 @@ return [
             'name'       => trans('Course'),
             'route'      => route('get.course.list'),
             'middleware' => ['course'],
+        ],
+        [
+            'id'         => 'course-voucher',
+            'name'       => trans('Course Voucher'),
+            'route'      => route('get.course_voucher.list'),
+            'middleware' => 'course-voucher'
         ]
     ]
 ];

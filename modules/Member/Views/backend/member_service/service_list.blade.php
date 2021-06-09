@@ -88,7 +88,7 @@
                         <td>
                             @if(!empty($value->voucher))
                                 <a target="_blank"
-                                   href="{{ route('get.voucher.update', $value->voucher_id) }}">
+                                   href="{{ route('get.service_voucher.update', $value->voucher_id) }}">
                                     {{ $value->voucher->code }}
                                 </a>
                             @endif
@@ -183,7 +183,7 @@
                             <td>
                                 @if(!empty($value->voucher))
                                     <a target="_blank"
-                                       href="{{ route('get.voucher.update', $value->voucher_id) }}">
+                                       href="{{ route('get.service_voucher.update', $value->voucher_id) }}">
                                         {{ $value->voucher->code }}
                                     </a>
                                 @endif

@@ -2,9 +2,9 @@
 return [
     'id'         => "voucher",
     'name'       => trans('Voucher'),
-    'route'      => route('get.voucher.list'),
+    'route'      => route('get.service_voucher.list'),
     'sort'       => 4,
-    'active'     => true,
+    'active'     => false,
     'icon'       => 'fa fa-tag',
     'middleware' => ['voucher'],
     'group'      => []

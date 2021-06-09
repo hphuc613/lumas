@@ -5,13 +5,13 @@ namespace Modules\Voucher\Http\Requests;
 use App\AppHelpers\Helper;
 use Illuminate\Foundation\Http\FormRequest;
 
-class VoucherRequest extends FormRequest {
+class CourseVoucherRequest extends FormRequest{
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(){
         return true;
     }
 
@@ -20,27 +20,27 @@ class VoucherRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(){
         $method = Helper::segment(2);
-        switch ($method) {
+        switch($method){
             default:
                 return [
-                    "code"      => "required|validate_unique:vouchers",
+                    "code"      => "required|validate_unique:course_vouchers",
                     "price"     => "required",
-                    "parent_id" => "required",
+                    "course_id" => "required|check_exist:courses,id",
                     "start_at"  => "required",
                 ];
             case "update":
                 return [
-                    "code"      => "required|validate_unique:vouchers," . $this->id,
+                    "code"      => "required|validate_unique:course_vouchers," . $this->id,
                     "price"     => "required",
-                    "parent_id" => "required",
+                    "course_id" => "required|check_exist:courses,id",
                     "start_at"  => "required",
                 ];
         }
     }
 
-    public function messages() {
+    public function messages(){
         return [
             'required'        => ':attribute' . trans(' can not be null.'),
             'validate_unique' => ':attribute' . trans(' was exist.'),
@@ -48,12 +48,12 @@ class VoucherRequest extends FormRequest {
         ];
     }
 
-    public function attributes() {
+    public function attributes(){
         return [
             "code"      => trans("Code"),
             "start_at"  => trans("Start day"),
             "price"     => trans("Price"),
-            "parent_id" => trans("Service/Course"),
+            "course_id" => trans("Course"),
         ];
     }
 }

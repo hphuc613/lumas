@@ -4,14 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableVouchers extends Migration{
+class CreateServiceVouchersTable extends Migration{
     /**
      * Run the migrations.
      *
      * @return void
      */
     public function up(){
-        Schema::create('vouchers', function(Blueprint $table){
+        Schema::create('service_vouchers', function(Blueprint $table){
             $table->id();
             $table->string('code');
             $table->string('description')->nullable();
@@ -21,7 +21,7 @@ class CreateTableVouchers extends Migration{
             $table->integer('status')->default(1);
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
-            $table->unsignedInteger('parent_id');
+            $table->unsignedInteger('service_id')->default(0);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
@@ -33,6 +33,6 @@ class CreateTableVouchers extends Migration{
      * @return void
      */
     public function down(){
-        Schema::dropIfExists('vouchers');
+        Schema::dropIfExists('service_vouchers');
     }
 }

@@ -16,7 +16,7 @@ use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberService;
 use Modules\Member\Model\MemberServiceHistory;
 use Modules\Service\Model\Service;
-use Modules\Voucher\Model\Voucher;
+use Modules\Voucher\Model\ServiceVoucher;
 
 
 class MemberServiceController extends Controller {
@@ -83,7 +83,7 @@ class MemberServiceController extends Controller {
      * @param $id
      * @return Application|Factory|View
      */
-    public function getEdit(Request $request, $id) {
+    public function getEdit(Request $request, $id){
         $filter                    = $request->all();
         $member_service            = MemberService::find($id);
         $member_services           = MemberService::filter($filter, $member_service->member_id)
@@ -93,8 +93,8 @@ class MemberServiceController extends Controller {
 
         $member   = Member::find($member_service->member_id);
         $services = Service::getArray(Status::STATUS_ACTIVE);
-        $vouchers = Voucher::query()->where('service_id', $member_service->service_id)
-                           ->where('status', Status::STATUS_ACTIVE)->pluck('code', 'id')->toArray();
+        $vouchers = ServiceVoucher::query()->where('service_id', $member_service->service_id)
+                                  ->where('status', Status::STATUS_ACTIVE)->pluck('code', 'id')->toArray();
 
         $histories                 = MemberServiceHistory::filter($filter, $member->id, $member_service->service_id)
                                                          ->paginate(10, ['*'], 'history_page');

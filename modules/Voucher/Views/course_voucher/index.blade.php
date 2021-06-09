@@ -6,14 +6,14 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
-                    <li class="breadcrumb-item"><a href="#">{{ trans("Voucher") }}</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ trans("Course Voucher") }}</a></li>
                 </ol>
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Voucher Listing") }}</h3></div>
+            <div class="page-title"><h3>{{ trans("Course Voucher Listing") }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route("get.voucher.create") }}" class="btn btn-primary"><i class="fa fa-plus"></i>
+                <a href="{{ route("get.course_voucher.create") }}" class="btn btn-primary"><i class="fa fa-plus"></i>
                     &nbsp; {{ trans("Add New") }}</a>
             </div>
         </div>
@@ -37,9 +37,9 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="code">{{ trans("Type") }}</label>
-                                {!! Form::select('type', ["" => trans("Select")] + $types, $filter['type'] ?? NULL, [
-                                    'id' => 'type',
+                                <label for="course_id">{{ trans("Course") }}</label>
+                                {!! Form::select('course_id', ["" => trans("Select")] + $courses, $filter['course_id'] ?? NULL, [
+                                    'id'    => 'course_id',
                                     'class' => 'select2 form-control',
                                     'style' => 'width: 100%']) !!}
                             </div>
@@ -67,8 +67,7 @@
                             <th>{{ trans('Code') }}</th>
                             <th>{{ trans('Price') }}</th>
                             <th>{{ trans('Start day') }}</th>
-                            <th>{{ trans('Service/Course') }}</th>
-                            <th>{{ trans('Type') }}</th>
+                            <th>{{ trans('Course') }}</th>
                             <th width="200px">{{ trans('Created At') }}</th>
                             <th width="200px">{{ trans('Updated At') }}</th>
                             <th width="200px" class="action">{{ trans('Action') }}</th>
@@ -77,24 +76,19 @@
                         <tbody>
                         @php($key = ($vouchers->currentpage()-1)*$vouchers->perpage()+1)
                         @foreach($vouchers as $voucher)
-                            @if((($voucher->type === \Modules\Voucher\Model\Voucher::COURSE_TYPE) && empty($voucher->course)) ||
-                                (($voucher->type === \Modules\Voucher\Model\Voucher::SERVICE_TYPE) && empty($voucher->service)))
-                                @continue
-                            @endif
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $voucher->code }}</td>
                                 <td>{{ $voucher->price }}</td>
-                                <td>{{ formatDate($voucher->start_at) }}</td>
-                                <td>{{ ($voucher->type === \Modules\Voucher\Model\Voucher::COURSE_TYPE) ? $voucher->course->name : $voucher->service->name }}</td>
-                                <td>{{ $types[$voucher->type] }}</td>
+                                <td>{{ formatDate(strtotime($voucher->start_at)) }}</td>
+                                <td>{{ $voucher->course->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">
-                                    <a href="{{ route('get.voucher.update',$voucher->id) }}"
+                                    <a href="{{ route('get.course_voucher.update',$voucher->id) }}"
                                        class="btn btn-primary mr-2">
                                         <i class="fas fa-pencil-alt"></i></a>
-                                    <a href="{{ route('get.voucher.delete',$voucher->id) }}"
+                                    <a href="{{ route('get.course_voucher.delete',$voucher->id) }}"
                                        class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
                                 </td>
                             </tr>

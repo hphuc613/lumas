@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Base\Model\BaseModel;
 use Modules\Base\Model\Status;
 use Modules\Member\Model\MemberService;
-use Modules\Voucher\Model\Voucher;
+use Modules\Voucher\Model\ServiceVoucher;
 
 /**
  * Class Service
@@ -58,7 +58,7 @@ class Service extends BaseModel{
      * @return HasMany
      */
     public function vouchers(){
-        return $this->hasMany(Voucher::class, 'service_id');
+        return $this->hasMany(ServiceVoucher::class, 'service_id');
     }
 
     /**

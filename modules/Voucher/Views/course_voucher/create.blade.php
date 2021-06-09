@@ -6,7 +6,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('get.voucher.list') }}">{{ trans("Voucher") }}</a>
+                    <li class="breadcrumb-item"><a
+                                href="{{ route('get.course_voucher.list') }}">{{ trans("Course Voucher") }}</a>
                     </li>
                     <li class="breadcrumb-item active"><a href="#">{{ trans("Create Voucher") }}</a></li>
                 </ol>
@@ -20,7 +21,7 @@
     <div id="voucher">
         <div class="card">
             <div class="card-body">
-                @include('Voucher::_form')
+                @include('Voucher::course_voucher._form')
             </div>
         </div>
     </div>

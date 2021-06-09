@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Modules\Base\Model\BaseModel;
 use Modules\Service\Model\Service;
-use Modules\Voucher\Model\Voucher;
+use Modules\Voucher\Model\ServiceVoucher;
 
 class MemberService extends BaseModel{
     use SoftDeletes;
@@ -147,7 +147,7 @@ class MemberService extends BaseModel{
      * @return BelongsTo
      */
     public function voucher(){
-        return $this->belongsTo(Voucher::class, "voucher_id");
+        return $this->belongsTo(ServiceVoucher::class, "voucher_id");
     }
 
 }

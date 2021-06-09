@@ -11,7 +11,7 @@
                     </a>
                 @endif
             @endif
-            <a href="{{ route('get.voucher.create_popup',["type" => 'service']) }}" class="btn btn-primary"
+            <a href="{{ route('get.service_voucher.create_popup',["type" => 'service']) }}" class="btn btn-primary"
                data-toggle="modal"
                data-target="#form-modal" data-title="{{ trans('Create Voucher') }}">
                 <i class="fa fa-plus"></i> &nbsp; {{ trans('Add Voucher') }}
@@ -122,7 +122,7 @@
             var service = $(this);
             var service_id = service.val();
             $.ajax({
-                url: "{{ route('get.voucher.get_list_by_service',["",""]) }}/" + service_id + '/service',
+                url: "{{ route('get.service_voucher.get_list_by_service',["",""]) }}/" + service_id + '/service',
                 method: "get"
             }).done(function (response) {
                 service.parents('form').find('#voucher').html(response);

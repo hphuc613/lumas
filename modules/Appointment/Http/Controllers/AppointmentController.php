@@ -180,7 +180,6 @@ class AppointmentController extends Controller{
             return redirect()->back();
         }
         $data = $request->all();
-        dd($data);
 
         /** Get list id service/course*/
         if ($data['type'] === Appointment::SERVICE_TYPE) {
@@ -245,26 +244,37 @@ class AppointmentController extends Controller{
     public function checkIn(Request $request, $id, $member_id){
         $appointment                   = Appointment::query();
         $check_appointment_progressing = clone $appointment;
+
+        /** Check appointment of member progressing */
         $check_appointment_progressing->where('status', Appointment::PROGRESSING_STATUS)
-                                      ->where('member_id', $member_id);
+                                      ->where('member_id', $member_id)
+                                      ->where('id', '<>', $id);
         $check_appointment_progressing = $check_appointment_progressing->first();
         if(!empty($check_appointment_progressing)){
             $request->session()->flash('error', trans("There is an appointment in progressing."));
 
             return redirect()->route('get.member_service.add', $check_appointment_progressing->member_id);
         }
+
+        /** Check appointment of staff progressing */
         $check_user_progressing = clone $appointment;
-        $appointment            = $appointment->find($id);
+        $appointment            = $appointment->find($id); //Get current appointment
         $check_user_progressing->where('status', Appointment::PROGRESSING_STATUS)
-                               ->where('user_id', $appointment->user_id);
+                               ->where('user_id', $appointment->user_id)
+                               ->where('id', '<>', $id);
         $check_user_progressing = $check_user_progressing->first();
         if(!empty($check_user_progressing)){
             $request->session()->flash('error', trans("Staff of this appointment is in progressing."));
 
             return redirect()->route('get.member_service.add', $check_user_progressing->member_id);
         }
-        $appointment->status = Appointment::PROGRESSING_STATUS;
-        $appointment->save();
+
+        /** Check In */
+        if($appointment->status !== Appointment::PROGRESSING_STATUS){
+            $appointment->status = Appointment::PROGRESSING_STATUS;
+            $appointment->save();
+        }
+
         $request->session()->flash('success', trans("This appointment in progressing."));
 
         return redirect()->route('get.member_service.add', $appointment->member_id);

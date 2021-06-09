@@ -18,6 +18,12 @@ return [
             'name'       => trans('Services'),
             'route'      => route('get.service.list'),
             'middleware' => 'service'
+        ],
+        [
+            'id'         => 'service-voucher',
+            'name'       => trans('Service Voucher'),
+            'route'      => route('get.service_voucher.list'),
+            'middleware' => 'service-voucher'
         ]
     ]
 ];
