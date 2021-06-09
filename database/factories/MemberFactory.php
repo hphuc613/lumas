@@ -5,7 +5,7 @@
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Str;
-use Modules\User\Model\User;
+use Modules\Member\Model\Member;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,12 +18,15 @@ use Modules\User\Model\User;
 |
 */
 
-$factory->define(User::class, function(Faker $faker){
+$factory->define(Member::class, function(Faker $faker){
     return [
         'name'              => $faker->name,
         'email'             => $faker->unique()->safeEmail,
+        'phone'             => $faker->unique()->phoneNumber,
         'email_verified_at' => now(),
-        'password'          => '$2y$10$Pji4MA/QQD1GTRPpRs2IAOTGfQUelsUGzYlWMDM.iZKHxqSMXRlUu', // 123456
-        'remember_token'    => Str::random(10)
+        'username'          => $faker->userName,
+        'password'          => '$2y$10$Pji4MA/QQD1GTRPpRs2IAOTGfQUelsUGzYlWMDM.iZKHxqSMXRlUu', // password
+        'remember_token'    => Str::random(10),
+        'type_id'           => 1
     ];
 });
