@@ -6,20 +6,19 @@ use Modules\Base\Model\Status;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
-if (!function_exists('gg_trans')) {
+if(!function_exists('gg_trans')){
     /**
      * @param $string
      * @return string|null
      * @throws ErrorException
      */
-    function gg_trans($string, $locale = null)
-    : ?string {
-        if (!empty($locale)) {
+    function gg_trans($string, $locale = null): ?string{
+        if(!empty($locale)){
             $tr = new GoogleTranslate($locale);
             return $tr->translate($string);
         }
         $target = (App::getLocale() === 'cn') ? 'zh-TW' : App::getLocale();
-        if (!empty($target) && $target !== 'en') {
+        if(!empty($target) && $target !== 'en'){
             $tr = new GoogleTranslate($target);
             return $tr->translate($string);
         }
@@ -27,40 +26,41 @@ if (!function_exists('gg_trans')) {
         return $string;
     }
 }
-if (!function_exists('formatDate')) {
+if(!function_exists('formatDate')){
     /**
      * @param $timestamp
      * @param null $format
      * @return string|null
      */
-    function formatDate($timestamp, $format = null)
-    : ?string {
-        if (!empty($format)) {
+    function formatDate($timestamp, $format = null): ?string{
+        if(!isTimestamp($timestamp)){
+            $timestamp = strtotime($timestamp);
+        }
+        if(!empty($format)){
             return Carbon::createFromTimestamp($timestamp)->format($format);
         }
         return Carbon::createFromTimestamp($timestamp)->format("d-m-Y");
     }
 }
 
-if (!function_exists('generateQRCode')) {
+if(!function_exists('generateQRCode')){
     /**
      * @param $data
      * @param null $format
      * @return string|null
      */
-    function generateQRCode($data, $format = 'svg')
-    : ?string {
+    function generateQRCode($data, $format = 'svg'): ?string{
         return QrCode::format($format)->generate($data);
     }
 }
 
-if (!function_exists('calculateTimeNotification')) {
+if(!function_exists('calculateTimeNotification')){
     /**
      * @param $data
      * @param null $format
      * @return string|null
      */
-    function calculateTimeNotification($data) {
+    function calculateTimeNotification($data){
         $time            = time() - strtotime($data); // to get the time since that moment
         $time            = ($time < 1) ? 1 : $time;
         $tokens          = array(
@@ -68,8 +68,8 @@ if (!function_exists('calculateTimeNotification')) {
             3600     => 'hour', 60 => 'minute', 1 => 'second'
         );
         $number_of_units = "";
-        foreach ($tokens as $unit => $text) {
-            if ($time < $unit) {
+        foreach($tokens as $unit => $text){
+            if($time < $unit){
                 continue;
             }
             $number_of_units = floor($time / $unit);
@@ -79,13 +79,12 @@ if (!function_exists('calculateTimeNotification')) {
     }
 }
 
-if (!function_exists('summaryListing')) {
+if(!function_exists('summaryListing')){
     /**
      * @param $data
      * @return string|null
      */
-    function summaryListing($data)
-    : ?string {
+    function summaryListing($data): ?string{
         $html = '';
         $html .= '<span class="listing-information">';
         $html .= trans('Showing');
@@ -103,7 +102,7 @@ if (!function_exists('summaryListing')) {
     }
 }
 
-if (!function_exists('notificationList')) {
+if(!function_exists('notificationList')){
     /**
      * @param $url
      * @param $notifications
@@ -119,34 +118,23 @@ if (!function_exists('notificationList')) {
         $html = '';
         foreach($notifications as $notification){
             $data = $notification['data'];
-            if ($data['status'] == Status::STATUS_ACTIVE) {
+            if($data['status'] == Status::STATUS_ACTIVE){
                 $url = route("read_notification", $notification['id']);
                 /** Notify content */
-                $notify = !empty($notification['read_at'])
-                    ? '<span>' . trans(" will be at the store in a few minutes.") . '</span>'
-                    : '<span class="text-dark">' . trans(" will be at the store in a few minutes.") . '</span>';
-
-                /** Timeline */
-                $timeline = !empty($notification['read_at'])
-                    ? '<small class="timestamp">' . trans("About ") . calculateTimeNotification($data['time_show'])
-                      . trans(" ago.")
-                      . '</small>'
-                    : '<small class="timestamp text-info">' . trans("About ")
-                      . calculateTimeNotification($data['time_show'])
-                      . trans(" ago.") . '</small>';
+                $new = empty($notification['read_at']) ? 'new' : '';
 
                 /** Notify item */
-                $html .= '<li class="mb-2">
-                            <a href="' . $url . '" class="media notification-link">
+                $html .= '<li class="notification-item ' . $new . '">
+                            <a href="' . $url . '" class="media">
                                 <div class="mr-3 img-notification rounded-circle bg-info p-2">
                                     <img class="w-100"
                                          src="https://cdn1.iconfinder.com/data/icons/youtuber/256/bell-notifications-notice-notify-alert-512.png">
                                 </div>
                                 <div class="media-body">
                                     <div class="notification-info">
-                                        <b class="text-dark">' . $data["member"] . '</b>' . $notify . '
+                                        <b class="text-dark">' . $data["member"] . '</b><span>' . trans(" will be at the store in a few minutes.") . '</span>
                                     </div>
-                                    ' . $timeline . '
+                                    <small class="timestamp">' . trans("About ") . calculateTimeNotification($data['time_show']) . trans(" ago.") . '</small>
                                 </div>
                             </a>
                         </li>';
@@ -155,5 +143,21 @@ if (!function_exists('notificationList')) {
 
 
         return $html;
+    }
+}
+
+if(!function_exists('isTimestamp')){
+    /**
+     * @param $date
+     * @return bool
+     */
+    function isTimestamp($date){
+        try{
+            return ((int)$date === $date)
+                && ($date <= PHP_INT_MAX)
+                && ($date >= ~PHP_INT_MAX);
+        }catch(Exception $e){
+            return $date;
+        }
     }
 }

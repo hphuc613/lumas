@@ -1,6 +1,7 @@
 <script>
-    $(document).ready(function(){
-        $("<?= $validator['selector']; ?>").each(function() {
+    jQuery(document).ready(function () {
+
+        $("<?= $validator['selector']; ?>").each(function () {
             $(this).validate({
                 errorElement: 'span',
                 errorClass: 'help-block error-help-block',
@@ -11,10 +12,9 @@
                         error.insertAfter(element.parents('.input-group'));
                         // else just place the validation message immediately after the input
                     } else {
-                        console.log(element);
-                        if(element.hasClass('select2')){
+                        if (element.hasClass('select2')) {
                             error.insertAfter(element.next());
-                        }else{
+                        } else {
                             error.insertAfter(element);
                         }
                     }

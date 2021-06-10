@@ -91,7 +91,9 @@ class MemberCourseController extends Controller{
         $member_course_check_exist = MemberCourse::query()->where('course_id', $course->id)
                                                  ->where('member_id', $member->id)
                                                  ->where('voucher_id', $request->voucher_id)
+                                                 ->whereRaw('deduct_quantity != quantity')
                                                  ->first();
+
         if(!empty($member_course_check_exist)){
             $request->session()->flash('error', trans("This course has not been used yet. Update right here."));
             return redirect()->route("get.member_course.edit", $member_course_check_exist->id);
@@ -140,6 +142,7 @@ class MemberCourseController extends Controller{
                                  ->where('status', Status::STATUS_ACTIVE)->pluck('code', 'id')->toArray();
 
         $histories = MemberCourseHistory::filter($filter, $member->id, $member_course->course_id)
+                                        ->where('member_course_id', $member_course->id)
                                         ->paginate(10, ['*'], 'history_page');
 
         /**

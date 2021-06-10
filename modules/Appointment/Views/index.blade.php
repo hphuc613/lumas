@@ -80,7 +80,8 @@
     <script>
         $(document).ready(function () {
             $('#form-modal').on('hidden.bs.modal', function () {
-                $('#get-date').val("{{ formatDate(time(), 'd-m-Y H:i') }}");
+                var now = new Date();
+                $('#get-date').val(formatDateTime(now));
             })
 
             $('#appointment_type').change(function () {

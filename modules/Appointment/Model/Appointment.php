@@ -132,8 +132,8 @@ class Appointment extends BaseModel
     public function getServiceList() {
         $data = Helper::isJson($this->service_ids, 1);
         $list = [];
-        if ($data) {
-            foreach ($data as $id) {
+        if($data){
+            foreach($data as $id){
                 $list[] = Service::find($id);
             }
         }
@@ -142,13 +142,28 @@ class Appointment extends BaseModel
     }
 
     /**
+     * @return int
+     */
+    public function getTotalIntendTimeService(){
+        $total = 0;
+        if(is_string($this->service_ids)){
+            $this->service_ids = $this->getServiceList();
+        }
+        foreach($this->service_ids as $val){
+            $total = $total + (int)$val->intend_time;
+        }
+
+        return $total;
+    }
+
+    /**
      * @return array
      */
-    public function getCourseList() {
+    public function getCourseList(){
         $data = Helper::isJson($this->course_ids, 1);
         $list = [];
-        if ($data) {
-            foreach ($data as $id) {
+        if($data){
+            foreach($data as $id){
                 $list[] = Course::find($id);
             }
         }

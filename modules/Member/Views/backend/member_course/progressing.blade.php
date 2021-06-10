@@ -1,4 +1,4 @@
-@if(!empty($progressing_courses))
+@if($progressing_courses->isNotEmpty())
     <div class="card mb-2">
         <div class="card-header">
             <h4>Course Progressing</h4>

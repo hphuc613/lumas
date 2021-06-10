@@ -79,7 +79,27 @@ function pusherNotification(key, user_id, url) {
     var notify = $('.notify');
     if (notify.html().trim() === "") {
         var lang = $('html').attr('lang');
-        var text = (lang === 'zh-TW') ? "還沒有消息." : "No news yet.";
-        notify.html('<div class="text-center p-3"><span><i>' + text + '</i></span></div>');
+        var text = (lang === 'zh-TW') ? "還沒有消息..." : "No news yet...";
+        notify.html('<div class="text-center p-3"><span class="font-italic">' + text + '</span></div>');
     }
+}
+
+/** Get Month List*/
+function getMonthToCurrentInYear(current) {
+    moment.locale($('html').attr('lang'))
+    const list_month = moment.months();
+    const current_month = moment().month();
+    const the_months = [];
+
+    if (!current) {
+        return list_month;
+    }
+
+    var i = 0;
+    while (i <= current_month) {
+        i++;
+        the_months.push(list_month[i])
+    }
+
+    return the_months;
 }

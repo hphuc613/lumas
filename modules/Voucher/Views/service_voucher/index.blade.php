@@ -67,7 +67,7 @@
                             <th>{{ trans('Code') }}</th>
                             <th>{{ trans('Price') }}</th>
                             <th>{{ trans('Start day') }}</th>
-                            <th>{{ trans('Service/Course') }}</th>
+                            <th>{{ trans('Service') }}</th>
                             <th width="200px">{{ trans('Created At') }}</th>
                             <th width="200px">{{ trans('Updated At') }}</th>
                             <th width="200px" class="action">{{ trans('Action') }}</th>

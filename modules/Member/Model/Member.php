@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\File;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 
-class Member extends BaseMember {
+class Member extends BaseMember{
     use SoftDeletes;
 
     protected $dates = ["deleted_at"];
@@ -22,24 +22,24 @@ class Member extends BaseMember {
      * @param $filter
      * @return Builder
      */
-    public static function filter($filter) {
+    public static function filter($filter){
         $query = self::with('type');
-        $query = $query->whereHas('type', function ($query) {
+        $query = $query->whereHas('type', function($query){
             return $query->where('status', Status::STATUS_ACTIVE);
         });
-        if (isset($filter['name'])) {
+        if(isset($filter['name'])){
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
-        if (isset($filter['phone'])) {
+        if(isset($filter['phone'])){
             $query->where('phone', 'LIKE', '%' . $filter['phone'] . '%');
         }
-        if (isset($filter['email'])) {
+        if(isset($filter['email'])){
             $query->where('email', 'LIKE', '%' . $filter['email'] . '%');
         }
-        if (isset($filter['status'])) {
+        if(isset($filter['status'])){
             $query->where('status', $filter['status']);
         }
-        if (isset($filter['type_id'])) {
+        if(isset($filter['type_id'])){
             $query->where('type_id', $filter['type_id']);
         }
 
@@ -49,9 +49,9 @@ class Member extends BaseMember {
     /**
      * @return string
      */
-    public function getAvatar() {
+    public function getAvatar(){
         $avatar = $this->avatar;
-        if (!empty($avatar) && File::exists(base_path() . '/storage/app/public/' . $avatar)) {
+        if(!empty($avatar) && File::exists(base_path() . '/storage/app/public/' . $avatar)){
             return url('/storage/' . $avatar);
         }
         return asset('/image/user.png');
@@ -61,16 +61,16 @@ class Member extends BaseMember {
      * @param null $status
      * @return array
      */
-    public static function getArray($status = null) {
+    public static function getArray($status = null){
         $query = self::select('id', 'name', 'phone', 'email');
-        if (!empty($status)) {
+        if(!empty($status)){
             $query = $query->where('status', $status);
         }
         $query = $query->orderBy('name', 'asc')->get();
 
         $data = [];
 
-        foreach ($query as $item) {
+        foreach($query as $item){
             $data[$item->id] = $item->name . ' | ' . $item->phone . ' | ' . $item->email;
         }
 
@@ -78,11 +78,16 @@ class Member extends BaseMember {
     }
 
     /**
-     * @return bool
+     * @param null $type
+     * @return false
      */
-    public function getAppointmentInProgressing() {
-        $appointment = $this->appointments->where('status', Appointment::PROGRESSING_STATUS)->first();
-        if (!empty($appointment)) {
+    public function getAppointmentInProgressing($type = NULL){
+        $appointment = $this->appointments->where('status', Appointment::PROGRESSING_STATUS);
+        if(!empty($type)){
+            $appointment = $appointment->where('type', $type);
+        }
+        $appointment = $appointment->first();
+        if(!empty($appointment)){
             return $appointment;
         }
 
@@ -92,10 +97,23 @@ class Member extends BaseMember {
     /**
      * @return bool
      */
-    public function checkServiceInProgressing() {
-        foreach ($this->memberServices as $service) {
-            if ($service->status === MemberService::PROGRESSING_STATUS) {
+    public function checkServiceInProgressing(){
+        foreach($this->memberServices as $service){
+            if($service->status === MemberService::PROGRESSING_STATUS){
                 return $service;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkCourseInProgressing(){
+        foreach($this->memberCourses as $course){
+            if($course->status === MemberCourse::PROGRESSING_STATUS){
+                return $course;
             }
         }
 
@@ -105,22 +123,29 @@ class Member extends BaseMember {
     /**
      * @return BelongsTo
      */
-    public function type() {
+    public function type(){
         return $this->belongsTo(MemberType::class, 'type_id');
     }
 
     /**
      * @return HasMany
      */
-    public function appointments() {
+    public function appointments(){
         return $this->hasMany(Appointment::class, 'member_id');
     }
 
     /**
      * @return HasMany
      */
-    public function memberServices() {
+    public function memberServices(){
         return $this->hasMany(MemberService::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function memberCourses(){
+        return $this->hasMany(MemberCourse::class);
     }
 
 }

@@ -16,6 +16,7 @@ class CreateApponintmentsTable extends Migration{
             $table->string('name');
             $table->string('location', 400)->nullable();
             $table->timestamp('time')->nullable();
+            $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
             $table->unsignedInteger('store_id');
             $table->string('service_ids')->nullable();

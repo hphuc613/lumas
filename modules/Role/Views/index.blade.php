@@ -32,7 +32,8 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="text-input">{{ trans('Role name') }}</label>
-                                    <input type="text" class="form-control" id="text-input" name="name" value="{{$filter['name'] ?? NULL}}">
+                                    <input type="text" class="form-control" id="text-input" name="name"
+                                           value="{{$filter['name'] ?? NULL}}">
                                 </div>
                             </div>
                         </div>
@@ -72,12 +73,15 @@
                                     <td>{{ \Carbon\Carbon::parse($role->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($role->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
-                                        <a href="{{ route('get.role.update',$role->id) }}" class="btn btn-primary mr-2"
-                                           data-toggle="modal" data-title="{{ trans('Update Role') }}"
-                                           data-target="#form-modal">
-                                            <i class="fas fa-pencil-alt"></i></a>
-                                        <a href="{{ route('get.role.delete',$role->id) }}"
-                                           class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
+                                        @if(!in_array($role->name, ["Administrator", "Staff"]))
+                                            <a href="{{ route('get.role.update',$role->id) }}"
+                                               class="btn btn-primary mr-2"
+                                               data-toggle="modal" data-title="{{ trans('Update Role') }}"
+                                               data-target="#form-modal">
+                                                <i class="fas fa-pencil-alt"></i></a>
+                                            <a href="{{ route('get.role.delete',$role->id) }}"
+                                               class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

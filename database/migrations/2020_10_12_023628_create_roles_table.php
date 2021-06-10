@@ -13,7 +13,7 @@ class CreateRolesTable extends Migration{
      * @return void
      */
     public function up(){
-        Schema::create('roles', function (Blueprint $table){
+        Schema::create('roles', function(Blueprint $table){
             $table->id();
             $table->string('name');
             $table->smallInteger('status')->default(1);
@@ -22,14 +22,20 @@ class CreateRolesTable extends Migration{
             $table->timestamps();
         });
 
-        DB::table('roles')->insert(
-            [
-                'name'        => 'Administrator',
-                'status'      => 1,
-                'description' => '',
-                'created_at'  => '2020-10-15 23:30:41',
-                'updated_at'  => '2020-10-20 22:17:19'
-            ]);
+        DB::table('roles')->insert([
+            'name'        => 'Administrator',
+            'status'      => 1,
+            'description' => '',
+            'created_at'  => formatDate(time(), 'Y-m-d H:i:s'),
+            'updated_at'  => formatDate(time(), 'Y-m-d H:i:s')
+        ]);
+        DB::table('roles')->insert([
+            'name'        => 'Staff',
+            'status'      => 1,
+            'description' => '',
+            'created_at'  => formatDate(time(), 'Y-m-d H:i:s'),
+            'updated_at'  => formatDate(time(), 'Y-m-d H:i:s')
+        ]);
     }
 
     /**

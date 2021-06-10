@@ -18,8 +18,8 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Add Course For Client") }}</h3></div>
             <div class="group-btn">
-                @if($member->getAppointmentInProgressing())
-                    <a href="{{ route('get.appointment.update', $member->getAppointmentInProgressing()->id) }}"
+                @if(!empty($appointment_in_progressing = $member->getAppointmentInProgressing(\Modules\Appointment\Model\Appointment::COURSE_TYPE)))
+                    <a href="{{ route('get.appointment.update', $appointment_in_progressing->id) }}"
                        class="btn btn-warning text-light"
                        id="update-booking" data-toggle="modal"
                        data-target="#form-modal"

@@ -7,10 +7,10 @@
   border-radius: 10px;
 }
 
-:hover::-webkit-scrollbar {
+:hover::-webkit-scrollbar, .menu-sidebar li a.active::-webkit-scrollbar {
   display: block;
 }
-:hover::-webkit-scrollbar-thumb:hover {
+:hover::-webkit-scrollbar-thumb:hover, .menu-sidebar li a.active::-webkit-scrollbar-thumb {
   background: #848484;
 }
 
@@ -21,9 +21,17 @@
   outline: none;
 }
 
-body, html {
-  background-color: #cecece6e;
+html {
   height: 100%;
+  width: 100%;
+  font-family: Inter, Poppins, sans-serif;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  background-color: #cecece6e;
+  background-attachment: fixed;
 }
 
 footer {
@@ -40,7 +48,7 @@ a {
   color: #848484;
   text-decoration: none !important;
 }
-a:hover {
+a:hover, .menu-sidebar li a.active {
   color: #efa6a1;
 }
 
@@ -50,6 +58,10 @@ a:hover {
   clear: both;
 }
 
+.font-size-clearfix {
+  font-size: inherit !important;
+}
+
 .modal-dialog {
   z-index: 9999;
 }
@@ -57,13 +69,14 @@ a:hover {
 .topbar {
   background-color: #ffccc8;
   width: 100%;
-  height: 60px;
+  height: 4.3rem;
   position: fixed;
   z-index: 199;
 }
 .topbar .logo {
   background-color: #efa6a1;
-  width: 220px;
+  width: 15.7rem;
+  padding-left: 1.2rem;
 }
 .topbar .logo img {
   width: 100%;
@@ -77,6 +90,8 @@ a:hover {
 .topbar .logo .menu-button {
   background-color: #efa6a1;
   color: white;
+  border-radius: inherit;
+  min-width: 4rem;
 }
 .topbar .logo .menu-button:focus {
   box-shadow: none;
@@ -99,7 +114,6 @@ a:hover {
   padding: 20px;
   width: 140px;
   height: 60px;
-  border-left: 1px solid white;
   position: relative;
 }
 .topbar .right-sidebar a.text-light {
@@ -120,7 +134,6 @@ a:hover {
   color: #848484;
   position: relative;
   height: 60px;
-  border-left: 1px solid white;
   padding: 1.5rem;
 }
 .topbar .notification-belling i {
@@ -147,31 +160,52 @@ a:hover {
   right: -8rem;
   top: 52px;
   width: 28rem;
-  box-shadow: 0 6px 9px 0 #848484;
+  box-shadow: 4px 5px 15px #ababab;
   border: none;
-  border-radius: 10px;
 }
 .topbar .notification-belling #notification-list .notify {
   max-height: 60rem;
   overflow-x: auto;
-}
-.topbar .notification-belling #notification-list .notify .media {
-  padding: 4px;
-}
-.topbar .notification-belling #notification-list .notify .media .img-notification {
-  width: 15%;
-}
-.topbar .notification-belling #notification-list .notify .media .notification-info {
-  font-weight: 500;
-}
-.topbar .notification-belling #notification-list .notify .media .notification-info b, .topbar .notification-belling #notification-list .notify .media .notification-info span {
   font-size: 16px;
 }
-.topbar .notification-belling #notification-list .notify .media:hover {
+.topbar .notification-belling #notification-list .notify .notification-list .notification-item {
+  padding: 8px 2px 8px 8px;
+  margin-bottom: 2px;
+  border-radius: 8px;
+}
+.topbar .notification-belling #notification-list .notify .notification-list .notification-item .img-notification {
+  width: 15%;
+}
+.topbar .notification-belling #notification-list .notify .notification-list .notification-item .timestamp {
+  font-size: 12px;
+}
+.topbar .notification-belling #notification-list .notify .notification-list .notification-item:hover, .topbar .notification-belling #notification-list .notify .notification-list .menu-sidebar li a.notification-item.active, .menu-sidebar li .topbar .notification-belling #notification-list .notify .notification-list a.notification-item.active {
   background: whitesmoke;
 }
-.topbar .notification-belling #notification-list .notify .media .timestamp {
-  font-size: 14px;
+.topbar .notification-belling #notification-list .notify .notification-list .notification-item.new {
+  background: #00d0ff21;
+  position: relative;
+}
+.topbar .notification-belling #notification-list .notify .notification-list .notification-item.new .notification-info, .topbar .notification-belling #notification-list .notify .notification-list .notification-item.new .timestamp {
+  color: var(--info);
+  font-weight: 500;
+}
+.topbar .notification-belling #notification-list .notify .notification-list .notification-item.new:hover, .topbar .notification-belling #notification-list .notify .notification-list .menu-sidebar li a.notification-item.new.active, .menu-sidebar li .topbar .notification-belling #notification-list .notify .notification-list a.notification-item.new.active {
+  background: #00d0ff52;
+}
+.topbar .notification-belling #notification-list .notify .notification-list .notification-item.new:before {
+  top: 50%;
+  transform: translateY(-50%);
+  content: "";
+  position: absolute;
+  right: 7px;
+  border: 6px solid var(--primary);
+  border-radius: 50%;
+}
+@media (max-width: 739px) {
+  .topbar .notification-belling #notification-list {
+    width: 21rem;
+  }
 }
 
 .title {
@@ -189,7 +223,7 @@ a:hover {
   background-color: #efa6a1;
   border-color: #efa6a1;
 }
-.btn.btn-primary:hover, .btn.btn-primary:active, .btn.btn-primary:focus, .btn.btn-primary:not(:disabled):not(.disabled):active:focus {
+.btn.btn-primary:hover, .menu-sidebar li a.btn.btn-primary.active, .btn.btn-primary:active, .btn.btn-primary:focus, .btn.btn-primary:not(:disabled):not(.disabled):active:focus {
   background-color: #ffccc8;
   border-color: #ffccc8;
 }
@@ -229,7 +263,7 @@ a:hover {
   /** Validation **/
 }
 .form-group label {
-  font-weight: 600;
+  font-weight: 500;
 }
 .form-group .help-block.error-help-block {
   color: red;
@@ -264,6 +298,9 @@ a:hover {
   box-shadow: 0 0 0 0.2rem #9a9a9a33;
 }
 
+table tr th {
+  width: auto;
+}
 table tr th.action {
   width: 150px;
 }
@@ -272,6 +309,16 @@ table tr td .btn {
 }
 table.access-control tr:hover {
   background-color: rgba(255, 0, 0, 0.04) !important;
+}
+table.table-fixed tbody {
+  display: block;
+  height: 20rem;
+  overflow-y: scroll;
+}
+table.table-fixed tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .left-sidebar {
@@ -298,7 +345,6 @@ table.access-control tr:hover {
   color: #848484;
 }
 .menu-sidebar li a {
-  font-weight: 600;
   color: inherit;
   display: block;
   padding: 11px 10px 11px 20px;
@@ -323,8 +369,12 @@ table.access-control tr:hover {
 .menu-sidebar li a:hover, .menu-sidebar li a.active {
   color: #efa6a1;
 }
-.menu-sidebar li a .menu-link-child {
-  color: inherit;
+.menu-sidebar li a.active {
+  font-weight: 600;
+  border-left: 4px solid #efa6a1;
+}
+.menu-sidebar li a.active.menu-link-child {
+  border-left: none;
 }
 .menu-sidebar li ul.list-child-hide {
   position: absolute;
@@ -337,8 +387,8 @@ table.access-control tr:hover {
 }
 
 .page-wrapper {
-  margin-bottom: 30px;
   padding-top: 60px;
+  padding-bottom: 30px;
   margin-left: 220px;
   position: relative;
 }
@@ -372,7 +422,7 @@ table.access-control tr:hover {
   padding: 0.5rem 0.75rem;
   border-radius: 5px;
 }
-.pagination li a:hover {
+.pagination li a:hover, .pagination .menu-sidebar li a.active, .menu-sidebar .pagination li a.active {
   background-color: #ffccc8;
   color: white;
 }
@@ -380,7 +430,7 @@ table.access-control tr:hover {
   color: white;
   background-color: #efa6a1;
 }
-.pagination li a.active:hover {
+.pagination li a.active:hover, .pagination .menu-sidebar li a.active, .menu-sidebar .pagination li a.active {
   background-color: #ffccc8;
   color: white;
 }
@@ -388,7 +438,7 @@ table.access-control tr:hover {
   cursor: default;
   color: #ffccc8;
 }
-.pagination li a.disabled:hover {
+.pagination li a.disabled:hover, .pagination .menu-sidebar li a.disabled.active, .menu-sidebar .pagination li a.disabled.active {
   background-color: transparent;
 }
 
@@ -549,6 +599,27 @@ input[type=file] {
 .fc button.fc-button-active {
   background-color: #ffccc8 !important;
   border-color: #ffccc8 !important;
+}
+
+#dashboard-module .card-group .card {
+  margin: 0.5rem;
+}
+#dashboard-module #section-all-information .round {
+  line-height: 48px;
+  color: #fff;
+  width: 3.6rem;
+  height: 3.6rem;
+  display: inline-block;
+  text-align: center;
+  border-radius: 100%;
+}
+
+#dashboard-module #section-all-information .round i {
+  font-size: 1.2rem;
+}
+
+#dashboard-module #section-appointment .progress {
+  height: 0.7rem;
 }
 
 /*# sourceMappingURL=main.css.map */

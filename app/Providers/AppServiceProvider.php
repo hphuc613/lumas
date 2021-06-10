@@ -82,7 +82,7 @@ class AppServiceProvider extends ServiceProvider{
          * Check date in the past
          */
         Validator::extend('check_past', function($attribute, $value, $parameters, $validator){
-            if(strtotime($value) < time()){
+            if(strtotime($value) < strtotime(formatDate(time(), 'd-m-Y H:i'))){
                 return false;
             }
             return true;

@@ -15,6 +15,7 @@ class CreateCoursesTable extends Migration{
             $table->id();
             $table->string('name');
             $table->double('price');
+            $table->integer('intend_time')->default(30);
             $table->text('description')->nullable();
             $table->integer('status')->default(1);
             $table->unsignedInteger('category_id');

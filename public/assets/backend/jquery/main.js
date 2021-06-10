@@ -82,9 +82,15 @@ function openElfinder(btn, url, soundPath, lang, csrf) {
 }
 
 $(document).ready(function () {
-    $(window).click(function () {
+    $(window).click(function (event) {
+        var clickover = $(event.target);
+        var _opened = $(".topbar .menu-sidebar").hasClass("show");
+        if (_opened === true && !clickover.parents(".menu-sidebar").length > 0) {
+            $('.topbar #list-menu').collapse('hide');
+            $('.topbar #languages').collapse('hide');
+        }
+
         $('.topbar #notification-list').collapse('hide');
-        $('.topbar #list-menu').collapse('hide');
     });
     //Select2
     $('select.select2').select2();

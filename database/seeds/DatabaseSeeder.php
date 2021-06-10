@@ -4,7 +4,6 @@ use Illuminate\Database\Seeder;
 use Modules\Course\Model\Course;
 use Modules\Course\Model\CourseCategory;
 use Modules\Member\Model\MemberType;
-use Modules\Role\Model\Role;
 use Modules\Service\Model\Service;
 use Modules\Service\Model\ServiceType;
 use Modules\Store\Model\Store;
@@ -16,19 +15,12 @@ class DatabaseSeeder extends Seeder{
      * @return void
      */
     public function run(){
-        $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(MemberTypeSeeder::class);
         $this->call(MemberSeeder::class);
         $this->call(ServiceSeeder::class);
         $this->call(CourseSeeder::class);
         $this->call(StoreSeeder::class);
-    }
-}
-
-class RoleSeeder extends Seeder{
-    public function run(){
-        Role::insert([['name' => 'Staff']]);
     }
 }
 

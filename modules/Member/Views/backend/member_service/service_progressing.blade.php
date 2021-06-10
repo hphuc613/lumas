@@ -1,4 +1,4 @@
-@if(!empty($progressing_services))
+@if($progressing_services->isNotEmpty())
     <div class="card mb-2">
         <div class="card-header">
             <h4>Service Progressing</h4>

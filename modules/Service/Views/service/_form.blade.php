@@ -11,6 +11,11 @@
                 ['id' => 'type-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
         </div>
         <div class="col-md-4 form-group">
+            <label for="intend_time">{{ trans('Intend Time (Minute)') }}</label>
+            <input type="number" id="intend_time" class="form-control" name="intend_time"
+                   value="{{ $service->intend_time ?? old('intend_time') }}">
+        </div>
+        <div class="col-md-4 form-group">
             <label for="status">{{ trans('Status') }}</label>
             <select name="status" id="status" class="select2 form-control">
                 @foreach($statuses as $key => $status)

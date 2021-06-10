@@ -90,7 +90,10 @@ class MemberServiceController extends Controller{
         $service                    = Service::where('id', $data['service_id'])->first();
         $member_service_check_exist = MemberService::query()->where('service_id', $service->id)
                                                    ->where('member_id', $member->id)
-                                                   ->where('voucher_id', $request->voucher_id)->first();
+                                                   ->where('voucher_id', $request->voucher_id)
+                                                   ->whereRaw('deduct_quantity != quantity')
+                                                   ->first();
+
         if(!empty($member_service_check_exist)){
             $request->session()->flash('error', trans("This service has not been used yet. Update right here."));
             return redirect()->route("get.member_service.edit", $member_service_check_exist->id);
@@ -138,7 +141,9 @@ class MemberServiceController extends Controller{
                                   ->where('status', Status::STATUS_ACTIVE)->pluck('code', 'id')->toArray();
 
         $histories = MemberServiceHistory::filter($filter, $member->id, $member_service->service_id)
+                                         ->where('member_service_id', $member_service->id)
                                          ->paginate(10, ['*'], 'history_page');
+
 
         /**
          * Get list using service

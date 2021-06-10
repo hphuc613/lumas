@@ -15,6 +15,7 @@ class CreateServices extends Migration{
             $table->id();
             $table->string('name');
             $table->double('price');
+            $table->integer('intend_time')->default(30);
             $table->double('additional_price')->nullable();
             $table->text('additional_service')->nullable();
             $table->text('description')->nullable();

@@ -2,6 +2,7 @@
 
 namespace Modules\Role\Model;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Base\Model\BaseModel;
 use Modules\User\Model\UserRole;
@@ -22,9 +23,11 @@ class Role extends BaseModel{
 
     const ADMINISTRATOR = 'Administrator';
 
+    const STAFF = 'Staff';
+
     public static function filter($filter){
         $query = self::query();
-        if (isset($filter['name'])){
+        if(isset($filter['name'])){
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
 
@@ -38,7 +41,7 @@ class Role extends BaseModel{
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function users(){
         return $this->hasMany(UserRole::class);
@@ -59,5 +62,12 @@ class Role extends BaseModel{
      */
     public static function getAdminRole(){
         return self::where('name', self::ADMINISTRATOR)->first();
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getStaffRole(){
+        return self::where('name', self::STAFF)->first();
     }
 }

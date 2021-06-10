@@ -3,9 +3,12 @@
 namespace Modules\User\Model;
 
 use App\User as BaseUser;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Request;
+use Modules\Appointment\Model\Appointment;
+use Modules\Base\Model\Status;
 use Modules\Role\Model\Role;
 
 /**
@@ -19,6 +22,10 @@ class User extends BaseUser{
 
     protected $dates = ['deleted_at'];
 
+    /**
+     * @param $filter
+     * @return Builder
+     */
     public static function filter($filter){
         $query = self::query();
         if(isset($filter['name'])){
@@ -28,12 +35,30 @@ class User extends BaseUser{
         return $query;
     }
 
+    /**
+     * @param array $options
+     * @return bool|void
+     */
     public function save(array $options = []){
         $insert = Request::all();
         $this->beforeSave($this->attributes, $insert);
         parent::save($options);
         $this->afterSave($insert);
     }
+
+    /**
+     * @return Builder
+     */
+    public static function getStaff(){
+        $staff = User::query()->whereHas('roles', function($qr){
+            $qr->whereHas('role', function($r){
+                $r->where('name', 'Staff');
+            });
+        })->where('status', Status::STATUS_ACTIVE);
+
+        return $staff;
+    }
+
 
     /**
      *
@@ -54,6 +79,13 @@ class User extends BaseUser{
      */
     public function roles(){
         return $this->hasMany(UserRole::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function appointments(){
+        return $this->hasMany(Appointment::class, 'user_id');
     }
 
     /**
