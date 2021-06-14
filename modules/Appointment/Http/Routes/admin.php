@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['admin'])->prefix("admin")->group(function(){
     Route::prefix("appointment")->group(function(){
         Route::get("/", "AppointmentController@index")->name("get.appointment.list")->middleware('can:appointment');
+        Route::get("/overview", "AppointmentController@overview")->name("get.appointment.overview")
+             ->middleware('can:appointment');
         Route::middleware('can:appointment-create')->group(function(){
             Route::get("/create", "AppointmentController@getCreate")->name("get.appointment.create");
             Route::post("/create", "AppointmentController@postCreate")->name("post.appointment.create");

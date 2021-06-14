@@ -78,6 +78,35 @@ class AppointmentController extends Controller{
 
     /**
      * @param Request $request
+     * @return Application|Factory|View
+     */
+    public function overview(Request $request){
+        $filter            = $request->all();
+        $members           = Member::getArray();
+        $statuses          = Appointment::getStatuses();
+        $stores            = Store::getArray(Status::STATUS_ACTIVE);
+        $appointment_types = Appointment::getTypeList();
+        $appointments      = Appointment::filter($filter);
+
+        /** Created_by */
+        if(!Auth::user()->isAdmin()){
+            $appointments = $appointments->where('user_id', Auth::id());
+        }
+
+        /** Type of appointment */
+        if(isset($filter['type'])){
+            $appointments = $appointments->where('type', $filter['type']);
+        }else{
+            $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
+        }
+
+        $appointments = $appointments->paginate(6);
+
+        return view("Appointment::overview", compact('appointments', 'appointment_types', 'filter', 'members', 'statuses', 'stores'));
+    }
+
+    /**
+     * @param Request $request
      * @return Application|Factory|RedirectResponse|View
      */
     public function getCreate(Request $request){

@@ -6,134 +6,148 @@
                 @php($appointment_all = (count($appointment_data['all']) == 0) ? 1 : count($appointment_data['all']))
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="d-flex no-block align-items-center">
-                                            <div>
-                                                <h3><i class="icon-screen-desktop"></i></h3>
-                                                <p class="text-muted text-uppercase">{{ trans('Total') }}</p>
-                                            </div>
-                                            <div class="ml-auto">
-                                                <h2 class="counter text-primary">{{ count($appointment_data['all']) }}</h2>
+                        <a href="{{ route('get.appointment.overview') }}" class="appointment-hover">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-flex no-block align-items-center">
+                                                <div>
+                                                    <h3><i class="icon-screen-desktop"></i></h3>
+                                                    <p class="text-uppercase">{{ trans('Total') }}</p>
+                                                </div>
+                                                <div class="ml-auto">
+                                                    <h2 class="counter text-primary">{{ count($appointment_data['all']) }}</h2>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="progress">
-                                            <div class="progress-bar tooltip-content bg-primary"
-                                                 title=""
-                                                 style="width: {{ count($appointment_data['all'])/$appointment_all*100 }}%"></div>
+                                        <div class="col-12">
+                                            <div class="progress">
+                                                <div class="progress-bar tooltip-content bg-primary"
+                                                     title=""
+                                                     style="width: {{ count($appointment_data['all'])/$appointment_all*100 }}%"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="d-flex no-block align-items-center">
-                                            <div>
-                                                <h3><i class="icon-screen-desktop"></i></h3>
-                                                <p class="text-muted text-uppercase">{{ trans('Progressing') }}</p>
-                                            </div>
-                                            <div class="ml-auto">
-                                                <h2 class="counter text-warning">{{ count($appointment_data['progressing']) }}</h2>
+                        <a href="{{ route('get.appointment.overview', ['status' => \Modules\Appointment\Model\Appointment::PROGRESSING_STATUS]) }}"
+                           class="appointment-hover">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-flex no-block align-items-center">
+                                                <div>
+                                                    <h3><i class="icon-screen-desktop"></i></h3>
+                                                    <p class="text-uppercase">{{ trans('Progressing') }}</p>
+                                                </div>
+                                                <div class="ml-auto">
+                                                    <h2 class="counter text-warning">{{ count($appointment_data['progressing']) }}</h2>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="progress">
-                                            <div class="progress-bar tooltip-content bg-warning"
-                                                 title=""
-                                                 style="width: {{ count($appointment_data['progressing'])/$appointment_all*100 }}%"></div>
+                                        <div class="col-12">
+                                            <div class="progress">
+                                                <div class="progress-bar tooltip-content bg-warning"
+                                                     title=""
+                                                     style="width: {{ count($appointment_data['progressing'])/$appointment_all*100 }}%"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="d-flex no-block align-items-center">
-                                            <div>
-                                                <h3><i class="icon-screen-desktop"></i></h3>
-                                                <p class="text-muted text-uppercase">{{ trans('Waiting') }}</p>
-                                            </div>
-                                            <div class="ml-auto">
-                                                <h2 class="counter text-info">{{ count($appointment_data['waiting']) }}</h2>
+                        <a href="{{ route('get.appointment.overview', ['status' => \Modules\Appointment\Model\Appointment::WAITING_STATUS]) }}"
+                           class="appointment-hover">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-flex no-block align-items-center">
+                                                <div>
+                                                    <h3><i class="icon-screen-desktop"></i></h3>
+                                                    <p class="text-uppercase">{{ trans('Waiting') }}</p>
+                                                </div>
+                                                <div class="ml-auto">
+                                                    <h2 class="counter text-info">{{ count($appointment_data['waiting']) }}</h2>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="progress">
-                                            <div class="progress-bar tooltip-content bg-info"
-                                                 title=""
-                                                 style="width: {{ count($appointment_data['waiting'])/$appointment_all*100 }}%"></div>
+                                        <div class="col-12">
+                                            <div class="progress">
+                                                <div class="progress-bar tooltip-content bg-info"
+                                                     title=""
+                                                     style="width: {{ count($appointment_data['waiting'])/$appointment_all*100 }}%"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="d-flex no-block align-items-center">
-                                            <div>
-                                                <h3><i class="icon-screen-desktop"></i></h3>
-                                                <p class="text-muted text-uppercase">{{ trans('Completed') }}</p>
-                                            </div>
-                                            <div class="ml-auto">
-                                                <h2 class="counter text-success">{{ count($appointment_data['completed']) }}</h2>
+                        <a href="{{ route('get.appointment.overview', ['status' => \Modules\Appointment\Model\Appointment::COMPLETED_STATUS]) }}"
+                           class="appointment-hover">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-flex no-block align-items-center">
+                                                <div>
+                                                    <h3><i class="icon-screen-desktop"></i></h3>
+                                                    <p class="text-uppercase">{{ trans('Completed') }}</p>
+                                                </div>
+                                                <div class="ml-auto">
+                                                    <h2 class="counter text-success">{{ count($appointment_data['completed']) }}</h2>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="progress">
-                                            <div class="progress-bar tooltip-content bg-success"
-                                                 title=""
-                                                 style="width: {{ count($appointment_data['completed'])/$appointment_all*100 }}%"></div>
+                                        <div class="col-12">
+                                            <div class="progress">
+                                                <div class="progress-bar tooltip-content bg-success"
+                                                     title=""
+                                                     style="width: {{ count($appointment_data['completed'])/$appointment_all*100 }}%"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="d-flex no-block align-items-center">
-                                            <div>
-                                                <h3><i class="icon-screen-desktop"></i></h3>
-                                                <p class="text-muted text-uppercase">{{ trans('Abort') }}</p>
-                                            </div>
-                                            <div class="ml-auto">
-                                                <h2 class="counter text-danger">{{ count($appointment_data['abort']) }}</h2>
+                        <a href="{{ route('get.appointment.overview', ['status' => \Modules\Appointment\Model\Appointment::ABORT_STATUS]) }}"
+                           class="appointment-hover">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-flex no-block align-items-center">
+                                                <div>
+                                                    <h3><i class="icon-screen-desktop"></i></h3>
+                                                    <p class="text-uppercase">{{ trans('Abort') }}</p>
+                                                </div>
+                                                <div class="ml-auto">
+                                                    <h2 class="counter text-danger">{{ count($appointment_data['abort']) }}</h2>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="progress">
-                                            <div class="progress-bar tooltip-content bg-danger"
-                                                 title=""
-                                                 style="width: {{ count($appointment_data['abort'])/$appointment_all*100 }}%"></div>
+                                        <div class="col-12">
+                                            <div class="progress">
+                                                <div class="progress-bar tooltip-content bg-danger"
+                                                     title=""
+                                                     style="width: {{ count($appointment_data['abort'])/$appointment_all*100 }}%"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>

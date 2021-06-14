@@ -14,60 +14,69 @@
 @endpush
 @section("content")
     <div id="appointment-module">
-        <div class="breadcrumb-line">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
-                    <li class="breadcrumb-item"><a href="#">{{ trans("Appointment") }}</a></li>
-                    @if(isset($member))
-                        <li class="breadcrumb-item"><a href="#">{{ $member->name }}</a></li> @endif
-                </ol>
-            </nav>
-        </div>
-    </div>
-    <div class="appointment">
-        <div class="card">
-            <div class="card-body">
-                <div id="head-page" class="d-flex justify-content-between">
-                    <div class="page-title">
-                        <h3>
-                            @if(isset($filter['type']) && $filter['type'] == \Modules\Appointment\Model\Appointment::COURSE_TYPE)
-                                {{ trans("Course") }}
-                            @else
-                                {{ trans("Service") }}
-                            @endif
-                            {{ trans("Appointment Listing") }}
-                            @if(isset($member))
-                                {{ trans("of") }}
-                                <span class="text-info" style="font-size: inherit">{{ $member->name }}</span>
-                            @endif
-                        </h3>
-                    </div>
-                    <div class="group-btn">
-                        <div class="d-inline-block" style="width: 150px">
-                            {!! Form::select('type', $appointment_types, $filter['type'] ?? null,
-                            ['id' => 'appointment_type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
-                        </div>
-                        <a href="{{ route('get.appointment.create',['member_id' => $member->id ?? NULL, 'type' => $filter['type'] ?? 'service']) }}"
-                           id="create-booking" class="btn btn-primary"
-                           data-toggle="modal"
-                           data-target="#form-modal" data-title="{{ trans('Create Appointment') }}">
-                            <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
-                        </a>
-                        <a href="#" data-url="{{ route("get.appointment.update",'') }}" class="d-none"
-                           id="update-booking" data-toggle="modal"
-                           data-target="#form-modal" data-title="{{ trans('Update Appointment') }}"></a>
+        <div class="d-flex justify-content-between">
+            <div class="breadcrumb-line">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
+                        <li class="breadcrumb-item"><a href="#">{{ trans("Appointment") }}</a></li>
                         @if(isset($member))
-                            <a href="{{ route('get.member_service.add',$member->id) }}"
-                               class="btn btn-warning text-light"><i class="fas fa-plus"></i> Add Service</a>
-                            <a href="{{ route('get.member_course.add',$member->id) }}"
-                               class="btn btn-info"><i class="fas fa-plus"></i> Add Course</a>
-                        @endif
-                    </div>
+                            <li class="breadcrumb-item"><a href="#">{{ $member->name }}</a></li> @endif
+                    </ol>
+                </nav>
+            </div>
+            @php($segment = \App\AppHelpers\Helper::segment(1))
+            @if($segment === "appointment")
+                <div class="p-3">
+                    <a href="{{ route("get.appointment.overview") }}"
+                       class="btn btn-primary">{{ trans('Overview') }}</a>
                 </div>
-                <div id="fullcalendar"></div>
-                <input type="hidden" id="get-date" value="{{ formatDate(time(),'d-m-Y H:i') }}">
-                <textarea id="event" class="d-none">{{ $events }}</textarea>
+            @endif
+        </div>
+        <div class="appointment">
+            <div class="card">
+                <div class="card-body">
+                    <div id="head-page" class="d-flex justify-content-between">
+                        <div class="page-title">
+                            <h3>
+                                @if(isset($filter['type']) && $filter['type'] == \Modules\Appointment\Model\Appointment::COURSE_TYPE)
+                                    {{ trans("Course") }}
+                                @else
+                                    {{ trans("Service") }}
+                                @endif
+                                {{ trans("Appointment Listing") }}
+                                @if(isset($member))
+                                    {{ trans("of") }}
+                                    <span class="text-info" style="font-size: inherit">{{ $member->name }}</span>
+                                @endif
+                            </h3>
+                        </div>
+                        <div class="group-btn">
+                            <div class="d-inline-block" style="width: 150px">
+                                {!! Form::select('type', $appointment_types, $filter['type'] ?? null,
+                                ['id' => 'appointment_type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
+                            </div>
+                            <a href="{{ route('get.appointment.create',['member_id' => $member->id ?? NULL, 'type' => $filter['type'] ?? 'service']) }}"
+                               id="create-booking" class="btn btn-primary"
+                               data-toggle="modal"
+                               data-target="#form-modal" data-title="{{ trans('Create Appointment') }}">
+                                <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
+                            </a>
+                            <a href="#" data-url="{{ route("get.appointment.update",'') }}" class="d-none"
+                               id="update-booking" data-toggle="modal"
+                               data-target="#form-modal" data-title="{{ trans('Update Appointment') }}"></a>
+                            @if(isset($member))
+                                <a href="{{ route('get.member_service.add',$member->id) }}"
+                                   class="btn btn-warning text-light"><i class="fas fa-plus"></i> Add Service</a>
+                                <a href="{{ route('get.member_course.add',$member->id) }}"
+                                   class="btn btn-info"><i class="fas fa-plus"></i> Add Course</a>
+                            @endif
+                        </div>
+                    </div>
+                    <div id="fullcalendar"></div>
+                    <input type="hidden" id="get-date" value="{{ formatDate(time(),'d-m-Y H:i') }}">
+                    <textarea id="event" class="d-none">{{ $events }}</textarea>
+                </div>
             </div>
         </div>
     </div>

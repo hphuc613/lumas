@@ -751,8 +751,20 @@ input[type='file'] {
   }
 
   #section-appointment {
-    .progress {
-      height: 0.7rem;
+    .appointment-hover {
+      .card {
+        .progress {
+          height: 0.7rem;
+        }
+
+        &:hover {
+          .card-body {
+            color: white;
+          }
+
+          background: $main-fade-color;
+        }
+      }
     }
   }
 }

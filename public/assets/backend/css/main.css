@@ -613,13 +613,17 @@ input[type=file] {
   text-align: center;
   border-radius: 100%;
 }
-
 #dashboard-module #section-all-information .round i {
   font-size: 1.2rem;
 }
-
-#dashboard-module #section-appointment .progress {
+#dashboard-module #section-appointment .appointment-hover .card .progress {
   height: 0.7rem;
+}
+#dashboard-module #section-appointment .appointment-hover .card:hover, #dashboard-module #section-appointment .appointment-hover .menu-sidebar li a.card.active, .menu-sidebar li #dashboard-module #section-appointment .appointment-hover a.card.active {
+  background: #ffccc8;
+}
+#dashboard-module #section-appointment .appointment-hover .card:hover .card-body, #dashboard-module #section-appointment .appointment-hover .menu-sidebar li a.card.active .card-body, .menu-sidebar li #dashboard-module #section-appointment .appointment-hover a.card.active .card-body {
+  color: white;
 }
 
 /*# sourceMappingURL=main.css.map */
