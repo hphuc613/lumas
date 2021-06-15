@@ -3,7 +3,7 @@
 namespace Modules\Member\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use ErrorException;
+use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -13,7 +13,6 @@ use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
 use Modules\Member\Http\Requests\MemberCourseRequest;
-use Modules\Member\Http\Requests\MemberServiceRequest;
 use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberCourse;
 use Modules\Member\Model\MemberCourseHistory;
@@ -79,28 +78,18 @@ class MemberCourseController extends Controller{
     }
 
     /**
-     * @param MemberServiceRequest $request
+     * @param MemberCourseRequest $request
      * @param $id
      * @return RedirectResponse
-     * @throws ErrorException
      */
     public function postAdd(MemberCourseRequest $request, $id){
-        $data                      = $request->all();
-        $member                    = Member::find($id);
-        $course                    = Course::where('id', $data['course_id'])->first();
-        $member_course_check_exist = MemberCourse::query()->where('course_id', $course->id)
-                                                 ->where('member_id', $member->id)
-                                                 ->where('voucher_id', $request->voucher_id)
-                                                 ->whereRaw('deduct_quantity != quantity')
-                                                 ->first();
+        $data                 = $request->all();
+        $member_course        = new MemberCourse($data);
+        $member_course->code  = $member_course->generateCode();
+        $member_course->price = !empty($member_course->voucher_id)
+            ? $member_course->voucher->price * $member_course->quantity
+            : $member_course->course->price * $member_course->quantity;
 
-        if(!empty($member_course_check_exist)){
-            $request->session()->flash('error', trans("This course has not been used yet. Update right here."));
-            return redirect()->route("get.member_course.edit", $member_course_check_exist->id);
-        }
-
-        $member_course       = new MemberCourse($data);
-        $member_course->code = $member_course->generateCode();
         $member_course->save();
         $request->session()->flash('success', trans("Course added successfully."));
 
@@ -137,9 +126,11 @@ class MemberCourseController extends Controller{
                                                              ->paginate(5, ['*'], 'course_completed_page');
 
         $member   = Member::find($member_course->member_id);
-        $courses  = Course::getArray(Status::STATUS_ACTIVE);
-        $vouchers = CourseVoucher::query()->where('course_id', $member_course->course_id)
-                                 ->where('status', Status::STATUS_ACTIVE)->pluck('code', 'id')->toArray();
+        $courses  = Course::getArray();
+        $vouchers = CourseVoucher::query()
+                                 ->where('course_id', $member_course->course_id)
+                                 ->pluck('code', 'id')
+                                 ->toArray();
 
         $histories = MemberCourseHistory::filter($filter, $member->id, $member_course->course_id)
                                         ->where('member_course_id', $member_course->id)
@@ -169,8 +160,29 @@ class MemberCourseController extends Controller{
      * @return RedirectResponse
      */
     public function postEdit(MemberCourseRequest $request, $id){
-        $data             = $request->all();
-        $member_course    = MemberCourse::find($id);
+        $data          = $request->all();
+        $member_course = MemberCourse::find($id);
+
+        /** Check when no Voucher */
+        $check_no_voucher = empty($member_course->voucher_id)
+            && (int)$member_course->price !== (int)$member_course->course->price;
+
+        /** Check when has Voucher */
+        $check_has_voucher = false;
+        if(!empty($member_course->voucher_id)){
+            $voucher              = $member_course->voucher;
+            $check_active_voucher =
+                (!empty($voucher->end_at) && strtotime($voucher->end_at) < strtotime(Carbon::today()))
+                || $voucher->status !== Status::STATUS_ACTIVE; //Check Voucher Inactive
+            $check_has_voucher    = !empty($member_course->voucher_id) && $check_active_voucher;
+        }
+
+        if($check_no_voucher || $check_has_voucher){
+            $request->session()
+                    ->flash('error', trans("Cannot updated! It seems the price of this course or voucher is too old. Please create a new one."));
+            return redirect()->back();
+        }
+
         $data['quantity'] = (int)$member_course->quantity + (int)$data['add_more_quantity'];
         unset($data['add_more_quantity']);
         $member_course->update($data);

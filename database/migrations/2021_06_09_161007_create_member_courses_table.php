@@ -19,6 +19,7 @@ class CreateMemberCoursesTable extends Migration{
             $table->unsignedInteger('voucher_id')->nullable();
             $table->integer('quantity')->default(0);
             $table->integer('deduct_quantity')->default(0);
+            $table->double('price');
             $table->smallInteger('status')->default(1);
             $table->text('remarks')->nullable();
             $table->softDeletes();

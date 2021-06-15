@@ -3,7 +3,6 @@
 namespace Modules\Voucher\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use ErrorException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -12,7 +11,6 @@ use Illuminate\View\View;
 use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
 use Modules\Voucher\Http\Requests\CourseVoucherRequest;
-use Modules\Voucher\Http\Requests\ServiceVoucherRequest;
 use Modules\Voucher\Model\CourseVoucher;
 
 
@@ -30,13 +28,13 @@ class CourseVoucherController extends Controller{
     public function index(Request $request){
         $filter   = $request->all();
         $courses  = Course::getArray(Status::STATUS_ACTIVE);
-        $vouchers = CourseVoucher::filter($filter);
-        $vouchers = $vouchers->where('status', Status::STATUS_ACTIVE)
-                             ->WhereHas('course', function($qc){
-                                 $qc->where('status', Status::STATUS_ACTIVE);
-                             })
-                             ->orderBy('start_at', 'DESC')
-                             ->paginate(15);
+        $vouchers = CourseVoucher::filter($filter)
+                                 ->WhereHas('course', function($qc){
+                                     $qc->where('status', Status::STATUS_ACTIVE);
+                                 })
+                                 ->orderBy('start_at', 'DESC')
+                                 ->paginate(15);
+
         return view("Voucher::course_voucher.index", compact('vouchers', 'courses', 'filter'));
     }
 
@@ -80,10 +78,10 @@ class CourseVoucherController extends Controller{
     }
 
     /**
-     * @param ServiceVoucherRequest $request
-     * @throws ErrorException
+     * @param CourseVoucherRequest $request
+     * @return RedirectResponse
      */
-    public function postCreatePopUp(ServiceVoucherRequest $request){
+    public function postCreatePopUp(CourseVoucherRequest $request){
         $this->postCreate($request);
 
         $request->session()->flash('success', trans('Voucher created successfully.'));
@@ -103,9 +101,9 @@ class CourseVoucherController extends Controller{
     }
 
     /**
-     * @param ServiceVoucherRequest $request
+     * @param CourseVoucherRequest $request
+     * @param $id
      * @return RedirectResponse
-     * @throws ErrorException
      */
     public function postUpdate(CourseVoucherRequest $request, $id){
         $data             = $request->all();
@@ -133,16 +131,24 @@ class CourseVoucherController extends Controller{
 
     /**
      * @param $id
-     * @param $type
      * @return string
      */
     public function getListVoucherByCourseID($id){
         $vouchers = CourseVoucher::where('status', Status::STATUS_ACTIVE)
                                  ->where('course_id', $id)
-                                 ->orderBy('start_at', 'desc')->pluck('code', 'id')->toArray();
-        $html     = "<option value=''>Select</option>";
-        foreach($vouchers as $key => $voucher){
-            $html .= "<option value='$key'>$voucher</option>";
+                                 ->orderBy('start_at', 'desc')
+                                 ->get();
+
+        $html = "<option value=''>Select</option>";
+        foreach($vouchers as $voucher){
+            $text = $voucher->code . ' | ' . $voucher->price;
+            if(!empty($voucher->end_at)){
+                if(strtotime($voucher->end_at) >= strtotime(Carbon::today())){
+                    $html .= "<option value='$voucher->id'>$text</option>";
+                }
+            }else{
+                $html .= "<option value='$voucher->id'>$text</option>";
+            }
         }
 
         return $html;
