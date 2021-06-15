@@ -24,9 +24,12 @@ function slideAlert(selector) {
 
         setTimeout(function () {
             selector.animate({
-                right: "-310px"
+                right: "-501px"
             }, 3000);
-        }, 7000);
+        }, 10000);
+        setTimeout(function () {
+            selector.remove();
+        }, 14000);
     }
 }
 
@@ -82,6 +85,7 @@ function openElfinder(btn, url, soundPath, lang, csrf) {
 }
 
 $(document).ready(function () {
+    /** Topbar */
     $(window).click(function (event) {
         var clickover = $(event.target);
         var _opened = $(".topbar .menu-sidebar").hasClass("show");
@@ -92,8 +96,22 @@ $(document).ready(function () {
 
         $('.topbar #notification-list').collapse('hide');
     });
-    //Select2
-    $('select.select2').select2();
+
+    /***** Show alert *****/
+    slideAlert($('.alert-fade-out'));
+    if ($('.alert-primary').html() !== undefined) {
+        $('.alert-danger').css('top', '120px');
+    }
+    $('.alert-close').click(function () {
+        var parent = $(this).parent('.alert-fade-out');
+        parent.animate({
+            right: "-500px"
+        }, 1000);
+        setTimeout(function () {
+            parent.remove();
+        }, 2100);
+    });
+
     /***** Action delete *****/
     $(document).on('click', '.btn-delete', function (e) {
         e.preventDefault();

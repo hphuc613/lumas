@@ -27,6 +27,7 @@
 </header>
 <!-- Left Sidebar -->
 @include('Base::layouts.left_sidebar')
+
 <!-- Content -->
 <div class="page-wrapper clearfix">
     <div class="container-fluid page-content">
@@ -35,12 +36,20 @@
 </div>
 @if (session('error') || session('danger'))
     <div class="alert alert-danger alert-fade-out" style="display: none" role="alert">
+        <span class="alert-close"><i class="fas fa-times"></i></span>
         {{ session('error') ?? session('danger') }}
     </div>
 @endif
 @if (session('success'))
     <div class="alert alert-primary alert-fade-out" style="display: none" role="alert">
+        <span class="alert-close"><i class="fas fa-times"></i></span>
         {{ session('success') }}
+    </div>
+@endif
+@if (session('warning'))
+    <div class="alert alert-warning alert-fade-out" style="display: none" role="alert">
+        <span class="alert-close"><i class="fas fa-times"></i></span>
+        {{ session('warning') }}
     </div>
 @endif
 <!-- Footer -->
@@ -69,12 +78,6 @@
         $('.select2').select2();
         $('.change-language').select2();
         $('[data-toggle="tooltip"]').tooltip()
-        if ($('.alert-primary').html() !== undefined) {
-            $('.alert-danger').css('top', '120px');
-        }
-
-        /** Show alert */
-        slideAlert($('.alert-fade-out'));
 
         /** Show file manager */
         $(".btn-elfinder").click(function () {

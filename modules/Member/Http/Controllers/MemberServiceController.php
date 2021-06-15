@@ -3,6 +3,7 @@
 namespace Modules\Member\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use ErrorException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -84,23 +85,13 @@ class MemberServiceController extends Controller{
      * @return RedirectResponse
      * @throws ErrorException
      */
-    public function postAdd(MemberServiceRequest $request, $id){
-        $data                       = $request->all();
-        $member                     = Member::find($id);
-        $service                    = Service::where('id', $data['service_id'])->first();
-        $member_service_check_exist = MemberService::query()->where('service_id', $service->id)
-                                                   ->where('member_id', $member->id)
-                                                   ->where('voucher_id', $request->voucher_id)
-                                                   ->whereRaw('deduct_quantity != quantity')
-                                                   ->first();
+    public function postAdd(MemberServiceRequest $request){
+        $data                  = $request->all();
+        $member_service        = new MemberService($data);
+        $member_service->code  = $member_service->generateCode();
+        $member_service->price =
+            !empty($member_service->voucher_id) ? $member_service->voucher->price : $member_service->service->price;
 
-        if(!empty($member_service_check_exist)){
-            $request->session()->flash('error', trans("This service has not been used yet. Update right here."));
-            return redirect()->route("get.member_service.edit", $member_service_check_exist->id);
-        }
-
-        $member_service       = new MemberService($data);
-        $member_service->code = $member_service->generateCode();
         $member_service->save();
         $request->session()->flash('success', trans("Service added successfully."));
         return redirect()->back();
@@ -136,9 +127,9 @@ class MemberServiceController extends Controller{
                                                                ->paginate(5, ['*'], 'service_completed_page');
 
         $member   = Member::find($member_service->member_id);
-        $services = Service::getArray(Status::STATUS_ACTIVE);
+        $services = Service::getArray();
         $vouchers = ServiceVoucher::query()->where('service_id', $member_service->service_id)
-                                  ->where('status', Status::STATUS_ACTIVE)->pluck('code', 'id')->toArray();
+                                  ->pluck('code', 'id')->toArray();
 
         $histories = MemberServiceHistory::filter($filter, $member->id, $member_service->service_id)
                                          ->where('member_service_id', $member_service->id)
@@ -169,8 +160,29 @@ class MemberServiceController extends Controller{
      * @return RedirectResponse
      */
     public function postEdit(MemberServiceRequest $request, $id){
-        $data             = $request->all();
-        $member_service   = MemberService::find($id);
+        $data           = $request->all();
+        $member_service = MemberService::find($id);
+
+        /** Check when no Voucher */
+        $check_no_voucher = empty($member_service->voucher_id)
+            && (int)$member_service->price !== (int)$member_service->service->price;
+
+        /** Check when has Voucher */
+        $check_has_voucher = false;
+        if(!empty($member_course->voucher_id)){
+            $voucher              = $member_service->voucher;
+            $check_active_voucher =
+                (!empty($voucher->end_at) && strtotime($voucher->end_at) < strtotime(Carbon::today()))
+                || $voucher->status !== Status::STATUS_ACTIVE; //Check Voucher Active
+            $check_has_voucher    = !empty($member_service->voucher_id) && $check_active_voucher;
+        }
+
+        if($check_no_voucher || $check_has_voucher){
+            $request->session()
+                    ->flash('error', trans("Cannot updated! It seems the price of this service or voucher is too old. Please create a new one."));
+            return redirect()->back();
+        }
+
         $data['quantity'] = (int)$member_service->quantity + (int)$data['add_more_quantity'];
         unset($data['add_more_quantity']);
         $member_service->update($data);

@@ -45,16 +45,7 @@
                 <div class="col-md-4">
                     @include('Member::backend.member_service._form')
                 </div>
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>{{ trans('Service Listing') }}</h5>
-                        </div>
-                        <div class="card-body">
-                            @include('Member::backend.member_service.service_list')
-                        </div>
-                    </div>
-                </div>
+                    @include('Member::backend.member_service.service_list')
                 <div class="col-md-12 mt-5">
                     @include('Member::backend.member_service.history')
                 </div>
@@ -71,8 +62,8 @@
                 return $(this).attr('data-tooltip');
             },
             position: {
-                my: "center bottom", // the "anchor point" in the tooltip element
-                at: "center top-10", // the position of that anchor point relative to selected element
+                my: "center bottom",
+                at: "center top-10",
             }
         });
     </script>

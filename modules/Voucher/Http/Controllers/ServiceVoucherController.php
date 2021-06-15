@@ -3,6 +3,7 @@
 namespace Modules\Voucher\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use ErrorException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -30,12 +31,12 @@ class ServiceVoucherController extends Controller{
         $filter   = $request->all();
         $services = Service::getArray(Status::STATUS_ACTIVE);
         $vouchers = ServiceVoucher::filter($filter)
-                                  ->where('status', Status::STATUS_ACTIVE)
                                   ->WhereHas('service', function($qs){
                                       $qs->where('status', Status::STATUS_ACTIVE);
                                   })
                                   ->orderBy('start_at', 'DESC')
                                   ->paginate(15);
+
         return view("Voucher::service_voucher.index", compact('vouchers', 'services', 'filter'));
     }
 
@@ -113,7 +114,6 @@ class ServiceVoucherController extends Controller{
         $data['end_at']   = (!empty($data['end_at'])) ? formatDate($data['end_at'], 'Y-m-d') : null;
         $voucher          = ServiceVoucher::find($id);
         $voucher->update($data);
-        $voucher->save();
 
         $request->session()->flash('success', trans('Voucher updated successfully.'));
         return redirect()->route('get.service_voucher.list');
@@ -133,16 +133,24 @@ class ServiceVoucherController extends Controller{
 
     /**
      * @param $id
-     * @param $type
      * @return string
      */
     public function getListVoucherByServiceID($id){
         $vouchers = ServiceVoucher::where('status', Status::STATUS_ACTIVE)
                                   ->where('service_id', $id)
-                                  ->orderBy('start_at', 'desc')->pluck('code', 'id')->toArray();
-        $html     = "<option value=''>Select</option>";
-        foreach($vouchers as $key => $voucher){
-            $html .= "<option value='$key'>$voucher</option>";
+                                  ->orderBy('start_at', 'desc')
+                                  ->get();
+
+        $html = "<option value=''>Select</option>";
+        foreach($vouchers as $voucher){
+            $text = $voucher->code . ' | ' . $voucher->price;
+            if(!empty($voucher->end_at)){
+                if(strtotime($voucher->end_at) >= strtotime(Carbon::today())){
+                    $html .= "<option value='$voucher->id'>$text</option>";
+                }
+            }else{
+                $html .= "<option value='$voucher->id'>$text</option>";
+            }
         }
 
         return $html;

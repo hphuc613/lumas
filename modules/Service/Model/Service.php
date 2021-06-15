@@ -48,6 +48,28 @@ class Service extends BaseModel{
     }
 
     /**
+     * @param null $status
+     * @param false $in
+     * @param false $not_in
+     * @return array
+     */
+    public static function getArray($status = null, $in = false, $not_in = false){
+        $query = self::query()->select('id', 'name', 'price');
+        if(!empty($status)){
+            $query = $query->where('status', $status);
+        }
+        $query = $query->orderBy('name')->get();
+
+        $data = [];
+
+        foreach($query as $item){
+            $data[$item->id] = $item->name . ' | ' . $item->price;
+        }
+
+        return $data;
+    }
+
+    /**
      * @return BelongsTo
      */
     public function type(){

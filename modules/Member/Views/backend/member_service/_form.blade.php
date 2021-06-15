@@ -80,6 +80,18 @@
                         </h5>
                     </div>
                     <div class="form-group col-md-6">
+                        <label for="status">{{ trans("Price") }}</label>
+                        <h5 class="text-danger">
+                            {{ $member_service->price }}
+                        </h5>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="status">{{ trans("Total Price") }}</label>
+                        <h5 class="text-danger">
+                            {{ $member_service->price * $member_service->quantity }}
+                        </h5>
+                    </div>
+                    <div class="form-group col-md-6">
                         <label for="status">{{ trans("Status") }}</label>
                         {!! Form::select('status', $statuses, $member_service->status ?? null, [
                         'id' => 'status',

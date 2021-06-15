@@ -675,13 +675,26 @@ input[type='file'] {
 }
 
 .alert-fade-out {
-  max-width: 300px;
+  max-width: 30rem;
   position: fixed;
   right: -300px;
   top: 70px;
   z-index: 100;
   font-size: 16px;
   color: white;
+  padding: .75rem 3rem 0.75rem 1.25rem;
+
+  .alert-close {
+    position: absolute;
+    right: 9px;
+    top: 0;
+    padding: 0 2px;
+    cursor: pointer;
+
+    i {
+      color: white;
+    }
+  }
 }
 
 .alert-danger.alert-fade-out {

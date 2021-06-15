@@ -90,7 +90,7 @@
                             <th width="200px">{{ trans('Status') }}</th>
                             <th>{{ trans('Created At') }}</th>
                             <th>{{ trans('Updated At') }}</th>
-                            <th class="action text-center" style="width: 200px">{{ trans('Action') }}</th>
+                            <th class="text-center" style="width: 10%">{{ trans('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -111,7 +111,7 @@
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($member->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($member->updated_at)->format('d/m/Y H:i:s')}}</td>
-                                <td class="link-action">
+                                <td class="text-center">
                                     <a href="{{ route('get.member.appointment',$member->id) }}"
                                        class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
                                     <a href="{{ route('get.member.update',$member->id) }}" class="btn btn-primary">

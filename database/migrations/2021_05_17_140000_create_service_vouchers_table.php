@@ -17,7 +17,6 @@ class CreateServiceVouchersTable extends Migration{
             $table->string('description')->nullable();
             $table->string('image')->nullable();
             $table->string('price')->nullable();
-            $table->string('type')->default("service");
             $table->integer('status')->default(1);
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
