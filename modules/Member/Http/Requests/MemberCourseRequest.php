@@ -22,7 +22,7 @@ class MemberCourseRequest extends FormRequest{
      * @return array
      */
     public function rules(){
-        $method = Helper::segment(2);
+        $method = Helper::segment(3);
         switch($method){
             default:
                 return [
@@ -31,7 +31,7 @@ class MemberCourseRequest extends FormRequest{
                     'voucher_id' => 'nullable|check_exist:course_vouchers,id',
                     'quantity'   => 'required|numeric',
                 ];
-            case "edit-course":
+            case "edit":
                 return [
                     'course_id'  => 'required|check_exist:courses,id',
                     'member_id'  => 'required|check_exist:members,id',

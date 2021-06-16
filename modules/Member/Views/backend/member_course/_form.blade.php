@@ -100,7 +100,7 @@
                 </div>
                 <div class="form-group col-md-12">
                     <label for="remarks">{{ trans("Remarks") }}</label>
-                    <textarea class="form-control" name="remarks" id="description"
+                    <textarea class="form-control" name="remarks" id="remarks"
                               @if(isset($member_course) && $member_course->getRemaining() == 0) readonly @endif
                               rows="5">{{ $member_course->remarks ?? old('remarks') }}</textarea>
                 </div>

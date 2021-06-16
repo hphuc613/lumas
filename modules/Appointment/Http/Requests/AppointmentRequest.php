@@ -28,7 +28,7 @@ class AppointmentRequest extends FormRequest{
                     'name'      => 'required',
                     'member_id' => 'required|check_exist:members,id',
                     'store_id'  => 'required|check_exist:stores,id',
-                    'time'      => 'required|check_past',
+                    'time'      => 'required',
                 ];
             case 'update':
                 return [

@@ -22,7 +22,7 @@ class MemberServiceRequest extends FormRequest{
      * @return array
      */
     public function rules(){
-        $method = Helper::segment(2);
+        $method = Helper::segment(3);
         switch($method){
             default:
                 return [
@@ -31,7 +31,7 @@ class MemberServiceRequest extends FormRequest{
                     'voucher_id' => 'nullable|check_exist:service_vouchers,id',
                     'quantity'   => 'required|numeric',
                 ];
-            case "edit-service":
+            case "edit":
                 return [
                     'service_id' => 'required|check_exist:services,id',
                     'member_id'  => 'required|check_exist:members,id',

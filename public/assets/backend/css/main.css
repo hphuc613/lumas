@@ -600,18 +600,6 @@ input[type=file] {
   color: darkblue;
 }
 
-.fc button {
-  background-color: #efa6a1 !important;
-  border-color: #efa6a1 !important;
-}
-.fc button:focus {
-  box-shadow: inherit !important;
-}
-.fc button.fc-button-active {
-  background-color: #ffccc8 !important;
-  border-color: #ffccc8 !important;
-}
-
 #dashboard-module .card-group .card {
   margin: 0.5rem;
 }

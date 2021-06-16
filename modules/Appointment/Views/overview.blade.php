@@ -28,8 +28,8 @@
                 <form action="" method="get">
                     <div class="row">
                         <div class="col-md-3 form-group">
-                            <label for="name">{{ trans("Subject") }}</label>
-                            <input type="text" class="form-control" id="name" name="name"
+                            <label for="name-search">{{ trans("Subject") }}</label>
+                            <input type="text" class="form-control" id="name-search" name="name"
                                    value="{{ $filter['name'] ?? null }}">
                         </div>
                         <div class="col-md-3 form-group">
@@ -38,9 +38,9 @@
                                              ['id' => 'member-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
                         </div>
                         <div class="col-md-3 form-group">
-                            <label for="status">{{ trans('Status') }}</label>
+                            <label for="status-search">{{ trans('Status') }}</label>
                             {{ Form::select('status', [null => 'Select'] + $statuses, $filter['status'] ?? null,
-                                             ['id' => 'status', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
+                                             ['id' => 'status-search', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="status">{{ trans('Month') }}</label>

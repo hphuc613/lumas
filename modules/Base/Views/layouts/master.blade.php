@@ -52,6 +52,7 @@
         {{ session('warning') }}
     </div>
 @endif
+<div class="datetime-modal position-relative"></div>
 <!-- Footer -->
 </body>
 <script src="{{ asset('assets/jquery/jquery-3.5.1.min.js') }}"></script>
@@ -68,31 +69,33 @@
 <script src="{{ asset('assets/jquery/moment.min.js') }}"></script>
 <script src="{{ asset('assets/jquery/moment-with-locales.min.js') }}"></script>
 <script src="{{ asset('vendor/barryvdh/elfinder/js/elfinder.full.js') }}"></script>
-<script src="{{ asset("vendor/barryvdh/elfinder/js/i18n/elfinder.zh_TW.js") }}"></script>
-<script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
+<script src="{{ asset('vendor/barryvdh/elfinder/js/i18n/elfinder.zh_TW.js') }}"></script>
+<script src="{{ asset('assets/backend/jquery/style.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/modal.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/menu.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/custom.js') }}"></script>
+<script class="master-script" src="{{ asset('assets/backend/jquery/main.js') }}"></script>
 <script>
     $(document).ready(function () {
         $('.select2').select2();
         $('.change-language').select2();
         $('[data-toggle="tooltip"]').tooltip()
 
-        /** Show file manager */
-        $(".btn-elfinder").click(function () {
-            @php
-                $locale = session()->get('locale');
-                if($locale === 'cn'){
-                    $locale = 'zh_TW';
-                }
-            @endphp
-            openElfinder($(this), '{{ route("elfinder.connector") }}', '{{ asset("packages/barryvdh/elfinder/sounds") }}', "{{ $locale }}", '{{ csrf_token() }}');
-        })
+        /** Change Language */
+        changeLanguage();
 
+        /** Popup Notification */
         pusherNotification("{{ env('PUSHER_APP_KEY') }}", {{ Auth::id() }}, "{{ route("get.member.appointment","") }}");
     });
-
 </script>
+<script class="master-script">
+    /** Show file manager */
+    $(".btn-elfinder").click(function () {
+        openElfinder($(this), '{{ route("elfinder.connector") }}', '{{ asset("packages/barryvdh/elfinder/sounds") }}', '{{ csrf_token() }}');
+    })
+</script>
+
 @stack('js')
+
+@yield('script')
 </html>

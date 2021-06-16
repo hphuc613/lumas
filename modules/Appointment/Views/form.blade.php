@@ -221,6 +221,7 @@ $segment                 = Helper::segment(2);
             todayBtn: true,
             autoclose: true,
             fontAwesome: true,
+            container: '.datetime-modal'
         });
     });
 

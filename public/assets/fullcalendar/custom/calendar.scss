@@ -1,0 +1,25 @@
+@import "../../backend/css/main_seting";
+
+#fullcalendar {
+  max-height: 700px;
+}
+
+button.fc-button {
+  text-transform: capitalize !important;
+}
+
+.fc {
+  button {
+    background-color: $main-color !important;
+    border-color: $main-color !important;
+
+    &:focus {
+      box-shadow: inherit !important;
+    }
+
+    &.fc-button-active {
+      background-color: $main-fade-color !important;
+      border-color: $main-fade-color !important;
+    }
+  }
+}

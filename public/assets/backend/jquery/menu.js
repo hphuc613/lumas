@@ -134,5 +134,17 @@
                 $(this).next(".list-child-hide").hide();
             }
         }, "#has-child");
+
+        /** Top bar */
+        $(window).click(function (event) {
+            var click_over = $(event.target);
+            var _opened = $(".topbar .menu-sidebar").hasClass("show");
+            if (_opened === true && !click_over.parents(".menu-sidebar").length > 0) {
+                $('.topbar #list-menu').collapse('hide');
+                $('.topbar #languages').collapse('hide');
+            }
+
+            $('.topbar #notification-list').collapse('hide');
+        });
     })
 })(jQuery);

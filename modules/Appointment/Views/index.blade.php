@@ -1,16 +1,7 @@
 @extends("Base::layouts.master")
 @push('css')
     <link href='{{ asset('assets/fullcalendar/lib/main.css') }}' rel='stylesheet'/>
-    <style>
-        #fullcalendar {
-            max-height: 700px;
-        }
-
-        button.fc-button {
-            text-transform: capitalize !important;
-        }
-
-    </style>
+    <link href='{{ asset('assets/fullcalendar/custom/calendar.css') }}' rel='stylesheet'/>
 @endpush
 @section("content")
     <div id="appointment-module">
@@ -85,7 +76,7 @@
 @push('js')
     <script src='{{ asset('assets/fullcalendar/lib/main.js') }}'></script>
     <script src='{{ asset('assets/fullcalendar/lib/locales-all.js') }}'></script>
-    <script src='{{ asset('assets/backend/jquery/calendar.js') }}'></script>
+    <script src='{{ asset('assets/fullcalendar/custom/calendar.js') }}'></script>
     <script>
         $(document).ready(function () {
             $('#form-modal').on('hidden.bs.modal', function () {

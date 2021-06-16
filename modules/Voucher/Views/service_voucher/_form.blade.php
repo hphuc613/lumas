@@ -4,7 +4,6 @@ use App\AppHelpers\Helper;
 
 $prompt       = [null => trans('Select')];
 $segment      = Helper::segment(2);
-$request_type = request()->type;
 ?>
 <form action="" method="post" id="voucher-form">
     @csrf
@@ -68,17 +67,6 @@ $request_type = request()->type;
 </form>
 @if($segment === "create-popup")
     {!! JsValidator::formRequest('Modules\Voucher\Http\Requests\ServiceVoucherRequest') !!}
-    <script>
-        $(".btn-elfinder").click(function () {
-            @php
-                $locale = session()->get('locale');
-                if($locale === 'cn'){
-                    $locale = 'zh_TW';
-                }
-            @endphp
-            openElfinder($(this), '{{ route("elfinder.connector") }}', '{{ asset("packages/barryvdh/elfinder/sounds") }}', "{{ $locale }}", '{{ csrf_token() }}');
-        })
-    </script>
 @else
     @push('js')
         {!! JsValidator::formRequest('Modules\Voucher\Http\Requests\ServiceVoucherRequest') !!}

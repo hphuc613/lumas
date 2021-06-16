@@ -10,107 +10,10 @@ function setTheme(theme) {
     }
 }*/
 
-
-// Should work for most cases
-function uniqueId() {
-    return Math.round(new Date().getTime() + 1000 + (Math.random() * 100)) + 250;
-}
-
-function slideAlert(selector) {
-    if (selector !== undefined) {
-        selector.show().animate({
-            right: "10px"
-        }, 500);
-
-        setTimeout(function () {
-            selector.animate({
-                right: "-501px"
-            }, 3000);
-        }, 10000);
-        setTimeout(function () {
-            selector.remove();
-        }, 14000);
-    }
-}
-
-/** Elfinder Popup */
-function openElfinder(btn, url, soundPath, lang, csrf) {
-    var modal = '\n' +
-        '    <div class="modal fade" id="elfinder-show">\n' +
-        '        <div class="modal-dialog modal-lg" style="max-width: 90%">\n' +
-        '            <div class="modal-content">\n' +
-        '                <div class="modal-body">\n' +
-        '                    <div id="elfinder"></div>\n' +
-        '                </div>\n' +
-        '            </div>\n' +
-        '        </div>\n' +
-        '    </div>';
-
-    if ($('body').find('#elfinder-show').length === 0) {
-        $('body').append(modal);
-    }
-    $('#elfinder-show').modal();
-    $('#elfinder').elfinder({
-        debug: false,
-        lang: lang,
-        width: '100%',
-        height: '100%',
-        customData: {
-            _token: csrf
-        },
-        commandsOptions: {
-            getfile: {
-                onlyPath: true,
-                folders: false,
-                multiple: false,
-                oncomplete: 'destroy'
-            },
-            ui: 'uploadbutton'
-        },
-        mimeDetect: 'internal',
-        onlyMimes: [
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-            'image/gif'
-        ],
-        soundPath: soundPath,
-        url: url,
-        getFileCallback: function (file) {
-            $(btn).parents('.input-group').find('input').val(file.url)
-            $('#elfinder-show').modal('hide');
-        },
-        resizable: false
-    }).elfinder('instance');
-}
-
 $(document).ready(function () {
-    /** Topbar */
-    $(window).click(function (event) {
-        var clickover = $(event.target);
-        var _opened = $(".topbar .menu-sidebar").hasClass("show");
-        if (_opened === true && !clickover.parents(".menu-sidebar").length > 0) {
-            $('.topbar #list-menu').collapse('hide');
-            $('.topbar #languages').collapse('hide');
-        }
-
-        $('.topbar #notification-list').collapse('hide');
-    });
-
-    /***** Show alert *****/
-    slideAlert($('.alert-fade-out'));
-    if ($('.alert-primary').html() !== undefined) {
-        $('.alert-danger').css('top', '120px');
-    }
-    $('.alert-close').click(function () {
-        var parent = $(this).parent('.alert-fade-out');
-        parent.animate({
-            right: "-500px"
-        }, 1000);
-        setTimeout(function () {
-            parent.remove();
-        }, 2100);
-    });
+    //Select2
+    $(document).find('.select2').select2();
+    $('input.datetime, input.date, input.time, input.month, input.year').attr("autocomplete", "off")
 
     /***** Action delete *****/
     $(document).on('click', '.btn-delete', function (e) {
@@ -142,7 +45,7 @@ $(document).ready(function () {
         form.find('select').attr('disabled', 'disabled');
         form.trigger('submit');
     });
-    /***** Check all item in table *****/
+    /***** Action Check all item in table *****/
     $(document).on('click', '.select-all', function () {
         var class_child = $(this).attr('id');
         if (class_child !== '') {
@@ -160,8 +63,10 @@ $(document).ready(function () {
             $('input.checkbox-item').not(this).prop('checked', this.checked);
         }
     });
+
     /*********** Datetime Picker *************/
-    //VIETNAM CALENDAR
+//VIETNAM CALENDAR
+    var lang = $('html').attr('lang');
     $.fn.datetimepicker.dates['vn'] = {
         days: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy", "Chủ nhật"],
         daysShort: ["CNhật", "Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy", "CNhật"],
@@ -177,7 +82,8 @@ $(document).ready(function () {
         autoclose: true,
         todayHighlight: true,
         todayBtn: true,
-        language: $('html').attr('lang'),
+        language: lang,
+        container: '.datetime-modal'
         //VN Calendar
         /*format: 'dd-mm-yyyy HH:ii P',
         language: 'vn',
@@ -192,14 +98,16 @@ $(document).ready(function () {
                       // in decade current
         minView: 2,
         todayBtn: true,
-        language: $('html').attr('lang'),
+        language: lang,
+        container: '.datetime-modal'
     });
     $('input.time').datetimepicker({
         format: 'hh:ii',
         fontAwesome: true,
         autoclose: true,
         startView: 1,
-        language: $('html').attr('lang'),
+        language: lang,
+        container: '.datetime-modal'
     });
     $('input.month').datetimepicker({
         format: 'mm-yyyy',
@@ -207,7 +115,8 @@ $(document).ready(function () {
         autoclose: true,
         startView: 3,
         minView: 3,
-        language: $('html').attr('lang'),
+        language: lang,
+        container: '.datetime-modal'
     });
     $('input.year').datetimepicker({
         format: 'yyyy',
@@ -215,50 +124,8 @@ $(document).ready(function () {
         autoclose: true,
         startView: 4,
         minView: 4,
-        language: $('html').attr('lang'),
+        language: lang,
+        container: '.datetime-modal'
     });
     /***********************************************************************/
-
-    /** Checkbox Style**/
-    $.each($('input[type=checkbox]'), function (i, item) {
-        var checkbox_id = $(item).attr('id');
-        var parent = $(item).parent();
-        if (checkbox_id === null || checkbox_id === undefined) {
-            $(item).attr('id', uniqueId());
-            checkbox_id = $(item).attr('id');
-        }
-        if (parent.find('.checkmark').html() === undefined) {
-            var checkbox_group;
-            if (typeof $(item).attr('disabled') !== typeof undefined && $(item).attr('disabled') !== false) {
-                checkbox_group = parent.html() + '<span class="checkmark checkmark-disabled"></span>';
-            } else {
-                checkbox_group = parent.html() + '<span class="checkmark"></span>';
-            }
-            parent.html('');
-            var check_mark = '<label class="selection-style-label" for="' + checkbox_id + '">' + checkbox_group + '</label>';
-            parent.html(check_mark);
-        }
-    });
-
-    /** Radio Style**/
-    $.each($('input[type=radio]'), function (i, item) {
-        var radio_id = $(item).attr('id');
-        var parent = $(item).parent();
-        if (radio_id === null || radio_id === undefined) {
-            $(item).attr('id', uniqueId());
-            radio_id = $(item).attr('id');
-        }
-
-        if (parent.find('.radiomark').html() === undefined) {
-            var radio_group = parent.html() + '<span class="radiomark"></span>';
-            parent.html('');
-            var radio_mark = '<label class="selection-style-label" for="' + radio_id + '">' + radio_group + '</label>';
-            parent.html(radio_mark);
-        }
-    });
-
-    $('input[type="file"]').change(function (e) {
-        var file_name = e.target.files[0].name;
-        $(this).siblings('label#upload-display').html('<i class="fas fa-upload"></i> ' + file_name);
-    });
 });
