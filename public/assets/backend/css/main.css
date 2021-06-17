@@ -3,7 +3,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c9c9c9;
+  background: rgba(201, 201, 201, 0.34);
   border-radius: 10px;
 }
 
@@ -258,6 +258,9 @@ a:hover, .menu-sidebar li a.active {
   border-color: #cbcbcb;
   box-shadow: 0 0 0 0.2rem #9a9a9a33;
 }
+.select2-container .select2-results .select2-results__options .select2-results__option {
+  border-bottom: 1px solid #C9C9C956;
+}
 
 .form-group {
   /** Validation **/
@@ -454,7 +457,7 @@ input[type=checkbox].checkbox-style:checked ~ .checkmark {
   background-color: #848484;
 }
 input[type=checkbox].checkbox-style:checked ~ .checkmark.checkmark-disabled {
-  background-color: #c9c9c9;
+  background-color: rgba(201, 201, 201, 0.34);
 }
 input[type=checkbox].checkbox-style:checked ~ .checkmark:after {
   display: block;

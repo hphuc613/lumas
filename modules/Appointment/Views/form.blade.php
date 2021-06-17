@@ -218,6 +218,7 @@ $segment                 = Helper::segment(2);
         $('input.datetime').datetimepicker({
             format: 'dd-mm-yyyy hh:ii',
             language: $('html').attr('lang'),
+            todayHighlight: true,
             todayBtn: true,
             autoclose: true,
             fontAwesome: true,

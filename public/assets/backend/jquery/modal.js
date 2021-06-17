@@ -1,6 +1,7 @@
 $(document).ready(function () {
     $('.modal-ajax').on('hidden.bs.modal', function () {
         $(document).find('.datetime-modal').html('');
+        $(document).find('.modal-ajax .modal-body').html('');
         loadScriptTag();
     })
     /** Modal Ajax */
@@ -8,26 +9,22 @@ $(document).ready(function () {
         var modal = $(this).attr('data-target');
         var title = $(this).attr('data-title');
         var url = $(this).attr('href');
-        getFormView(modal, title, url);
+        if ($(modal).hasClass('modal-ajax')) {
+            $.ajax({
+                async: true,
+                url: url,
+                type: 'GET',
+            }).done(function (response) {
+                var html = response;
+                $(modal).find('.modal-header h5').html(title);
+                $(modal).find('.modal-body').html(html);
+                $(modal).find('form').attr('action', url);
+                loadScriptTag();
+            });
+        }
     });
 
 });
-
-function getFormView(modal, title, url) {
-    if ($(modal).hasClass('modal-ajax')) {
-        $.ajax({
-            async: true,
-            url: url,
-            type: 'GET',
-        }).done(function (response) {
-            var html = response;
-            $(modal).find('.modal-header h5').html(title);
-            $(modal).find('.modal-body').html(html);
-            $(modal).find('form').attr('action', url);
-            loadScriptTag();
-        });
-    }
-}
 
 function loadScriptTag() {
     const body = $('body');

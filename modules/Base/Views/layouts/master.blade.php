@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ (!empty(\App::getLocale())) ? \App::getLocale() : 'en' }}">
+<html lang="{{ (!empty(App::getLocale())) ? App::getLocale() : 'en' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,8 +11,11 @@
     <link href="{{ asset('assets/fontawesome/css/all.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.css') }}">
+    {{-- Datetimepicker   --}}
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/datetimepicker/css/datetimepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/bootstrap/datetimepicker/css/datetimepicker-custom.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/backend/css/main.css') }}">
+    {{-- Elfinder  --}}
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/barryvdh/elfinder/css/elfinder.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/barryvdh/elfinder/css/theme.css') }}">
@@ -52,7 +55,6 @@
         {{ session('warning') }}
     </div>
 @endif
-<div class="datetime-modal position-relative"></div>
 <!-- Footer -->
 </body>
 <script src="{{ asset('assets/jquery/jquery-3.5.1.min.js') }}"></script>
@@ -70,11 +72,11 @@
 <script src="{{ asset('assets/jquery/moment-with-locales.min.js') }}"></script>
 <script src="{{ asset('vendor/barryvdh/elfinder/js/elfinder.full.js') }}"></script>
 <script src="{{ asset('vendor/barryvdh/elfinder/js/i18n/elfinder.zh_TW.js') }}"></script>
-<script src="{{ asset('assets/backend/jquery/style.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/modal.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/menu.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/custom.js') }}"></script>
-<script class="master-script" src="{{ asset('assets/backend/jquery/main.js') }}"></script>
+<script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
+<script class="master-script" src="{{ asset('assets/backend/jquery/modal-init-script.js') }}"></script>
 <script>
     $(document).ready(function () {
         $('.select2').select2();
@@ -83,7 +85,7 @@
 
         /** Change Language */
         changeLanguage();
-
+        showAlert($('.alert-fade-out'));
         /** Popup Notification */
         pusherNotification("{{ env('PUSHER_APP_KEY') }}", {{ Auth::id() }}, "{{ route("get.member.appointment","") }}");
     });
