@@ -21,5 +21,5 @@
         <label for="signature">{{ trans("Signature") }}</label>
         <input type="text" name="signature" id="signature" class="form-control">
     </div>
-    <button type="submit" class="btn btn-primary">{{ trans("Submit") }}</button>
+    <button type="submit" class="btn btn-main-color">{{ trans("Submit") }}</button>
 </form>

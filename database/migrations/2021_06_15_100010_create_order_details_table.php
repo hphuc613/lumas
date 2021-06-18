@@ -18,6 +18,7 @@ class CreateOrderDetailsTable extends Migration{
             $table->double('product_price');
             $table->unsignedInteger('voucher_id')->nullable();
             $table->double('voucher_price')->nullable();
+            $table->integer('price');
             $table->integer('quantity');
             $table->double('amount')->nullable();
             $table->timestamps();

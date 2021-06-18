@@ -18,7 +18,9 @@ $(document).ready(function () {
                 var html = response;
                 $(modal).find('.modal-header h5').html(title);
                 $(modal).find('.modal-body').html(html);
-                $(modal).find('form').attr('action', url);
+                if ($(modal).find('form').attr('action') === "") {
+                    $(modal).find('form').attr('action', url);
+                }
                 loadScriptTag();
             });
         }

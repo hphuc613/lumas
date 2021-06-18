@@ -13,10 +13,12 @@
     </div>
 </section>
 <input type="hidden" id="chart_appointment_data" value="{{ json_encode($chart_data['appointment']) }}">
+<input type="hidden" id="chart_order_data" value="{{ json_encode($chart_data['order']) }}">
 @push('js')
     <script>
         const labels = getMonthToCurrentInYear(true);
         /** Order Chart */
+        var order_data = JSON.parse($('#chart_order_data').val());
         const data_order = {
             labels: labels,
             datasets: [{
@@ -24,7 +26,7 @@
                 label: "{{ trans('Revenue/Month') }}",
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: [3000000, 16000000, 52000000, 35000000, 19000000, 72000000],
+                data: order_data.paid,
             }]
         };
 
@@ -41,9 +43,9 @@
                         callbacks: {
                             label: function (context) {
                                 if (context.parsed.y !== null) {
-                                    var html = new Intl.NumberFormat('zh-CN', {
+                                    var html = new Intl.NumberFormat('en-HK', {
                                         style: 'currency',
-                                        currency: 'CNY'
+                                        currency: 'HKD'
                                     }).format(context.parsed.y);
                                 }
                                 return html;

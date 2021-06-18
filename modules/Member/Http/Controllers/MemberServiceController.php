@@ -3,8 +3,6 @@
 namespace Modules\Member\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
-use ErrorException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -12,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
-use Modules\Member\Http\Requests\MemberServiceRequest;
 use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberService;
 use Modules\Member\Model\MemberServiceHistory;
@@ -80,29 +77,11 @@ class MemberServiceController extends Controller{
     }
 
     /**
-     * @param MemberServiceRequest $request
-     * @param $id
-     * @return RedirectResponse
-     * @throws ErrorException
-     */
-    public function postAdd(MemberServiceRequest $request){
-        $data                  = $request->all();
-        $member_service        = new MemberService($data);
-        $member_service->code  = $member_service->generateCode();
-        $member_service->price =
-            !empty($member_service->voucher_id) ? $member_service->voucher->price : $member_service->service->price;
-
-        $member_service->save();
-        $request->session()->flash('success', trans("Service added successfully."));
-        return redirect()->back();
-    }
-
-    /**
      * @param Request $request
      * @param $id
      * @return Application|Factory|View
      */
-    public function getEdit(Request $request, $id){
+    public function getView(Request $request, $id){
         $filter                = $request->all();
         $query_member_services = new MemberService();
 
@@ -152,43 +131,6 @@ class MemberServiceController extends Controller{
         return view('Member::backend.member_service.index',
             compact('member', 'services', 'member_services', 'member_service', 'vouchers', 'histories',
                 'completed_member_services', 'filter', 'statuses', 'search_services', 'search_completed_services', 'progressing_services'));
-    }
-
-    /**
-     * @param MemberServiceRequest $request
-     * @param $id
-     * @return RedirectResponse
-     */
-    public function postEdit(MemberServiceRequest $request, $id){
-        $data           = $request->all();
-        $member_service = MemberService::find($id);
-
-        /** Check when no Voucher */
-        $check_no_voucher = empty($member_service->voucher_id)
-            && (int)$member_service->price !== (int)$member_service->service->price;
-
-        /** Check when has Voucher */
-        $check_has_voucher = false;
-        if(!empty($member_course->voucher_id)){
-            $voucher              = $member_service->voucher;
-            $check_active_voucher =
-                (!empty($voucher->end_at) && strtotime($voucher->end_at) < strtotime(Carbon::today()))
-                || $voucher->status !== Status::STATUS_ACTIVE; //Check Voucher Active
-            $check_has_voucher    = !empty($member_service->voucher_id) && $check_active_voucher;
-        }
-
-        if($check_no_voucher || $check_has_voucher){
-            $request->session()
-                    ->flash('error', trans("Cannot updated! It seems the price of this service or voucher is too old. Please create a new one."));
-            return redirect()->back();
-        }
-
-        $data['quantity'] = (int)$member_service->quantity + (int)$data['add_more_quantity'];
-        unset($data['add_more_quantity']);
-        $member_service->update($data);
-
-        $request->session()->flash('success', trans("Service edited successfully."));
-        return redirect()->back();
     }
 
     /**

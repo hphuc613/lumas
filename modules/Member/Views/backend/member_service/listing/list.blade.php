@@ -28,7 +28,7 @@
                     </li>
                 @endif
             </ul>
-            @php($route_form_search = !isset($member_service) ? route('get.member_service.add', $member->id) : route('get.member_service.edit', $member_service->id))
+            @php($route_form_search = !isset($member_service) ? route('get.member_service.add', $member->id) : route('get.member_service.view', $member_service->id))
             <div class="tab-content">
                 <div class="tab-pane fade
         @if(!isset($filter['code_completed']) && !isset($filter['service_search_completed'])) show active @endif"
@@ -46,7 +46,7 @@
                                         'style' => 'width: 100%']) !!}
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <button class="btn btn-primary"
+                                    <button class="btn btn-main-color"
                                             type="submit">{{ trans("Search") }}</button>
                                 </div>
                             </div>
@@ -99,13 +99,13 @@
                                         </td>
                                         <td class="text-center">{{ $value->getRemaining() }}</td>
                                         <td>{{ $value->quantity }}</td>
-                                        <td>{{ $value->price }}</td>
-                                        <td>{{ $value->price * $value->quantity }}</td>
+                                        <td>{{ moneyFormat($value->price, 0) }}</td>
+                                        <td>{{ moneyFormat($value->price * $value->quantity, 0) }}</td>
                                         <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('get.member_service.edit',$value->id) }}"
-                                               class="btn btn-primary">
-                                                <i class="fas fa-pencil-alt"></i></a>
+                                            <a href="{{ route('get.member_service.view',$value->id) }}"
+                                               class="btn btn-outline-primary">
+                                                <i class="fas fa-eye"></i></a>
                                             <a href="{{ route('get.member_service.delete',$value->id) }}"
                                                class="btn btn-danger btn-delete">
                                                 <i class="fas fa-trash-alt"></i></a>
@@ -140,7 +140,7 @@
                                         'style' => 'width: 100%']) !!}
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <button class="btn btn-primary"
+                                    <button class="btn btn-main-color"
                                             type="submit">{{ trans("Search") }}</button>
                                 </div>
                             </div>
@@ -191,12 +191,12 @@
                                         </td>
                                         <td class="text-center">{{ $value->getRemaining() }}</td>
                                         <td>{{ $value->quantity }}</td>
-                                        <td>{{ $value->price }}</td>
-                                        <td>{{ $value->price * $value->quantity }}</td>
+                                        <td>{{ moneyFormat($value->price, 0) }}</td>
+                                        <td>{{ moneyFormat($value->price * $value->quantity, 0) }}</td>
                                         <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('get.member_service.edit',$value->id) }}"
-                                               class="btn btn-primary">
+                                            <a href="{{ route('get.member_service.view',$value->id) }}"
+                                               class="btn btn-outline-primary">
                                                 <i class="fas fa-eye"></i></a>
                                         </td>
                                     </tr>

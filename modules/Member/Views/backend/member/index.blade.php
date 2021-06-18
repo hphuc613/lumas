@@ -18,7 +18,7 @@
                     <i class="fa fa-plus"></i>
                     {{ trans("Import Client") }}
                 </a>
-                <a href="{{ route("get.member.create") }}" class="btn btn-primary"><i class="fa fa-plus"></i>
+                <a href="{{ route("get.member.create") }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
                     {{ trans("Add New") }}
                 </a>
             </div>
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans("Search") }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans("Search") }}</button>
                         <button type="button" class="btn btn-default clear">{{ trans("Cancel") }}</button>
                     </div>
                 </form>
@@ -90,7 +90,7 @@
                             <th width="200px">{{ trans('Status') }}</th>
                             <th>{{ trans('Created At') }}</th>
                             <th>{{ trans('Updated At') }}</th>
-                            <th class="text-center" style="width: 10%">{{ trans('Action') }}</th>
+                            <th style="width: 200px;" class="text-center">{{ trans('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -112,9 +112,11 @@
                                 <td>{{ \Carbon\Carbon::parse($member->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($member->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="text-center">
+                                    <a href="{{ route("get.order.list",['member_id' => $member->id]) }}"
+                                       class="btn btn-outline-primary"><i class="fas fa-file-invoice"></i></a>
                                     <a href="{{ route('get.member.appointment',$member->id) }}"
                                        class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
-                                    <a href="{{ route('get.member.update',$member->id) }}" class="btn btn-primary">
+                                    <a href="{{ route('get.member.update',$member->id) }}" class="btn btn-main-color">
                                         <i class="fas fa-pencil-alt"></i></a>
                                     <a href="{{ route('get.member.delete',$member->id) }}"
                                        class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>

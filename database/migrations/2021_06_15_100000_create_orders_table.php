@@ -15,11 +15,12 @@ class CreateOrdersTable extends Migration{
             $table->id();
             $table->string('code');
             $table->unsignedInteger('member_id');
-            $table->unsignedInteger('user_id');
             $table->unsignedInteger('remarks')->nullable();
             $table->double('total_price')->default(0);
             $table->smallInteger('status')->default(1);
             $table->string('order_type');
+            $table->unsignedInteger('created_by');
+            $table->unsignedInteger('updated_by');
             $table->timestamps();
         });
     }

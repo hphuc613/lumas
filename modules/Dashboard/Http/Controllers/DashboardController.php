@@ -32,6 +32,7 @@ class DashboardController extends Controller{
         $appointment_data = Dashboard::getAppointmentData();
 
         $chart_data['appointment'] = Dashboard::getChartAppointmentData();
+        $chart_data['order']       = Dashboard::getChartOrderData();
 
         return view('Dashboard::index', compact('count_data', 'appointment_data', 'chart_data'));
     }

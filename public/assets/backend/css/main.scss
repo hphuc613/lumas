@@ -388,15 +388,6 @@ table {
     }
   }
 
-  &.access-control {
-    tr {
-      &:hover {
-        background-color: rgb(255 0 0 / 4%) !important;
-      }
-    }
-  }
-
-
   &.table-fixed {
     tbody {
       display: block;
@@ -725,6 +716,14 @@ input[type='file'] {
   span {
     font-weight: bold;
     color: darkblue;
+  }
+}
+
+.product-cart {
+  .cart {
+    .icon, .number-item {
+      padding: .375rem .75rem;
+    }
   }
 }
 

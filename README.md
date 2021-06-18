@@ -10,22 +10,24 @@ II. Set .env file
     DB_USERNAME=root
     DB_PASSWORD=
     
-III. Install laravel in root folder project
-    Run this command:
-    
+III. Install laravel in root folder project Run this command:
+
         composer install
-        
-IV. Migrate base table
-    Run this command:
-                       
+
+IV. Migrate base table Run this command:
+
         php artisan migrate
-        
-V. Run permission
-    Run this command:
-     
+
+V. Run permission Run this command:
+
         php artisan permissions:update
 
 VI. Generate Application Key:
+Run this command:
 
         php artisan key:generate
 
+VI. Generate Data Fake:
+Run this command:
+
+        php artisan db:seed

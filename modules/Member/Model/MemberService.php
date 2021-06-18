@@ -71,8 +71,8 @@ class MemberService extends BaseModel{
      */
     public static function getStatus(){
         return [
-            self::COMPLETED_STATUS   => 'Completed',
-            self::PROGRESSING_STATUS => 'Progressing'
+            self::COMPLETED_STATUS   => trans('Completed'),
+            self::PROGRESSING_STATUS => trans('Progressing')
         ];
     }
 
@@ -107,7 +107,7 @@ class MemberService extends BaseModel{
     /**
      * @return string
      */
-    public function generateCode() {
+    public function generateCode(){
         return 'LMC' . $this->member->id . 'SV' . $this->service->id . 'T' . time();
     }
 
@@ -115,8 +115,8 @@ class MemberService extends BaseModel{
      * @param $data
      * @param $appointment
      */
-    public function eSign($data, $appointment) {
-        if (empty($data['signature'])) {
+    public function eSign($data, $appointment){
+        if(empty($data['signature'])){
             $data['signature'] = Auth::user()->name;
         }
 
@@ -129,10 +129,55 @@ class MemberService extends BaseModel{
         $history->save();
     }
 
+
+    /**
+     * @param $data
+     * @return bool
+     */
+    public static function insertData($data){
+        $member_service = self::query()
+                              ->where('member_id', $data['member_id'])
+                              ->where('service_id', $data['service_id'])
+                              ->where('voucher_id', $data['voucher_id'])
+                              ->where('price', $data['price'])
+                              ->whereRaw('deduct_quantity < quantity')
+                              ->first();
+
+        if(empty($member_service)){
+            $member_service        = new MemberService($data);
+            $member_service->code  = $member_service->generateCode();
+            $member_service->price =
+                !empty($member_service->voucher_id) ? $member_service->voucher->price : $member_service->service->price;
+            $member_service->save();
+        }else{
+
+            /** Check when no Voucher */
+            if(empty($member_service->voucher_id)){
+                $check_same_price = (int)$member_service->price === (int)$member_service->service->price;
+            }else{
+                $voucher          = $member_service->voucher;
+                $check_same_price = (int)$voucher->price === (int)$member_service->price;
+            }
+
+            if($check_same_price){
+                $data['quantity'] = (int)$member_service->quantity + (int)$data['quantity'];
+                $member_service->update($data);
+            }else{
+                $member_service        = new MemberService($data);
+                $member_service->code  = $member_service->generateCode();
+                $member_service->price =
+                    !empty($member_service->voucher_id) ? $member_service->voucher->price : $member_service->service->price;
+                $member_service->save();
+            }
+        }
+
+        return true;
+    }
+
     /**
      * @return BelongsTo
      */
-    public function member() {
+    public function member(){
         return $this->belongsTo(Member::class, "member_id");
     }
 

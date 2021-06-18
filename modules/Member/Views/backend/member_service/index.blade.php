@@ -31,7 +31,7 @@
                         &nbsp; {{ trans('Check In Appointment Here') }}
                     </a>
                 @endif
-                <a href="{{ route('get.member_service.add', $member->id) }}" class="btn btn-primary">
+                <a href="{{ route('get.member_service.add', $member->id) }}" class="btn btn-main-color">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
             </div>
@@ -40,14 +40,18 @@
 
     <div id="member_service" class="card">
         <div class="card-body">
-            @include('Member::backend.member_service.service_progressing')
+            @include('Member::backend.member_service.listing.progressing')
             <div class="row">
                 <div class="col-md-4">
-                    @include('Member::backend.member_service._form')
+                    @if(!isset($member_service))
+                        @include('Member::backend.member_service._form')
+                    @else
+                        @include('Member::backend.member_service.view')
+                    @endif
                 </div>
-                    @include('Member::backend.member_service.service_list')
+                @include('Member::backend.member_service.listing.list')
                 <div class="col-md-12 mt-5">
-                    @include('Member::backend.member_service.history')
+                    @include('Member::backend.member_service.listing.history')
                 </div>
             </div>
         </div>

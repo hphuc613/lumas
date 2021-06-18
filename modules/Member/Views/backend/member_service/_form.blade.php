@@ -1,26 +1,39 @@
+@php
+    use Modules\Member\Model\Member;
+    use Modules\Member\Model\MemberService;
+    /**
+     * @var Member $member
+     * @var MemberService $member_service
+     */
+    $member = $member ?? $member_service->member
+@endphp
 <div class="card">
     <div class="card-header d-flex justify-content-between">
-        <h5>{{ !isset($member_service) ? trans("Add Service") : trans("Update Service") }}</h5>
-        <div class="group-btn">
-            @if(isset($member_service))
-                @if($member_service->getRemaining() > 0 && $member_service->status === \Modules\Member\Model\MemberService::PROGRESSING_STATUS)
-                    <a href="{{ route('get.member_service.e_sign',$member_service->id) }}"
-                       class="btn btn-info" data-toggle="modal" data-target="#form-modal"
-                       data-title="{{ trans('E-sign') }}">
-                        <i class="fas fa-file-signature"></i>
-                    </a>
-                @endif
+        <h5>{{ trans("Add Service") }}</h5>
+        <div class="group-btn product-cart">
+            @if(!empty($member->getDraftOrder()))
+                <a href="{{ route('get.order.add_to_cart',[\Modules\Order\Model\Order::SERVICE_TYPE, $member->id]) }}"
+                   class="btn btn-outline-info p-0"
+                   data-toggle="modal"
+                   data-title="Order Detail"
+                   data-target="#form-modal">
+                    <div class="cart d-flex justify-content-between">
+                        <div class="icon">
+                            <i class="fas fa-cart-plus"></i> &nbsp;
+                        </div>
+                        <span class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder())->orderDetails)->count() ?? 0}}</span>
+                    </div>
+                </a>
             @endif
-            <a href="{{ route('get.service_voucher.create_popup',["type" => 'service']) }}" class="btn btn-primary"
+            <a href="{{ route('get.service_voucher.create_popup') }}" class="btn btn-main-color"
                data-toggle="modal"
                data-target="#form-modal" data-title="{{ trans('Create Voucher') }}">
                 <i class="fa fa-plus"></i> &nbsp; {{ trans('Add Voucher') }}
             </a>
         </div>
     </div>
-    @php($route_form = !isset($member_service) ? route('post.member_service.add', $member->id) : route('post.member_service.edit', $member_service->id))
     <div class="card-body">
-        <form action="{{$route_form}}" method="post">
+        <form action="{{ route('post.order.add_to_cart') }}" method="post">
             @csrf
             <div class="row">
                 <div class="form-group col-md-6">
@@ -32,98 +45,35 @@
                         </a>
                     </h5>
                 </div>
-                <div class="form-group col-md-6">
-                    @if(isset($member_service))
-                        <label>{{ trans("Code") }}</label>
-                        <h5 class="text-info">
-                            {{ $member_service->code }}
-                        </h5>
-                    @endif
-                </div>
+                <div class="form-group col-md-6"></div>
                 <div class="form-group col-md-6">
                     <label for="service-form">{{ trans("Service") }}</label>
-                    {!! Form::select('service_id', $prompt + $services, $member_service->service_id ?? null, [
+                    {!! Form::select('service_id', $prompt + $services, NULL, [
                     'id' => 'service-form',
                     'class' => 'select2 form-control service service-relate',
                     'style' => 'width: 100%']) !!}
-                    @if(isset($member_service))
-                        <input type="hidden" name="service_id" value="{{ $member_service->service_id }}">
-                    @endif
+                    <input type="hidden" name="order_type" value="{{ \Modules\Order\Model\Order::SERVICE_TYPE }}">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="voucher">{{ trans("Voucher") }}</label>
-                    @if(!isset($member_service))
-                        <select name="voucher_id" id="voucher" class="select2 form-control w-100">
-                            <option value="">{{ trans("Please Select Service") }}</option>
-                        </select>
-                    @else
-                        {!! Form::select('voucher_id', $prompt + $vouchers, $member_service->voucher_id ?? null, [
-                        'id' => 'voucher',
-                        'class' => 'select2 form-control service-relate',
-                        'style' => 'width: 100%']) !!}
-                        @if(isset($member_service))
-                            <input type="hidden" name="voucher_id" value="{{ $member_service->voucher_id }}">
-                        @endif
-                    @endif
+                    <select name="voucher_id" id="voucher" class="select2 form-control w-100">
+                        <option value="">{{ trans("Please Select Service") }}</option>
+                    </select>
                 </div>
-                @if(isset($member_service))
-                    <div class="form-group col-md-6">
-                        <label for="remaining-quantity">{{ trans("Total Quantity") }}</label>
-                        <h5 class="text-danger">
-                            {{ $member_service->quantity }}
-                        </h5>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="remaining-quantity">{{ trans("Remaning Quantity") }}</label>
-                        <h5 class="text-danger">
-                            {{ $member_service->getRemaining() }}
-                        </h5>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="status">{{ trans("Price") }}</label>
-                        <h5 class="text-danger">
-                            {{ $member_service->price }}
-                        </h5>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="status">{{ trans("Total Price") }}</label>
-                        <h5 class="text-danger">
-                            {{ $member_service->price * $member_service->quantity }}
-                        </h5>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="status">{{ trans("Status") }}</label>
-                        {!! Form::select('status', $statuses, $member_service->status ?? null, [
-                        'id' => 'status',
-                        'class' => 'select2 form-control service-relate',
-                        'style' => 'width: 100%']) !!}
-                    </div>
-                @endif
                 <div class="form-group col-md-6">
-                    @if(isset($member_service))
-                        <label for="add-more-quantity">{{ trans("Add More Quantity") }}</label>
-                        <input type="number" name="add_more_quantity" id="add-more-quantity" class="form-control"
-                               @if(isset($member_service) && $member_service->getRemaining() == 0) readonly @endif>
-                    @else
-                        <label for="quantity">{{ trans("Quantity") }} </label>
-                        <input type="number" name="quantity" id="quantity" class="form-control">
-                    @endif
-
+                    <label for="quantity">{{ trans("Quantity") }} </label>
+                    <input type="number" name="quantity" id="quantity" class="form-control">
                 </div>
                 <div class="form-group col-md-12">
-                    <label for="remarks">{{ trans("Remarks") }}</label>
-                    <textarea class="form-control" name="remarks" id="description"
-                              @if(isset($member_service) && $member_service->getRemaining() == 0) readonly @endif
-                              rows="5">{{ $member_service->remarks ?? old('remarks') }}</textarea>
+                    <label for="remarks">{{ trans("Remarks") }} </label>
+                    <textarea name="remarks" class="form-control" rows="5"></textarea>
                 </div>
             </div>
-            @if(!isset($member_service) || $member_service->getRemaining() > 0)
-                <div class="input-group">
-                    <button type="submit" class="btn btn-primary" id="btn-add-service">
-                        @if(isset($member_service)) {{ trans("Update") }} @else {{ trans("Add") }} @endif
-                    </button>
-                </div>
-            @endif
+            <div class="mt-3 input-group">
+                <button type="submit" class="btn btn-main-color" id="btn-add-service">
+                    {{ trans("Add") }}
+                </button>
+            </div>
         </form>
     </div>
 </div>
@@ -134,15 +84,14 @@
         $(document).on('change', '#service-form', function () {
             var service = $(this);
             var service_id = service.val();
-            $.ajax({
-                url: "{{ route('get.service_voucher.get_list_by_service',"") }}/" + service_id,
-                method: "get"
-            }).done(function (response) {
-                service.parents('form').find('#voucher').html(response);
-            });
+            if (service_id !== '') {
+                $.ajax({
+                    url: "{{ route('get.service_voucher.get_list_by_service',"") }}/" + service_id,
+                    method: "get"
+                }).done(function (response) {
+                    service.parents('form').find('#voucher').html(response);
+                });
+            }
         });
-        @if(isset($member_service))
-        $(".service-relate").prop("disabled", true);
-        @endif
     </script>
 @endpush

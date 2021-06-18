@@ -78,7 +78,7 @@
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $service->name }}</td>
-                                <td>{{ $service->price }}</td>
+                                <td>{{ number_format($service->price) }}</td>
                                 <td>{{ $service->type->name }}</td>
                                 <td>{{ \Modules\Base\Model\Status::getStatus($service->status) ?? NULL }}</td>
                                 <td>{{ \Carbon\Carbon::parse($service->created_at)->format('d/m/Y H:i:s')}}</td>

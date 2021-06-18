@@ -104,6 +104,7 @@ class Helper {
             $html .= '</div>';
             $html .= '</div>';
             $html .= '</div>';
+            $html .= '<div class="datetime-modal position-relative"></div>';
         }
         else {
             $html = '<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="form-modal" aria-hidden="true">';
@@ -118,6 +119,7 @@ class Helper {
             $html .= '</div>';
             $html .= '</div>';
             $html .= '</div>';
+            $html .= '<div class="datetime-modal position-relative"></div>';
         }
         return $html;
     }

@@ -68,8 +68,8 @@
                             @foreach($courses as $course)
                                 <tr>
                                     <td>{{$key++}}</td>
-                                    <td>{{ trans($course->name) }}</td>
-                                    <td>{{ trans($course->price) }}</td>
+                                    <td>{{ $course->name }}</td>
+                                    <td>{{ number_format($course->price) }}</td>
                                     <td>{{ \Modules\Base\Model\Status::getStatus($course->status) ?? null }}</td>
                                     <td>{{ \Carbon\Carbon::parse($course->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($course->updated_at)->format('d/m/Y H:i:s')}}</td>

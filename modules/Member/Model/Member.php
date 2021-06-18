@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\File;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
+use Modules\Order\Model\Order;
 
 class Member extends BaseMember{
     use SoftDeletes;
@@ -121,6 +122,13 @@ class Member extends BaseMember{
     }
 
     /**
+     * @return mixed
+     */
+    public function getDraftOrder(){
+        return $this->orders->where('status', Order::STATUS_DRAFT)->first();
+    }
+
+    /**
      * @return BelongsTo
      */
     public function type(){
@@ -146,6 +154,13 @@ class Member extends BaseMember{
      */
     public function memberCourses(){
         return $this->hasMany(MemberCourse::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function orders(){
+        return $this->hasMany(Order::class, 'member_id');
     }
 
 }

@@ -24,9 +24,6 @@
                     @php($key = 1)
                     @foreach($progressing_services as $value)
                         @if($value->status === \Modules\Member\Model\MemberService::PROGRESSING_STATUS)
-                            @php($total_price = !empty($value->voucher)
-                                    ? $value->voucher->price * $value->quantity
-                                    : $value->service->price * $value->quantity)
                             <tr>
                                 <td>{{$key++}}</td>
                                 <td>
@@ -51,12 +48,13 @@
                                 </td>
                                 <td class="text-center">{{ $value->getRemaining() }}</td>
                                 <td>{{ $value->quantity }}</td>
-                                <td>{{ $value->voucher->price ?? $value->service->price }}</td>
-                                <td>{{ $total_price }}</td>
+                                <td>{{ moneyFormat($value->price, 0) }}</td>
+                                <td>{{ moneyFormat($value->price * $value->quantity, 0) }}</td>
                                 <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">
-                                    <a href="{{ route('get.member_service.edit',$value->id) }}" class="btn btn-primary">
-                                        <i class="fas fa-pencil-alt"></i>
+                                    <a href="{{ route('get.member_service.view',$value->id) }}"
+                                       class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('get.member_service.out_progress',$value->id) }}"
                                        class="btn btn-danger">
