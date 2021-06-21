@@ -109,7 +109,7 @@
     <div class="col-md-12 mt-5 d-flex justify-content-between">
         @if(!$route_is_member_product)
             <div>
-                <button type="button" id="edit-btn" class="btn btn-primary mr-2">{{ trans('Edit') }}</button>
+                <button type="button" id="edit-btn" class="btn btn-main-color mr-2">{{ trans('Edit') }}</button>
             </div>
         @endif
         @if($appointment->checkProgressing() && $route_is_member_product)

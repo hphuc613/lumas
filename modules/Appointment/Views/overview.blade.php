@@ -14,7 +14,7 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Appointment Overview") }}</h3></div>
             <div class=""><a href="{{ route('get.appointment.list') }}"
-                             class="btn btn-primary">{{ trans("Calendar") }}</a></div>
+                             class="btn btn-main-color">{{ trans("Calendar") }}</a></div>
         </div>
     </div>
     <!--Search box-->
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans("Search") }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans("Search") }}</button>
                         <button type="button" class="btn btn-default clear">{{ trans("Cancel") }}</button>
                     </div>
                 </form>
@@ -108,7 +108,7 @@
                                 <td>{{ $appointment->getTotalIntendTimeService() . trans(' minutes') }}</td>
                                 <td class="text-center">
                                     <a href="{{ route("get.appointment.update",$appointment->id) }}"
-                                       class="btn btn-primary"
+                                       class="btn btn-main-color"
                                        id="update-booking" data-toggle="modal"
                                        data-target="#form-modal" data-title="{{ trans('Update Appointment') }}">
                                         <i class="fas fa-eye"></i>

@@ -51,7 +51,7 @@
                             <input type="password" id="re-enter-password" name="password_re_enter" class="form-control">
                         </div>
                         <div class="btn-group d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary w-100">{{ trans('Sign Up') }}</button>
+                            <button type="submit" class="btn btn-main-color w-100">{{ trans('Sign Up') }}</button>
                         </div>
                     </form>
                 </div>

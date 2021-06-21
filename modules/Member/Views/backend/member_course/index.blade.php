@@ -32,7 +32,7 @@
                         &nbsp; {{ trans('Check In Appointment Here') }}
                     </a>
                 @endif
-                <a href="{{ route('get.member_course.add', $member->id) }}" class="btn btn-primary">
+                <a href="{{ route('get.member_course.add', $member->id) }}" class="btn btn-main-color">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
             </div>

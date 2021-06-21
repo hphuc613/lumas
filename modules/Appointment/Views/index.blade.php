@@ -20,7 +20,7 @@
             @if($segment === "appointment")
                 <div class="p-3">
                     <a href="{{ route("get.appointment.overview") }}"
-                       class="btn btn-primary">{{ trans('Overview') }}</a>
+                       class="btn btn-main-color">{{ trans('Overview') }}</a>
                 </div>
             @endif
         </div>
@@ -48,7 +48,7 @@
                                 ['id' => 'appointment_type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
                             </div>
                             <a href="{{ route('get.appointment.create',['member_id' => $member->id ?? NULL, 'type' => $filter['type'] ?? 'service']) }}"
-                               id="create-booking" class="btn btn-primary"
+                               id="create-booking" class="btn btn-main-color"
                                data-toggle="modal"
                                data-target="#form-modal" data-title="{{ trans('Create Appointment') }}">
                                 <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}

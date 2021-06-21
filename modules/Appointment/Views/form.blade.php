@@ -159,7 +159,8 @@ $segment                 = Helper::segment(2);
             <div class="col-md-12 mt-5 d-flex justify-content-between">
                 @if(!$route_is_member_product)
                     <div>
-                        <button type="submit" id="submit-btn" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
+                        <button type="submit" id="submit-btn"
+                                class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
                         <button type="reset" class="btn btn-default" data-dismiss="modal">{{ trans('Cancel') }}</button>
                     </div>
                 @endif

@@ -53,7 +53,7 @@ $segment      = Helper::segment(2);
                 <input type="text" class="form-control" name="image" id="image"
                        value="{{ $voucher->image ?? old('image') }}">
                 <div class="input-group-prepend">
-                    <button class="btn btn-primary btn-elfinder"
+                    <button class="btn btn-main-color btn-elfinder"
                             type="button">{{ trans("Open File Manager") }}</button>
                 </div>
             </div>
@@ -61,7 +61,7 @@ $segment      = Helper::segment(2);
     </div>
 
     <div class="input-group">
-        <button type="submit" class="btn btn-primary mr-2">{{ trans("Save") }}</button>
+        <button type="submit" class="btn btn-main-color mr-2">{{ trans("Save") }}</button>
         <button type="reset" class="btn btn-default">{{ trans("Reset") }}</button>
     </div>
 </form>

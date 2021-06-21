@@ -13,7 +13,7 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Store Listing") }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route("get.store.create") }}" class="btn btn-primary"><i class="fa fa-plus"></i>
+                <a href="{{ route("get.store.create") }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
                     &nbsp; {{ trans("Add New") }}</a>
             </div>
         </div>
@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans("Search") }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans("Search") }}</button>
                         <button type="button" class="btn btn-default clear">{{ trans("Cancel") }}</button>
                     </div>
                 </form>
@@ -71,7 +71,8 @@
                                 <td>{{ $store->open_close_time }}</td>
                                 <td>{{ \Modules\Base\Model\Status::getStatus($store->status)}}</td>
                                 <td class="link-action">
-                                    <a href="{{ route('get.store.update', $store->id) }}" class="btn btn-primary mr-2">
+                                    <a href="{{ route('get.store.update', $store->id) }}"
+                                       class="btn btn-main-color mr-2">
                                         <i class="fas fa-pencil-alt"></i></a>
                                     <a href="{{ route('get.user.delete',$store->id) }}"
                                        class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>

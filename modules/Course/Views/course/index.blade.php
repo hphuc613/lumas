@@ -13,7 +13,7 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans('Course Listing') }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.course.create') }}" class="btn btn-primary">
+                <a href="{{ route('get.course.create') }}" class="btn btn-main-color">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
             </div>
@@ -37,7 +37,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <button type="submit" class="btn btn-primary mr-2">{{ trans('Search') }}</button>
+                            <button type="submit" class="btn btn-main-color mr-2">{{ trans('Search') }}</button>
                             <button type="button" class="btn btn-default clear">{{ trans('Cancel') }}</button>
                         </div>
                     </form>
@@ -69,13 +69,13 @@
                                 <tr>
                                     <td>{{$key++}}</td>
                                     <td>{{ $course->name }}</td>
-                                    <td>{{ number_format($course->price) }}</td>
+                                    <td>{{ moneyFormat($course->price, 0) }}</td>
                                     <td>{{ \Modules\Base\Model\Status::getStatus($course->status) ?? null }}</td>
                                     <td>{{ \Carbon\Carbon::parse($course->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($course->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
                                         <a href="{{ route('get.course.update',$course->id) }}"
-                                           class="btn btn-primary mr-2">
+                                           class="btn btn-main-color mr-2">
                                             <i class="fas fa-pencil-alt"></i></a>
                                         <a href="{{ route('get.course.delete',$course->id) }}"
                                            class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>

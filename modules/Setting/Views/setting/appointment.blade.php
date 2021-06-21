@@ -34,7 +34,7 @@
                 </div>
                 <div class="input-group mt-5 d-flex justify-content-between">
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
                         <button type="reset" class="btn btn-default">{{ trans('Reset') }}</button>
                     </div>
                 </div>

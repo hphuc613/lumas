@@ -13,7 +13,7 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans('Service Type Listing') }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.service_type.create') }}" class="btn btn-primary" data-toggle="modal"
+                <a href="{{ route('get.service_type.create') }}" class="btn btn-main-color" data-toggle="modal"
                    data-target="#form-modal" data-title="{{ trans('Create Service Type') }}">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <button type="submit" class="btn btn-primary mr-2">{{ trans('Search') }}</button>
+                            <button type="submit" class="btn btn-main-color mr-2">{{ trans('Search') }}</button>
                             <button type="button" class="btn btn-default clear">{{ trans('Cancel') }}</button>
                         </div>
                     </form>
@@ -74,7 +74,7 @@
                                     <td>{{ \Carbon\Carbon::parse($service_type->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
                                         <a href="{{ route('get.service_type.update',$service_type->id) }}"
-                                           class="btn btn-primary mr-2"
+                                           class="btn btn-main-color mr-2"
                                            data-toggle="modal" data-title="{{ trans('Update Service Type') }}"
                                            data-target="#form-modal">
                                             <i class="fas fa-pencil-alt"></i></a>

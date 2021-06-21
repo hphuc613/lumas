@@ -17,11 +17,11 @@
                         @csrf
                         <div class="form-group">
                             <label
-                                for="email">{{ trans('Enter your registered email below, We will send you a new password') }}</label>
+                                    for="email">{{ trans('Enter your registered email below, We will send you a new password') }}</label>
                             <input type="email" id="email" name="email" class="form-control">
                         </div>
                         <div class="btn-group d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary w-100">{{ trans('Confirm') }}</button>
+                            <button type="submit" class="btn btn-main-color w-100">{{ trans('Confirm') }}</button>
                         </div>
                     </form>
                 </div>

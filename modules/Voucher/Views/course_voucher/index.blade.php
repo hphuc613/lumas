@@ -13,7 +13,7 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Course Voucher Listing") }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route("get.course_voucher.create") }}" class="btn btn-primary"><i class="fa fa-plus"></i>
+                <a href="{{ route("get.course_voucher.create") }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
                     &nbsp; {{ trans("Add New") }}</a>
             </div>
         </div>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans("Search") }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans("Search") }}</button>
                         <button type="button" class="btn btn-default clear">{{ trans("Cancel") }}</button>
                     </div>
                 </form>
@@ -79,14 +79,14 @@
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $voucher->code }}</td>
-                                <td>{{ number_format($voucher->price) }}</td>
+                                <td>{{ moneyFormat($voucher->price, 0) }}</td>
                                 <td>{{ formatDate(strtotime($voucher->start_at)) }}</td>
                                 <td>{{ $voucher->course->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($voucher->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">
                                     <a href="{{ route('get.course_voucher.update',$voucher->id) }}"
-                                       class="btn btn-primary mr-2">
+                                       class="btn btn-main-color mr-2">
                                         <i class="fas fa-pencil-alt"></i></a>
                                     <a href="{{ route('get.course_voucher.delete',$voucher->id) }}"
                                        class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>

@@ -82,7 +82,7 @@
                             </table>
                         </div>
                         <div class="btn-group mt-3">
-                            <button type="submit" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
+                            <button type="submit" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
                         </div>
                     </div>
                 </div>

@@ -34,7 +34,7 @@
                                            name="{{ \Modules\Setting\Model\Website::LOGO }}"
                                            value="{{ $setting[\Modules\Setting\Model\Website::LOGO] ?? null}}">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-primary btn-elfinder" type="button">
+                                        <button class="btn btn-main-color btn-elfinder" type="button">
                                             {{ trans('Open File Manager') }}
                                         </button>
                                     </div>
@@ -51,7 +51,8 @@
                                            name="{{ \Modules\Setting\Model\Website::BG_LOGIN }}"
                                            value="{{ $setting[\Modules\Setting\Model\Website::BG_LOGIN] ?? null}}">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-primary btn-elfinder" id="elfinder-popup" type="button">
+                                        <button class="btn btn-main-color btn-elfinder" id="elfinder-popup"
+                                                type="button">
                                             {{ trans('Open File Manager') }}
                                         </button>
                                     </div>
@@ -62,7 +63,7 @@
                 </div>
                 <div class="input-group mt-5 d-flex justify-content-between">
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
                         <button type="reset" class="btn btn-default">{{ trans('Reset') }}</button>
                     </div>
                 </div>

@@ -11,7 +11,7 @@
                     </a>
                 @endif
             @endif
-            <a href="{{ route('get.course_voucher.create_popup') }}" class="btn btn-primary"
+            <a href="{{ route('get.course_voucher.create_popup') }}" class="btn btn-main-color"
                data-toggle="modal"
                data-target="#form-modal" data-title="{{ trans('Create Voucher') }}">
                 <i class="fa fa-plus"></i> &nbsp; {{ trans('Add Voucher') }}
@@ -107,7 +107,7 @@
             </div>
             @if(!isset($member_course) || $member_course->getRemaining() > 0)
                 <div class="input-group">
-                    <button type="submit" class="btn btn-primary" id="btn-add-course">
+                    <button type="submit" class="btn btn-main-color" id="btn-add-course">
                         @if(isset($member_course)) {{ trans("Update") }} @else {{ trans("Add") }} @endif
                     </button>
                 </div>

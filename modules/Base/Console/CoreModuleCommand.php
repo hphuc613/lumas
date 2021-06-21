@@ -280,7 +280,7 @@ use Illuminate\Support\Facades\Route;
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("' . $module . ' Listing") }}</h3></div>
             <div class="group-btn">
-                <a href="#" class="btn btn-primary"><i class="fa fa-plus"></i> &nbsp; {{ trans("Add New") }}</a>
+                <a href="#" class="btn btn-main-color"><i class="fa fa-plus"></i> &nbsp; {{ trans("Add New") }}</a>
             </div>
         </div>
     </div>
@@ -301,7 +301,7 @@ use Illuminate\Support\Facades\Route;
                         </div>
                     </div>
                     <div class="input-group">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans("Search") }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans("Search") }}</button>
                         <button type="button" class="btn btn-default clear">{{ trans("Cancel") }}</button>
                     </div>
                 </form>

@@ -42,7 +42,7 @@
                                     'style' => 'width: 100%']) !!}
                             </div>
                             <div class="form-group col-md-4">
-                                <button class="btn btn-primary"
+                                <button class="btn btn-main-color"
                                         type="submit">{{ trans("Search") }}</button>
                             </div>
                         </div>
@@ -100,7 +100,7 @@
                                     <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
                                         <a href="{{ route('get.member_course.edit',$value->id) }}"
-                                           class="btn btn-primary">
+                                           class="btn btn-main-color">
                                             <i class="fas fa-pencil-alt"></i></a>
                                         <a href="{{ route('get.member_course.delete',$value->id) }}"
                                            class="btn btn-danger btn-delete">
@@ -136,7 +136,7 @@
                                     'style' => 'width: 100%']) !!}
                             </div>
                             <div class="form-group col-md-4">
-                                <button class="btn btn-primary"
+                                <button class="btn btn-main-color"
                                         type="submit">{{ trans("Search") }}</button>
                             </div>
                         </div>
@@ -192,7 +192,7 @@
                                     <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action text-center">
                                         <a href="{{ route('get.member_course.edit',$value->id) }}"
-                                           class="btn btn-primary">
+                                           class="btn btn-main-color">
                                             <i class="fas fa-eye"></i></a>
                                     </td>
                                 </tr>

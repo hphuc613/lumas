@@ -26,11 +26,12 @@
             <label for="description">{{ trans('Description') }}</label>
         </div>
         <div class="col-md-8">
-            <textarea name="description" id="description" class="form-control" rows="5">{{ $role->description ?? NULL }}</textarea>
+            <textarea name="description" id="description" class="form-control"
+                      rows="5">{{ $role->description ?? NULL }}</textarea>
         </div>
     </div>
     <div class="input-group mt-5">
-        <button type="submit" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
+        <button type="submit" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
         <button type="reset" class="btn btn-default" data-dismiss="modal">{{ trans('Cancel') }}</button>
     </div>
 </form>

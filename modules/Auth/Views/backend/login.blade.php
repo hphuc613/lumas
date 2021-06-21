@@ -45,10 +45,11 @@
                         <span class="checkbox-option pl-2">{{ trans('Remember me?') }}</span>
                     </div>
                     <div class="btn-group d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary w-100">{{ trans('Login') }}</button>
+                        <button type="submit" class="btn btn-main-color w-100">{{ trans('Login') }}</button>
                     </div>
                     <div class="p-2">
-                        <a href="{{ route('get.logout.forgot_password') }}" class="text-info">{{ trans('Forget Password?') }}</a>
+                        <a href="{{ route('get.logout.forgot_password') }}"
+                           class="text-info">{{ trans('Forget Password?') }}</a>
                     </div>
                 </form>
             </div>

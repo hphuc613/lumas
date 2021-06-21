@@ -42,16 +42,18 @@
                                     <a href="javascript:void(0)">
                                         <div class="btn btn-success btn-circle"><i class="ti-calendar"></i></div>
                                         <div class="mail-contnet">
-                                            <h5>Event today</h5> <span class="mail-desc">Just a reminder that you have event</span> <span class="time">9:10 AM</span> </div>
+                                            <h5>Event today</h5> <span class="mail-desc">Just a reminder that you have event</span>
+                                            <span class="time">9:10 AM</span></div>
                                     </a>
                                     <a href="javascript:void(0)">
                                         <div class="btn btn-info btn-circle"><i class="ti-settings"></i></div>
                                         <div class="mail-contnet">
-                                            <h5>Settings</h5> <span class="mail-desc">You can customize this template as you want</span> <span class="time">9:08 AM</span> </div>
+                                            <h5>Settings</h5> <span class="mail-desc">You can customize this template as you want</span>
+                                            <span class="time">9:08 AM</span></div>
                                     </a>
                                     <!-- Message -->
                                     <a href="javascript:void(0)">
-                                        <div class="btn btn-primary btn-circle"><i class="ti-user"></i></div>
+                                        <div class="btn btn-main-color btn-circle"><i class="ti-user"></i></div>
                                         <div class="mail-contnet">
                                             <h5>Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span>
                                             <span class="time">9:02 AM</span></div>

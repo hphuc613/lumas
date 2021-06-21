@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="input-group mt-5">
-            <button type="submit" id="save" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
+            <button type="submit" id="save" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
             <button type="reset" class="btn btn-default">{{ trans('Reset') }}</button>
         </div>
     </form>

@@ -13,7 +13,7 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Service Listing") }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route("get.service.create") }}" class="btn btn-primary"><i class="fa fa-plus"></i>
+                <a href="{{ route("get.service.create") }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
                     &nbsp; {{ trans("Add New") }}</a>
             </div>
         </div>
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans("Search") }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans("Search") }}</button>
                         <button type="button" class="btn btn-default clear">{{ trans("Cancel") }}</button>
                     </div>
                 </form>
@@ -78,14 +78,14 @@
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $service->name }}</td>
-                                <td>{{ number_format($service->price) }}</td>
+                                <td>{{ moneyFormat($service->price, 0) }}</td>
                                 <td>{{ $service->type->name }}</td>
                                 <td>{{ \Modules\Base\Model\Status::getStatus($service->status) ?? NULL }}</td>
                                 <td>{{ \Carbon\Carbon::parse($service->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td>{{ \Carbon\Carbon::parse($service->updated_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">
                                     <a href="{{ route('get.service.update',$service->id) }}"
-                                       class="btn btn-primary mr-2">
+                                       class="btn btn-main-color mr-2">
                                         <i class="fas fa-pencil-alt"></i></a>
                                     <a href="{{ route('get.service.delete',$service->id) }}"
                                        class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>

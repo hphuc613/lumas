@@ -78,13 +78,13 @@
                 </div>
                 <div class="input-group mt-5 d-flex justify-content-between">
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
                         <button type="reset" class="btn btn-default">{{ trans('Reset') }}</button>
                     </div>
                     @if(Auth::user()->getRoleAttribute()->id === \Modules\Role\Model\Role::getAdminRole()->id)
                         <div>
                             <a href="{{ route("get.setting.testSendMail") }}"
-                               class="btn btn-primary">{{ trans('Test Send Mail') }}</a>
+                               class="btn btn-main-color">{{ trans('Test Send Mail') }}</a>
                         </div>
                     @endif
                 </div>

@@ -251,9 +251,10 @@ a {
     box-shadow: 0 0 5px 0.2rem #9a9a9a5e;
   }
 
-  &.btn-primary {
+  &.btn-main-color {
     background-color: $main-color;
     border-color: $main-color;
+    color: white;
 
     &:hover, &:active, &:focus, &:not(:disabled):not(.disabled):active:focus {
       background-color: $main-fade-color;
@@ -561,7 +562,7 @@ input[type='checkbox'].checkbox-style {
   }
 
   &:checked ~ .checkmark.checkmark-disabled {
-    background-color: $text-fade-color;
+    background-color: rgb(201 201 201);
   }
 
   &:checked ~ .checkmark:after {
@@ -765,6 +766,14 @@ input[type='file'] {
           background: $main-fade-color;
         }
       }
+    }
+  }
+}
+
+#invoice {
+  #company-info {
+    p {
+      font-size: 1.2rem;
     }
   }
 }

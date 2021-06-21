@@ -13,7 +13,7 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans('User Listing') }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.user.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i>
+                <a href="{{ route('get.user.create') }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
                     &nbsp; {{ trans('Add New') }}</a>
             </div>
         </div>
@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <button type="submit" class="btn btn-primary mr-2">{{ trans('Search') }}</button>
+                            <button type="submit" class="btn btn-main-color mr-2">{{ trans('Search') }}</button>
                             <button type="button" class="btn btn-default clear">{{ trans('Cancel') }}</button>
                         </div>
                     </form>
@@ -87,7 +87,8 @@
                                     <td class="link-action">
                                         <a href="{{ route('get.user.appointment',$user->id) }}"
                                            class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
-                                        <a href="{{ route('get.user.update',$user->id) }}" class="btn btn-primary mr-2">
+                                        <a href="{{ route('get.user.update',$user->id) }}"
+                                           class="btn btn-main-color mr-2">
                                             <i class="fas fa-pencil-alt"></i></a>
                                         @if(Auth::user()->id !== $user->id && ($user->getRoleAttribute()->id ?? null)!== \Modules\Role\Model\Role::getAdminRole()->id)
                                             <a href="{{ route('get.user.delete',$user->id) }}"

@@ -161,3 +161,20 @@ if(!function_exists('isTimestamp')){
         }
     }
 }
+
+
+if(!function_exists('moneyFormat')){
+    /**
+     * @param $number
+     * @param bool $has_unit
+     * @return string
+     */
+    function moneyFormat($number, $has_unit = true){
+        $unit = "HK$";
+        if(is_numeric($number)){
+            return ($has_unit) ? $unit . number_format($number) : number_format($number);
+        }
+
+        return "N/A";
+    }
+}

@@ -13,7 +13,7 @@
                 <input type="text" class="form-control" id="search-course" name="code_history"
                        placeholder="{{ trans("Search Course") }}">
                 <div class="input-group-prepend">
-                    <button class="btn btn-primary"
+                    <button class="btn btn-main-color"
                             type="submit">{{ trans("Search") }}</button>
                 </div>
             </div>

@@ -35,7 +35,7 @@
                                    value="{{ $store->address ?? old('address') }}">
                         </div>
                         <div class="col-md-12 input-group">
-                            <button type="submit" id="save" class="btn btn-primary mr-2">{{ trans('Save') }}</button>
+                            <button type="submit" id="save" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
                             <button type="reset" class="btn btn-default">{{ trans('Reset') }}</button>
                         </div>
                     </div>
