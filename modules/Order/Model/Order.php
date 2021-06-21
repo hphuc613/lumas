@@ -2,6 +2,7 @@
 
 namespace Modules\Order\Model;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,17 +14,55 @@ use Modules\User\Model\User;
  * @package Modules\Order\Model
  */
 class Order extends Model{
-
-    const STATUS_DRAFT = 0;
-    const STATUS_PAID = 1;
-    const STATUS_ABORT = -1;
-    public $timestamps = TRUE;
     protected $table = "orders";
     protected $primaryKey = "id";
     protected $guarded = [];
 
+    public $timestamps = TRUE;
+
+    const STATUS_DRAFT = 0;
+    const STATUS_PAID = 1;
+    const STATUS_ABORT = -1;
+
+
     const SERVICE_TYPE = 'service';
     const COURSE_TYPE = 'course';
+
+    /**
+     * @param $filter
+     * @return Builder
+     */
+    public static function filter($filter){
+        $query = self::query()->with('member')->with('creator');
+        if(isset($filter['status'])){
+            $query->where('status', $filter['status']);
+        }
+        if(isset($filter['code'])){
+            $query->where('code', 'LIKE', '%' . $filter['code'] . '%');
+        }
+        if(isset($filter['month'])){
+            $query->whereMonth('updated_at', $filter['month']);
+        }
+        if(isset($filter['member_id'])){
+            $query->where('member_id', $filter['member_id']);
+        }
+        if(isset($filter['order_type'])){
+            $query->where('order_type', $filter['order_type']);
+        }
+
+        return $query;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatus(){
+        return [
+            self::STATUS_PAID  => trans("Paid"),
+            self::STATUS_ABORT => trans("Abort"),
+            self::STATUS_DRAFT => trans("Draft"),
+        ];
+    }
 
     /**
      * @return string
@@ -49,8 +88,15 @@ class Order extends Model{
     /**
      * @return BelongsTo
      */
-    public function user(){
-        return $this->belongsTo(User::class, 'user_id');
+    public function creator(){
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function updater(){
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
 

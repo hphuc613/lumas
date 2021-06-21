@@ -4,10 +4,14 @@ namespace Modules\Order\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Modules\Member\Http\Requests\MemberServiceRequest;
+use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberService;
 use Modules\Order\Model\Order;
 use Modules\Order\Model\OrderDetail;
@@ -26,8 +30,29 @@ class OrderController extends Controller{
         # parent::__construct();
     }
 
+    /**
+     * @param Request $request
+     * @return Application|Factory|View
+     */
     public function index(Request $request){
-        return view("Order::index");
+        $filter      = $request->all();
+        $orders      = Order::filter($filter)->paginate(15);
+        $statuses    = Order::getStatus();
+        $members     = Member::getArray();
+        $order_types = [
+            Order::SERVICE_TYPE => trans('Service'),
+            Order::COURSE_TYPE  => trans('Course')
+        ];
+        return view("Order::index", compact('orders', 'statuses', 'filter', 'members', 'order_types'));
+    }
+
+    /**
+     * @param $id
+     * @return Application|Factory|View
+     */
+    public function orderDetail($id){
+        $order = Order::query()->find($id);
+        return view("Order::detail", compact('order'));
     }
 
 
@@ -149,7 +174,12 @@ class OrderController extends Controller{
             return redirect()->back();
         }
 
-        foreach($data as $value){
+        foreach($data as $key => $value){
+            $order_detail           = OrderDetail::find($key);
+            $order_detail->quantity = $value['quantity'];
+            $order_detail->amount   = $order_detail->amount * $order_detail->quantity;
+            $order_detail->save();
+
             MemberService::insertData($value);
         }
 

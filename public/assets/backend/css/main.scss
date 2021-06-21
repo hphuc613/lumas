@@ -759,11 +759,7 @@ input[type='file'] {
         }
 
         &:hover {
-          .card-body {
-            color: white;
-          }
-
-          background: $main-fade-color;
+          background: $text-fade-color;
         }
       }
     }

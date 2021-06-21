@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/barryvdh/elfinder/css/elfinder.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/barryvdh/elfinder/css/theme.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/printjs/print.min.css') }}">
     <title>{{ trans('Lumas System - Administration') }}</title>
     @stack('css')
 </head>
@@ -68,6 +69,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script src="https://js.pusher.com/4.4/pusher.min.js"></script>
 <script src="{{ asset('assets/jquery/chart.js') }}"></script>
+<script src="{{ asset('assets/printjs/print.min.js') }}"></script>
 <script src="{{ asset('assets/jquery/moment.min.js') }}"></script>
 <script src="{{ asset('assets/jquery/moment-with-locales.min.js') }}"></script>
 <script src="{{ asset('vendor/barryvdh/elfinder/js/elfinder.full.js') }}"></script>

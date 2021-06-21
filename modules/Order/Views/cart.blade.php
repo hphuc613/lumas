@@ -42,11 +42,11 @@
                                value="{{ $order_detail->quantity }}">
                     </td>
                     <td>
-                        {{ number_format($order_detail->price) }}
+                        {{ moneyFormat($order_detail->price) }}
                         <input type="hidden" name="product[{{$order_detail->id}}][price]"
                                value="{{ $order_detail->price }}">
                     </td>
-                    <td>{{ number_format($order_detail->amount) }}</td>
+                    <td>{{ moneyFormat($order_detail->amount, 0) }}</td>
                     <td><a href="{{ route('get.order.delete_from_cart', $order_detail->id) }}"
                            class="btn btn-danger btn-delete"><i class="fas fa-trash"></i></a></td>
                 </tr>
@@ -56,7 +56,7 @@
     </div>
     <div class="p-2">
         <h4>{{ trans('Money to be paid:') }} <span
-                    class="text-danger font-size-clearfix">{{ number_format($order->getTotalPrice()) }}</span></h4>
+                    class="text-danger font-size-clearfix">{{ moneyFormat($order->getTotalPrice()) }}</span></h4>
 
     </div>
     <div class="modal-footer">
@@ -105,7 +105,7 @@
             }
         });
 
-        $(document).on('keyup', '. item-quantity-cart', function () {
+        $(document).on('keyup', '.item-quantity-cart', function () {
             var value = $(this).val();
             if (parseInt(value) < 0) {
 

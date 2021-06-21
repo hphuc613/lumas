@@ -1,4 +1,11 @@
 @extends("Base::layouts.master")
+<?php
+use Modules\Order\Model\Order;
+/**
+ * @var Order $orders
+ */
+$key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
+?>
 
 @section("content")
     <div id="order-module">
@@ -12,9 +19,6 @@
         </div>
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Order Listing") }}</h3></div>
-            <div class="group-btn">
-                <a href="#" class="btn btn-primary"><i class="fa fa-plus"></i> &nbsp; {{ trans("Add New") }}</a>
-            </div>
         </div>
     </div>
     <!--Search box-->
@@ -29,13 +33,39 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="text-input">{{ trans("Order name") }}</label>
-                                <input type="text" class="form-control" id="text-input" name="name" value="">
+                                <label for="text-input">{{ trans("Order code") }}</label>
+                                <input type="text" class="form-control" id="text-input" name="code"
+                                       value="{{ $filter['code'] ?? NULL }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="text-input">{{ trans("Client") }}</label>
+                                {!! Form::select('member_id', ["" => trans("Select")] + $members, $filter['member_id'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="text-input">{{ trans("Order Type") }}</label>
+                                {!! Form::select('order_type', ["" => trans("Select")] + $order_types, $filter['order_type'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="text-input">{{ trans("Status") }}</label>
+                                {!! Form::select('status', ["" => trans("Select")] + $statuses, $filter['status'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="text-input">{{ trans("Month") }}</label>
+                                <input type="text" name="month" class="form-control month"
+                                       value="{{ $filter['month'] ?? NULL }}">
                             </div>
                         </div>
                     </div>
                     <div class="input-group">
-                        <button type="submit" class="btn btn-primary mr-2">{{ trans("Search") }}</button>
+                        <button type="submit" class="btn btn-main-color mr-2">{{ trans("Search") }}</button>
                         <button type="button" class="btn btn-default clear">{{ trans("Cancel") }}</button>
                     </div>
                 </form>
@@ -47,27 +77,66 @@
             <div class="card-body">
                 <div class="sumary">
                     <span class="listing-information">
-                        <!-- Quantity item -->
-                        </span>
+                        {!! summaryListing($orders) !!}
+                    </span>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
                         <tr>
                             <th width="50px">#</th>
-                            <th>{{ trans("Search") }}</th>
-                            <th width="200px" class="action">{{ trans("Search") }}</th>
+                            <th>{{ trans("Order Code") }}</th>
+                            <th>{{ trans("Type") }}</th>
+                            <th>{{ trans("Client Name") }}</th>
+                            <th>{{ trans("Total Price") }}</th>
+                            <th>{{ trans("Purchase Time") }}</th>
+                            <th>{{ trans("Order Creator") }}</th>
+                            <th>{{ trans("Status") }}</th>
+                            <th class="action text-center">{{ trans("Action") }}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <!-- listing -->
+                        @foreach($orders as $order)
+                            <tr>
+                                <td>{{ $key++ }}</td>
+                                <td><h5>{{ $order->code }}</h5></td>
+                                <td>{{ $order_types[$order->order_type] }}</td>
+                                <td>
+                                    <span class="@if($order->status === \Modules\Order\Model\Order::STATUS_DRAFT)
+                                            text-warning
+@elseif($order->status === \Modules\Order\Model\Order::STATUS_PAID)
+                                            text-success
+@else
+                                            text-danger
+@endif ">
+                                        <h5>{{ $statuses[$order->status] }}</h5>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ route('get.member.update', $order->member->id) }}"
+                                       target="_blank">{{ $order->member->name  }}</a>
+                                </td>
+                                <td>{{ moneyFormat($order->total_price) }}</td>
+                                <td>{{ formatDate(strtotime($order->updated_at), 'd-m-Y H:i') }}</td>
+                                <td>{{ $order->creator->name }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('get.order.order_detail',$order->id) }}"
+                                       class="btn btn-outline-primary"
+                                       data-toggle="modal" data-title="{{ trans('Order Detail') }}"
+                                       data-target="#form-modal">
+                                        <i class="fas fa-eye"></i></a>
+                                </td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                     <div class="mt-5 pagination-style">
-                        <!-- Pagination -->
+                        {{ $orders->render('vendor.pagination.default') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'size' => 'modal-lg'])  !!}
 @endsection
