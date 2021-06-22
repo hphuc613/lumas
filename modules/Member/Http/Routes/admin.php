@@ -58,9 +58,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
         Route::middleware('can:member-add-course')->group(function(){
             Route::prefix("course")->group(function(){
                 Route::get('/add/{id}', 'MemberCourseController@getAdd')->name('get.member_course.add');
-                Route::post('/add/{id}', 'MemberCourseController@postAdd')->name('post.member_course.add');
-                Route::get('/edit/{id}', 'MemberCourseController@getEdit')->name('get.member_course.edit');
-                Route::post('/edit/{id}', 'MemberCourseController@postEdit')->name('post.member_course.edit');
+                Route::get('/view/{id}', 'MemberCourseController@getView')->name('get.member_course.view');
                 Route::get('/delete/{id}', 'MemberCourseController@delete')->name('get.member_course.delete');
 
                 /** E sign */

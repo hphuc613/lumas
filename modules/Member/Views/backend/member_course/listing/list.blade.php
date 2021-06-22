@@ -24,7 +24,7 @@
                 </li>
             @endif
         </ul>
-        @php($route_form_search = !isset($member_course) ? route('get.member_course.add', $member->id) : route('get.member_course.edit', $member_course->id))
+        @php($route_form_search = !isset($member_course) ? route('get.member_course.add', $member->id) : route('get.member_course.view', $member_course->id))
         <div class="tab-content">
             <div class="tab-pane fade
         @if(!isset($filter['code_completed']) && !isset($filter['course_search_completed'])) show active @endif"
@@ -99,9 +99,9 @@
                                     <td>{{ $value->price * $value->quantity }}</td>
                                     <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
-                                        <a href="{{ route('get.member_course.edit',$value->id) }}"
-                                           class="btn btn-main-color">
-                                            <i class="fas fa-pencil-alt"></i></a>
+                                        <a href="{{ route('get.member_course.view',$value->id) }}"
+                                           class="btn btn-outline-primary">
+                                            <i class="fas fa-eye"></i></a>
                                         <a href="{{ route('get.member_course.delete',$value->id) }}"
                                            class="btn btn-danger btn-delete">
                                             <i class="fas fa-trash-alt"></i></a>
@@ -191,8 +191,8 @@
                                     <td>{{ $value->price*$value->quantity }}</td>
                                     <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action text-center">
-                                        <a href="{{ route('get.member_course.edit',$value->id) }}"
-                                           class="btn btn-main-color">
+                                        <a href="{{ route('get.member_course.view',$value->id) }}"
+                                           class="btn btn-outline-primary">
                                             <i class="fas fa-eye"></i></a>
                                     </td>
                                 </tr>

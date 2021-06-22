@@ -41,16 +41,18 @@
 
     <div id="member_course" class="card">
         <div class="card-body">
-            @include('Member::backend.member_course.progressing')
+            @include('Member::backend.member_course.listing.progressing')
             <div class="row">
                 <div class="col-md-4">
-                    @include('Member::backend.member_course._form')
+                    @if(!isset($member_course))
+                        @include('Member::backend.member_course._form')
+                    @else
+                        @include('Member::backend.member_course.view')
+                    @endif
                 </div>
-                <div class="col-md-8">
-                    @include('Member::backend.member_course.list')
-                </div>
+                @include('Member::backend.member_course.listing.list')
                 <div class="col-md-12 mt-5">
-                    @include('Member::backend.member_course.history')
+                    @include('Member::backend.member_course.listing.history')
                 </div>
             </div>
         </div>

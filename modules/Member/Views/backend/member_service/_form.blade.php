@@ -1,17 +1,18 @@
 @php
     use Modules\Member\Model\Member;
-    use Modules\Member\Model\MemberService;
+    use Modules\Member\Model\MemberService;use Modules\Order\Model\Order;
     /**
      * @var Member $member
      * @var MemberService $member_service
      */
-    $member = $member ?? $member_service->member
+    $member = $member ?? $member_service->member;
+    $order_type = Order::SERVICE_TYPE;
 @endphp
 <div class="card">
     <div class="card-header d-flex justify-content-between">
         <h5>{{ trans("Add Service") }}</h5>
         <div class="group-btn product-cart">
-            <a href="{{ route('get.order.add_to_cart',[\Modules\Order\Model\Order::SERVICE_TYPE, $member->id]) }}"
+            <a href="{{ route('get.order.add_to_cart',[$order_type, $member->id]) }}"
                class="btn btn-outline-info p-0"
                data-toggle="modal"
                data-title="{{ trans('Order Detail') }}"
@@ -20,7 +21,8 @@
                     <div class="icon">
                         <i class="fas fa-cart-plus"></i> &nbsp;
                     </div>
-                    <span class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder())->orderDetails)->count() ?? 0}}</span>
+                    <span
+                        class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder())->orderDetails)->count() ?? 0}}</span>
                 </div>
             </a>
             <a href="{{ route('get.service_voucher.create_popup') }}" class="btn btn-main-color"
@@ -31,7 +33,7 @@
         </div>
     </div>
     <div class="card-body">
-        <form action="{{ route('post.order.add_to_cart') }}" method="post">
+        <form action="{{ route('post.order.add_to_cart_service') }}" method="post">
             @csrf
             <div class="row">
                 <div class="form-group col-md-6">
@@ -50,7 +52,7 @@
                     'id' => 'service-form',
                     'class' => 'select2 form-control service service-relate',
                     'style' => 'width: 100%']) !!}
-                    <input type="hidden" name="order_type" value="{{ \Modules\Order\Model\Order::SERVICE_TYPE }}">
+                    <input type="hidden" name="order_type" value="{{ $order_type }}">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="voucher">{{ trans("Voucher") }}</label>

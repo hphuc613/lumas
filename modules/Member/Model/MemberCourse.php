@@ -130,6 +130,50 @@ class MemberCourse extends BaseModel{
     }
 
     /**
+     * @param $data
+     * @return bool
+     */
+    public static function insertData($data){
+        $member_course = self::query()
+                             ->where('member_id', $data['member_id'])
+                             ->where('course_id', $data['course_id'])
+                             ->where('voucher_id', $data['voucher_id'])
+                             ->where('price', $data['price'])
+                             ->whereRaw('deduct_quantity < quantity')
+                             ->first();
+
+        if(empty($member_course)){
+            $member_course        = new MemberCourse($data);
+            $member_course->code  = $member_course->generateCode();
+            $member_course->price =
+                !empty($member_course->voucher_id) ? $member_course->voucher->price : $member_course->course->price;
+            $member_course->save();
+        }else{
+
+            /** Check when no Voucher */
+            if(empty($member_course->voucher_id)){
+                $check_same_price = (int)$member_course->price === (int)$member_course->course->price;
+            }else{
+                $voucher          = $member_course->voucher;
+                $check_same_price = (int)$voucher->price === (int)$member_course->price;
+            }
+
+            if($check_same_price){
+                $data['quantity'] = (int)$member_course->quantity + (int)$data['quantity'];
+                $member_course->update($data);
+            }else{
+                $member_course        = new MemberService($data);
+                $member_course->code  = $member_course->generateCode();
+                $member_course->price =
+                    !empty($member_course->voucher_id) ? $member_course->voucher->price : $member_course->course->price;
+                $member_course->save();
+            }
+        }
+
+        return TRUE;
+    }
+
+    /**
      * @return BelongsTo
      */
     public function member(){

@@ -7,7 +7,7 @@
         </h5>
     </div>
     <div class="card-body">
-        @php($route_form_search = !isset($member_course) ? route('get.member_course.add', $member->id) : route('get.member_course.edit', $member_course->id))
+        @php($route_form_search = !isset($member_course) ? route('get.member_course.add', $member->id) : route('get.member_course.view', $member_course->id))
         <form action="{{ $route_form_search }}" method="get" class="mb-3">
             <div class="input-group">
                 <input type="text" class="form-control" id="search-course" name="code_history"

@@ -5,9 +5,9 @@ use App\AppHelpers\Helper;
 $prompt                  = [null => trans('Select')];
 $route_previous          = Helper::getRoutePrevious();
 $route_is_member_product = in_array($route_previous, ["get.member_service.add",
-                                                      "get.member_service.edit",
+                                                      "get.member_service.view",
                                                       "get.member_course.add",
-                                                      "get.member_course.edit"]);
+                                                      "get.member_course.view"]);
 $member_display_id       = (int)request()->get('member_id');
 $type                    = request()->get('type');
 $segment                 = Helper::segment(2);

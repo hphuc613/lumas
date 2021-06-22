@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between">
-        <h5>{{ trans("Service Information") }}</h5>
-        <a href="{{ route('get.member_service.e_sign',$member_service->id) }}"
+        <h5>{{ trans("Course Information") }}</h5>
+        <a href="{{ route('get.member_course.e_sign',$member_course->id) }}"
            class="btn btn-info" data-toggle="modal" data-target="#form-modal"
            data-title="{{ trans('E-sign') }}">
             <i class="fas fa-file-signature"></i>
@@ -21,37 +21,37 @@
             <div class="form-group col-md-6">
                 <label>{{ trans("Code") }}</label>
                 <h5 class="text-info">
-                    {{ $member_service->code }}
+                    {{ $member_course->code }}
                 </h5>
             </div>
             <div class="form-group col-md-6">
                 <label for="remaining-quantity">{{ trans("Total Quantity") }}</label>
                 <h5 class="text-danger">
-                    {{ $member_service->quantity }}
+                    {{ $member_course->quantity }}
                 </h5>
             </div>
             <div class="form-group col-md-6">
                 <label for="remaining-quantity">{{ trans("Remaining Quantity") }}</label>
                 <h5 class="text-danger">
-                    {{ $member_service->getRemaining() }}
+                    {{ $member_course->getRemaining() }}
                 </h5>
             </div>
             <div class="form-group col-md-6">
                 <label for="status">{{ trans("Price") }}</label>
                 <h5 class="text-danger">
-                    {{ moneyFormat($member_service->price) }}
+                    {{ moneyFormat($member_course->price) }}
                 </h5>
             </div>
             <div class="form-group col-md-6">
                 <label for="status">{{ trans("Total Price") }}</label>
                 <h5 class="text-danger">
-                    {{ moneyFormat($member_service->price * $member_service->quantity) }}
+                    {{ moneyFormat($member_course->price * $member_course->quantity) }}
                 </h5>
             </div>
             <div class="form-group col-md-6">
                 <label for="status">{{ trans("Status") }}</label>
                 <h5 class="text-danger">
-                    {{ $statuses[$member_service->status] }}
+                    {{ $statuses[$member_course->status] }}
                 </h5>
             </div>
         </div>

@@ -55,9 +55,9 @@
                                 <td>{{ $total_price }}</td>
                                 <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                 <td class="link-action">
-                                    <a href="{{ route('get.member_course.edit',$value->id) }}"
-                                       class="btn btn-main-color">
-                                        <i class="fas fa-pencil-alt"></i>
+                                    <a href="{{ route('get.member_course.view',$value->id) }}"
+                                       class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('get.member_course.out_progress',$value->id) }}"
                                        class="btn btn-danger">

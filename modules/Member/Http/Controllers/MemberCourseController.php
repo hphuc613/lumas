@@ -78,30 +78,11 @@ class MemberCourseController extends Controller{
     }
 
     /**
-     * @param MemberCourseRequest $request
-     * @param $id
-     * @return RedirectResponse
-     */
-    public function postAdd(MemberCourseRequest $request, $id){
-        $data                 = $request->all();
-        $member_course        = new MemberCourse($data);
-        $member_course->code  = $member_course->generateCode();
-        $member_course->price = !empty($member_course->voucher_id)
-            ? $member_course->voucher->price * $member_course->quantity
-            : $member_course->course->price * $member_course->quantity;
-
-        $member_course->save();
-        $request->session()->flash('success', trans("Course added successfully."));
-
-        return redirect()->back();
-    }
-
-    /**
      * @param Request $request
      * @param $id
      * @return Application|Factory|View
      */
-    public function getEdit(Request $request, $id){
+    public function getView(Request $request, $id){
         $filter               = $request->all();
         $query_member_courses = new MemberCourse();
 
