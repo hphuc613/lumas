@@ -49,6 +49,9 @@ class Order extends Model{
         if(isset($filter['order_type'])){
             $query->where('order_type', $filter['order_type']);
         }
+        if(isset($filter['creator'])){
+            $query->where('created_by', $filter['creator']);
+        }
 
         return $query;
     }
@@ -68,7 +71,7 @@ class Order extends Model{
      * @return string
      */
     public function generateCode(){
-        return 'LM-ORDER' . $this->member->id . 'T' . time();
+        return 'LM-ORDER' . $this->member->id . 'T' . formatDate(time(), 'dmYHis');
     }
 
     /**

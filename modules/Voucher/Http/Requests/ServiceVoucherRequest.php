@@ -42,7 +42,7 @@ class ServiceVoucherRequest extends FormRequest{
 
     public function messages(){
         return [
-            'required'        => ':attribute' . trans(' can not be null.'),
+            'required'        => ':attribute' . trans(' can not be empty.'),
             'validate_unique' => ':attribute' . trans(' was exist.'),
             'check_exist'     => ':attribute' . trans(' does not exist.'),
         ];

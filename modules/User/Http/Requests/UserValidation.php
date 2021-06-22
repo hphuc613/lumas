@@ -48,11 +48,11 @@ class UserValidation extends FormRequest {
     }
 
     public function messages() {
-        return ['required'          => ':attribute' . trans(' can not be null.'),
+        return ['required'          => ':attribute' . trans(' can not be empty.'),
                 'email'             => ':attribute' . trans(' must be the email.'),
                 'min'               => ':attribute' . trans('  too short.'),
                 're_enter_password' => trans('Wrong password'),
-                'required_with'     => ':attribute' . trans(' can not be null.'),
+                'required_with'     => ':attribute' . trans(' can not be empty.'),
                 'validate_unique'   => ':attribute' . trans(' was exist.'),
                 'check_exist'       => ':attribute' . trans(' does not exist.'),];
     }

@@ -31,7 +31,7 @@ class CourseRequest extends FormRequest {
     public
     function messages() {
         return [
-            'required'    => ':attribute' . trans(' can not be null.'),
+            'required'    => ':attribute' . trans(' can not be empty.'),
             'check_exist' => ':attribute' . trans(' does not exist.'),
         ];
     }

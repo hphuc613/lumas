@@ -6,22 +6,22 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <label for="name">Name</label>
+                            <label for="name">{{ trans('Name') }}</label>
                             <input type="text" name="name" class="form-control" id="name"
                                    value="{{ $store->name ?? old('name') }}">
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="location">Location</label>
+                            <label for="location">{{ trans('Location') }}</label>
                             <input type="text" name="location" class="form-control" id="location"
                                    value="{{ $store->location ?? old('location') }}">
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="open-close-time">Open/Close Time</label>
+                            <label for="open-close-time">{{ trans('Open/Close Time') }}</label>
                             <input type="text" name="open_close_time" class="form-control" id="open-close-time"
                                    value="{{ $store->open_close_time ?? old('open_close_time') }}">
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="status">Status</label>
+                            <label for="status">{{ trans('Status') }}</label>
                             <select name="status" id="status" class="select2 form-control">
                                 @foreach($statuses as $key => $status)
                                     <option value="{{ $key }}"
@@ -30,7 +30,7 @@
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="address">Address</label>
+                            <label for="address">{{ trans('Address') }}</label>
                             <input type="text" name="address" class="form-control"
                                    value="{{ $store->address ?? old('address') }}">
                         </div>

@@ -11,20 +11,18 @@
     <div class="card-header d-flex justify-content-between">
         <h5>{{ trans("Add Service") }}</h5>
         <div class="group-btn product-cart">
-            @if(!empty($member->getDraftOrder()))
-                <a href="{{ route('get.order.add_to_cart',[\Modules\Order\Model\Order::SERVICE_TYPE, $member->id]) }}"
-                   class="btn btn-outline-info p-0"
-                   data-toggle="modal"
-                   data-title="Order Detail"
-                   data-target="#form-modal">
-                    <div class="cart d-flex justify-content-between">
-                        <div class="icon">
-                            <i class="fas fa-cart-plus"></i> &nbsp;
-                        </div>
-                        <span class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder())->orderDetails)->count() ?? 0}}</span>
+            <a href="{{ route('get.order.add_to_cart',[\Modules\Order\Model\Order::SERVICE_TYPE, $member->id]) }}"
+               class="btn btn-outline-info p-0"
+               data-toggle="modal"
+               data-title="{{ trans('Order Detail') }}"
+               data-target="#form-modal">
+                <div class="cart d-flex justify-content-between">
+                    <div class="icon">
+                        <i class="fas fa-cart-plus"></i> &nbsp;
                     </div>
-                </a>
-            @endif
+                    <span class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder())->orderDetails)->count() ?? 0}}</span>
+                </div>
+            </a>
             <a href="{{ route('get.service_voucher.create_popup') }}" class="btn btn-main-color"
                data-toggle="modal"
                data-target="#form-modal" data-title="{{ trans('Create Voucher') }}">

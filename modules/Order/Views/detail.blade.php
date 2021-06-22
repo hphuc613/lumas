@@ -5,7 +5,7 @@
 @endphp
 <div id="invoice" class="container">
     <div id="company-info">
-        <h4>LUMAS</h4>
+        <h3>LUMAS</h3>
         <p class="mb-1">
             {{ trans('Address') }}: 123 Sample Str., Sample Dist, Sample City, Sample Country
         </p>
@@ -21,54 +21,75 @@
         <div class="text-center title">
             <h3>{{ trans('INVOICE') }}</h3>
         </div>
-        <div class="info mb-3">
-            <div class="row">
-                <div class="col-3">
-                    {{ trans('To') }}
+        <div class="info mb-3 row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('To') }}
+                    </div>
+                    <div class="col-8">
+                        : {{ $order->member->name }}
+                    </div>
                 </div>
-                <div class="col-6">
-                    : {{ $order->member->name }}
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('Email') }}
+                    </div>
+                    <div class="col-8">
+                        : {{ $order->member->email }}
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    {{ trans('Email') }}
-                </div>
-                <div class="col-6">
-                    : {{ $order->member->email }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    {{ trans('Phone') }}
-                </div>
-                <div class="col-6">
-                    : {{ $order->member->phone }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    {{ trans('Invoice code') }}
-                </div>
-                <div class="col-6">
-                    : <span class="font-weight-bold">{{ $order->code }}</span>
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('Phone') }}
+                    </div>
+                    <div class="col-8">
+                        : {{ $order->member->phone }}
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-3">
-                    {{ trans('Created At') }}
+            <div class="col-6">
+
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('Invoice code') }}
+                    </div>
+                    <div class="col-8">
+                        : <span class="font-weight-bold">{{ $order->code }}</span>
+                    </div>
                 </div>
-                <div class="col-6">
-                    : {{ formatDate(strtotime($order->updated_at), 'd-m-Y H:i') }}
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('Purchase/Abort Time') }}
+                    </div>
+                    <div class="col-8">
+                        : {{ formatDate(strtotime($order->updated_at), 'd-m-Y H:i') }}
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-3">
-                    {{ trans('Status') }}
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('Creator') }}
+                    </div>
+                    <div class="col-8">
+                        : {{ $order->creator->name }}
+                    </div>
                 </div>
-                <div class="col-6">
-                    :
-                    <span class="font-weight-bold">{{ \Modules\Order\Model\Order::getStatus()[$order->status] }}</span>
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('Created At') }}
+                    </div>
+                    <div class="col-8">
+                        : {{ formatDate(strtotime($order->created_at), 'd-m-Y H:i') }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('Status') }}
+                    </div>
+                    <div class="col-8">
+                        :
+                        <span class="font-weight-bold">{{ \Modules\Order\Model\Order::getStatus()[$order->status] }}</span>
+                    </div>
                 </div>
             </div>
         </div>

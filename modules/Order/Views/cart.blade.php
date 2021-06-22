@@ -1,9 +1,9 @@
 @php
     use Modules\Order\Model\Order;
     /** @var Order $order */
-    $order_details = $order->orderDetails
+    $order_details = $order->orderDetails ?? [];
 @endphp
-<form action="{{ route('post.order.purchase_order', $order->id) }}" method="post" id="cart-form">
+<form action="{{ $order ? route('post.order.purchase_order', $order->id) : '#'}}" method="post" id="cart-form">
     @csrf
     <div class="table-responsive">
         <table class="table table-striped table-hover">
@@ -56,15 +56,18 @@
     </div>
     <div class="p-2">
         <h4>{{ trans('Money to be paid:') }} <span
-                    class="text-danger font-size-clearfix">{{ moneyFormat($order->getTotalPrice()) }}</span></h4>
+                    class="text-danger font-size-clearfix">{{ moneyFormat($order ? $order->getTotalPrice() : 0) }}</span>
+        </h4>
 
     </div>
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-success btn-purchase">{{ trans('Purchase') }}</button>
-        <a href="{{ route('get.order.abort_order', $order->id) }}"
-           class="btn btn-danger btn-abort">{{ trans('Abort') }}</a>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('Close') }}</button>
-    </div>
+    @if($order && !empty($order->orderDetails->count()))
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success btn-purchase">{{ trans('Purchase') }}</button>
+            <a href="{{ route('get.order.abort_order', $order->id) }}"
+               class="btn btn-danger btn-abort">{{ trans('Abort') }}</a>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('Close') }}</button>
+        </div>
+    @endif
 </form>
 
 <script>

@@ -16,6 +16,7 @@ use Modules\Member\Model\MemberService;
 use Modules\Order\Model\Order;
 use Modules\Order\Model\OrderDetail;
 use Modules\Service\Model\Service;
+use Modules\User\Model\User;
 use Modules\Voucher\Model\ServiceVoucher;
 
 
@@ -36,14 +37,15 @@ class OrderController extends Controller{
      */
     public function index(Request $request){
         $filter      = $request->all();
-        $orders      = Order::filter($filter)->paginate(15);
+        $orders      = Order::filter($filter)->orderBy('updated_at', 'desc')->paginate(15);
         $statuses    = Order::getStatus();
         $members     = Member::getArray();
+        $creators    = User::query()->pluck('name', 'id')->toArray();
         $order_types = [
             Order::SERVICE_TYPE => trans('Service'),
             Order::COURSE_TYPE  => trans('Course')
         ];
-        return view("Order::index", compact('orders', 'statuses', 'filter', 'members', 'order_types'));
+        return view("Order::index", compact('orders', 'statuses', 'filter', 'members', 'order_types', 'creators'));
     }
 
     /**
@@ -177,7 +179,7 @@ class OrderController extends Controller{
         foreach($data as $key => $value){
             $order_detail           = OrderDetail::find($key);
             $order_detail->quantity = $value['quantity'];
-            $order_detail->amount   = $order_detail->amount * $order_detail->quantity;
+            $order_detail->amount   = $order_detail->price * $order_detail->quantity;
             $order_detail->save();
 
             MemberService::insertData($value);

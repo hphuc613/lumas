@@ -17,12 +17,10 @@
                 </nav>
             </div>
             @php($segment = \App\AppHelpers\Helper::segment(1))
-            @if($segment === "appointment")
-                <div class="p-3">
-                    <a href="{{ route("get.appointment.overview") }}"
-                       class="btn btn-main-color">{{ trans('Overview') }}</a>
-                </div>
-            @endif
+            <div class="p-3">
+                <a href="{{ route("get.appointment.overview", ['member_id' => $member->id ?? NULL]) }}"
+                   class="btn btn-main-color">{{ trans('Overview') }}</a>
+            </div>
         </div>
         <div class="appointment">
             <div class="card">
@@ -58,9 +56,10 @@
                                data-target="#form-modal" data-title="{{ trans('Update Appointment') }}"></a>
                             @if(isset($member))
                                 <a href="{{ route('get.member_service.add',$member->id) }}"
-                                   class="btn btn-warning text-light"><i class="fas fa-plus"></i> Add Service</a>
+                                   class="btn btn-warning text-light"><i
+                                            class="fas fa-plus"></i> {{ trans('Add Service') }}</a>
                                 <a href="{{ route('get.member_course.add',$member->id) }}"
-                                   class="btn btn-info"><i class="fas fa-plus"></i> Add Course</a>
+                                   class="btn btn-info"><i class="fas fa-plus"></i> {{ trans('Add Course') }}</a>
                             @endif
                         </div>
                     </div>

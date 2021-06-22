@@ -21,7 +21,8 @@ class Dashboard extends BaseModel{
             'client'  => Member::query()->where('status', Status::STATUS_ACTIVE)->count(),
             'staff'   => User::getStaff()->count(),
             'service' => Service::query()->where('status', Status::STATUS_ACTIVE)->count(),
-            'course'  => Course::query()->where('status', Status::STATUS_ACTIVE)->count()
+            'course'  => Course::query()->where('status', Status::STATUS_ACTIVE)->count(),
+            'order'   => Order::query()->count()
         ];
 
         return json_decode(json_encode($count_data), FALSE);

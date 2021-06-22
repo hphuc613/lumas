@@ -44,7 +44,7 @@ class MemberServiceRequest extends FormRequest{
 
     public function messages(){
         return [
-            'required'    => ':attribute' . trans(' can not be null.'),
+            'required'    => ':attribute' . trans(' can not be empty.'),
             'numeric'     => ':attribute' . trans(' must be a numeric.'),
             'check_exist' => ':attribute' . trans(' does not exist.'),
         ];

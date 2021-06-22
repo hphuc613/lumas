@@ -35,7 +35,7 @@ class RoleValidation extends FormRequest {
     }
 
     public function messages() {
-        return ['required'        => ':attribute' . trans(' can not be null.'),
+        return ['required'        => ':attribute' . trans(' can not be empty.'),
                 'validate_unique' => ':attribute' . trans(' was exist.')];
     }
 

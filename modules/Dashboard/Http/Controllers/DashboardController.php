@@ -28,7 +28,6 @@ class DashboardController extends Controller{
     public function index(Request $request){
 
         $count_data = Dashboard::getCountData();
-
         $appointment_data = Dashboard::getAppointmentData();
 
         $chart_data['appointment'] = Dashboard::getChartAppointmentData();

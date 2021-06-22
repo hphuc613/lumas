@@ -93,12 +93,12 @@ class MemberRequest extends FormRequest{
 
     public function messages(){
         return [
-            'required'          => ':attribute' . trans(' can not be null.'),
+            'required'          => ':attribute' . trans(' can not be empty.'),
             'regex'             => ':attribute' . trans(' contains invalid characters.'),
             'email'             => ':attribute' . trans(' must be the email.'),
             'min'               => ':attribute' . trans('  too short.'),
             're_enter_password' => trans('Wrong password'),
-            'required_with'     => ':attribute' . trans(' can not be null.'),
+            'required_with'     => ':attribute' . trans(' can not be empty.'),
             'validate_unique'   => ':attribute' . trans(' was exist.'),
             'image'             => ':attribute' . trans(' must be an image.'),
             'digits'            => ':attribute' . trans(' must be 10 digits.'),

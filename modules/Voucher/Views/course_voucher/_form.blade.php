@@ -24,12 +24,12 @@ $segment      = Helper::segment(2);
             <input type="text" name="price" class="form-control" value="{{ $voucher->price ?? old('price') }}">
         </div>
         <div class="form-group col-md-6">
-            <label for="start-at">{{ trans("Start at") }}</label>
+            <label for="start-at">{{ trans("Start At") }}</label>
             <input type="text" name="start_at" id="start-at" class="form-control date"
                    value="{{ isset($voucher) ? formatDate(strtotime($voucher->start_at)) : old('start_at') }}">
         </div>
         <div class="form-group col-md-6">
-            <label for="end-at">{{ trans("End at") }}</label>
+            <label for="end-at">{{ trans("End At") }}</label>
             <input type="text" name="end_at" id="end-at" class="form-control date"
                    value="{{ isset($voucher) ? (!empty($voucher->end_at) ? formatDate(strtotime($voucher->end_at)) : null) : old('end_at') }}">
         </div>

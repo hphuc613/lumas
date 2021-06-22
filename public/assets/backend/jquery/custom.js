@@ -142,9 +142,7 @@ function getMonthToCurrentInYear(current) {
         return list_month;
     }
 
-    var i = 0;
-    while (i <= current_month) {
-        i++;
+    for (var i = 0; i <= current_month; i++) {
         the_months.push(list_month[i])
     }
 

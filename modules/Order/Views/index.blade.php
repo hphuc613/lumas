@@ -40,20 +40,20 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="text-input">{{ trans("Client") }}</label>
-                                {!! Form::select('member_id', ["" => trans("Select")] + $members, $filter['member_id'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
+                                <label for="text-input">{{ trans("Order Type") }}</label>
+                                {!! Form::select('order_type', ["" => trans("All")] + $order_types, $filter['order_type'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="text-input">{{ trans("Order Type") }}</label>
-                                {!! Form::select('order_type', ["" => trans("Select")] + $order_types, $filter['order_type'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
+                                <label for="text-input">{{ trans("Client") }}</label>
+                                {!! Form::select('member_id', ["" => trans("All")] + $members, $filter['member_id'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="text-input">{{ trans("Status") }}</label>
-                                {!! Form::select('status', ["" => trans("Select")] + $statuses, $filter['status'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
+                                {!! Form::select('status', ["" => trans("All")] + $statuses, $filter['status'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -61,6 +61,12 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                                 <label for="text-input">{{ trans("Month") }}</label>
                                 <input type="text" name="month" class="form-control month"
                                        value="{{ $filter['month'] ?? NULL }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="text-input">{{ trans("Creator") }}</label>
+                                {!! Form::select('creator', ["" => trans("All")] + $creators, $filter['creator'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
                             </div>
                         </div>
                     </div>
@@ -75,9 +81,17 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
     <div class="listing">
         <div class="card">
             <div class="card-body">
-                <div class="sumary">
+                <div class="sumary d-flex justify-content-between">
                     <span class="listing-information">
                         {!! summaryListing($orders) !!}
+                    </span>
+                    <span class="total-price">
+                         <h4>
+                             {{ trans('Total:') }}
+                             <span class="text-danger font-size-clearfix">
+                                 {{ moneyFormat($orders->sum('total_price')) }}
+                             </span>
+                         </h4>
                     </span>
                 </div>
                 <div class="table-responsive">
@@ -87,11 +101,11 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                             <th width="50px">#</th>
                             <th>{{ trans("Order Code") }}</th>
                             <th>{{ trans("Type") }}</th>
+                            <th>{{ trans("Status") }}</th>
                             <th>{{ trans("Client Name") }}</th>
                             <th>{{ trans("Total Price") }}</th>
-                            <th>{{ trans("Purchase Time") }}</th>
+                            <th>{{ trans("Purchase/Abort Time") }}</th>
                             <th>{{ trans("Order Creator") }}</th>
-                            <th>{{ trans("Status") }}</th>
                             <th class="action text-center">{{ trans("Action") }}</th>
                         </tr>
                         </thead>
