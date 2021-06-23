@@ -22,7 +22,7 @@
                         <i class="fas fa-cart-plus"></i> &nbsp;
                     </div>
                     <span
-                        class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder())->orderDetails)->count() ?? 0}}</span>
+                            class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder($order_type))->orderDetails)->count() ?? 0}}</span>
                 </div>
             </a>
             <a href="{{ route('get.service_voucher.create_popup') }}" class="btn btn-main-color"

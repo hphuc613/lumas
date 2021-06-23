@@ -34,6 +34,9 @@
             type: 'line',
             data: data_order,
             options: {
+                interaction: {
+                    intersect: false,
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -80,13 +83,16 @@
         };
 
         const appointment = new Chart(document.getElementById('appointment-statistical-chart'), {
-                type: 'bar',
-                data: data_appointment,
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: "{{ trans('Appointment Statistical Chart') }}"
+            type: 'bar',
+            data: data_appointment,
+            options: {
+                interaction: {
+                    intersect: false,
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "{{ trans('Appointment Statistical Chart') }}"
                         }
                     },
                     maintainAspectRatio: false,

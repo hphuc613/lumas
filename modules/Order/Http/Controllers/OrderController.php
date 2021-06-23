@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Modules\Course\Model\Course;
 use Modules\Member\Http\Requests\MemberCourseRequest;
@@ -22,6 +23,7 @@ use Modules\Service\Model\Service;
 use Modules\User\Model\User;
 use Modules\Voucher\Model\CourseVoucher;
 use Modules\Voucher\Model\ServiceVoucher;
+use Throwable;
 
 
 class OrderController extends Controller{
@@ -91,64 +93,72 @@ class OrderController extends Controller{
      * @return string
      */
     public function postAddOrderService(MemberServiceRequest $request){
-        $data  = $request->all();
-        $order = Order::query()
-                      ->where('member_id', $data['member_id'])
-                      ->where('status', Order::STATUS_DRAFT)
-                      ->where('order_type', $data['order_type'])
-                      ->first();
+        $data   = $request->all();
+        $member = Member::find($data['member_id']);
+        $order  = $member->getDraftOrder($data['order_type']);
 
-        if(empty($order)){
-            $order              = new Order();
-            $order->member_id   = $data['member_id'];
-            $order->code        = $order->generateCode();
-            $order->remarks     = $data['remarks'];
-            $order->total_price = 0;
-            $order->status      = Order::STATUS_DRAFT;
-            $order->order_type  = $data['order_type'];
-            $order->created_by  = Auth::id();
-            $order->updated_by  = Auth::id();
+        DB::beginTransaction();
+
+        try{
+            if(empty($order)){
+                $order              = new Order();
+                $order->member_id   = $data['member_id'];
+                $order->code        = $order->generateCode();
+                $order->remarks     = $data['remarks'];
+                $order->total_price = 0;
+                $order->status      = Order::STATUS_DRAFT;
+                $order->order_type  = $data['order_type'];
+                $order->created_by  = Auth::id();
+                $order->updated_by  = Auth::id();
+            }
+
+            $order->updated_by = Auth::id();
+            $order->save();
+
+
+            $service       = Service::query()->find($data['service_id']);
+            $data['price'] = 0;
+
+            if(!empty($data['voucher_id'])){
+                $voucher       = ServiceVoucher::query()->find($data['voucher_id']);
+                $data['price'] = $voucher->price;
+
+            }else{
+                $data['price'] = $service->price;
+            }
+
+
+            $order_detail = OrderDetail::query()
+                                       ->where('order_id', $order->id)
+                                       ->where('product_id', $data['service_id'])
+                                       ->where('voucher_id', $data['voucher_id'])
+                                       ->first();
+
+            if(empty($order_detail)){
+                $order_detail                  = new OrderDetail();
+                $order_detail['order_id']      = $order->id;
+                $order_detail['product_id']    = $data['service_id'];
+                $order_detail['product_price'] = $service->price;
+                $order_detail['voucher_id']    = $data['voucher_id'];
+                $order_detail['voucher_price'] = $voucher->price ?? 0;
+                $order_detail['price']         = $data['price'];
+                $order_detail['quantity']      = (int)$data['quantity'];
+            }else{
+                $order_detail['quantity'] = $order_detail->quantity + (int)$data['quantity'];
+            }
+
+            $order_detail['amount'] = $order_detail['price'] * $order_detail['quantity'];
+            $order_detail->save();
+
+            DB::commit();
+            $request->session()->flash('success', trans("Service added to order successfully."));
+            return redirect()->back();
+        }catch(Throwable $th){
+            DB::rollBack();
+
+            $request->session()->flash('danger', trans("Service added to order failed. Please try again."));
+            return redirect()->back();
         }
-
-        $order->updated_by = Auth::id();
-        $order->save();
-
-        $service       = Service::query()->find($data['service_id']);
-        $data['price'] = 0;
-
-        if(!empty($data['voucher_id'])){
-            $voucher       = ServiceVoucher::query()->find($data['voucher_id']);
-            $data['price'] = $voucher->price;
-
-        }else{
-            $data['price'] = $service->price;
-        }
-
-
-        $order_detail = OrderDetail::query()
-                                   ->where('order_id', $order->id)
-                                   ->where('product_id', $data['service_id'])
-                                   ->where('voucher_id', $data['voucher_id'])
-                                   ->first();
-
-        if(empty($order_detail)){
-            $order_detail                  = new OrderDetail();
-            $order_detail['order_id']      = $order->id;
-            $order_detail['product_id']    = $data['service_id'];
-            $order_detail['product_price'] = $service->price;
-            $order_detail['voucher_id']    = $data['voucher_id'];
-            $order_detail['voucher_price'] = $voucher->price ?? 0;
-            $order_detail['price']         = $data['price'];
-            $order_detail['quantity']      = (int)$data['quantity'];
-        }else{
-            $order_detail['quantity'] = $order_detail->quantity + (int)$data['quantity'];
-        }
-
-        $order_detail['amount'] = $order_detail['price'] * $order_detail['quantity'];
-        $order_detail->save();
-
-        $request->session()->flash('success', trans("Service added to order successfully."));
-        return redirect()->back();
     }
 
     /**
@@ -156,64 +166,71 @@ class OrderController extends Controller{
      * @return string
      */
     public function postAddOrderCourse(MemberCourseRequest $request){
-        $data  = $request->all();
-        $order = Order::query()
-                      ->where('member_id', $data['member_id'])
-                      ->where('status', Order::STATUS_DRAFT)
-                      ->where('order_type', $data['order_type'])
-                      ->first();
+        $data   = $request->all();
+        $member = Member::find($data['member_id']);
+        $order  = $member->getDraftOrder($data['order_type']);
 
-        if(empty($order)){
-            $order              = new Order();
-            $order->member_id   = $data['member_id'];
-            $order->code        = $order->generateCode();
-            $order->remarks     = $data['remarks'];
-            $order->total_price = 0;
-            $order->status      = Order::STATUS_DRAFT;
-            $order->order_type  = $data['order_type'];
-            $order->created_by  = Auth::id();
-            $order->updated_by  = Auth::id();
+        DB::beginTransaction();
+
+        try{
+            if(empty($order)){
+                $order              = new Order();
+                $order->member_id   = $data['member_id'];
+                $order->code        = $order->generateCode();
+                $order->remarks     = $data['remarks'];
+                $order->total_price = 0;
+                $order->status      = Order::STATUS_DRAFT;
+                $order->order_type  = $data['order_type'];
+                $order->created_by  = Auth::id();
+                $order->updated_by  = Auth::id();
+            }
+
+            $order->updated_by = Auth::id();
+            $order->save();
+
+            $course        = Course::query()->find($data['course_id']);
+            $data['price'] = 0;
+
+            if(!empty($data['voucher_id'])){
+                $voucher       = CourseVoucher::query()->find($data['voucher_id']);
+                $data['price'] = $voucher->price;
+
+            }else{
+                $data['price'] = $course->price;
+            }
+
+
+            $order_detail = OrderDetail::query()
+                                       ->where('order_id', $order->id)
+                                       ->where('product_id', $data['course_id'])
+                                       ->where('voucher_id', $data['voucher_id'])
+                                       ->first();
+
+            if(empty($order_detail)){
+                $order_detail                  = new OrderDetail();
+                $order_detail['order_id']      = $order->id;
+                $order_detail['product_id']    = $data['course_id'];
+                $order_detail['product_price'] = $course->price;
+                $order_detail['voucher_id']    = $data['voucher_id'];
+                $order_detail['voucher_price'] = $voucher->price ?? 0;
+                $order_detail['price']         = $data['price'];
+                $order_detail['quantity']      = (int)$data['quantity'];
+            }else{
+                $order_detail['quantity'] = $order_detail->quantity + (int)$data['quantity'];
+            }
+
+            $order_detail['amount'] = $order_detail['price'] * $order_detail['quantity'];
+            $order_detail->save();
+
+            DB::commit();
+            $request->session()->flash('success', trans("Course added to order successfully."));
+            return redirect()->back();
+        }catch(Throwable $th){
+            DB::rollBack();
+            $request->session()->flash('danger', trans("Course added to order failed. Please try again."));
+            return redirect()->back();
         }
 
-        $order->updated_by = Auth::id();
-        $order->save();
-
-        $course        = Course::query()->find($data['course_id']);
-        $data['price'] = 0;
-
-        if(!empty($data['voucher_id'])){
-            $voucher       = CourseVoucher::query()->find($data['voucher_id']);
-            $data['price'] = $voucher->price;
-
-        }else{
-            $data['price'] = $course->price;
-        }
-
-
-        $order_detail = OrderDetail::query()
-                                   ->where('order_id', $order->id)
-                                   ->where('product_id', $data['course_id'])
-                                   ->where('voucher_id', $data['voucher_id'])
-                                   ->first();
-
-        if(empty($order_detail)){
-            $order_detail                  = new OrderDetail();
-            $order_detail['order_id']      = $order->id;
-            $order_detail['product_id']    = $data['course_id'];
-            $order_detail['product_price'] = $course->price;
-            $order_detail['voucher_id']    = $data['voucher_id'];
-            $order_detail['voucher_price'] = $voucher->price ?? 0;
-            $order_detail['price']         = $data['price'];
-            $order_detail['quantity']      = (int)$data['quantity'];
-        }else{
-            $order_detail['quantity'] = $order_detail->quantity + (int)$data['quantity'];
-        }
-
-        $order_detail['amount'] = $order_detail['price'] * $order_detail['quantity'];
-        $order_detail->save();
-
-        $request->session()->flash('success', trans("Course added to order successfully."));
-        return redirect()->back();
     }
 
     /**
@@ -249,6 +266,9 @@ class OrderController extends Controller{
         }
 
         foreach($data as $key => $value){
+            if($value['quantity'] < 1){
+                continue;
+            }
             $order_detail           = OrderDetail::find($key);
             $order_detail->quantity = $value['quantity'];
             $order_detail->amount   = $order_detail->price * $order_detail->quantity;

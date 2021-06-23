@@ -30,14 +30,14 @@ class MemberServiceRequest extends FormRequest{
                     'service_id' => 'required|check_exist:services,id',
                     'member_id'  => 'required|check_exist:members,id',
                     'voucher_id' => 'nullable|check_exist:service_vouchers,id',
-                    'quantity'   => 'required|numeric',
+                    'quantity'   => 'required|numeric|min:1',
                 ];
             case "edit":
                 return [
                     'service_id' => 'required|check_exist:services,id',
                     'member_id'  => 'required|check_exist:members,id',
                     'voucher_id' => 'nullable|check_exist:service_vouchers,id',
-                    'quantity'   => 'nullable|numeric',
+                    'quantity'   => 'nullable|numeric|min:1',
                 ];
         }
     }
@@ -47,6 +47,7 @@ class MemberServiceRequest extends FormRequest{
             'required'    => ':attribute' . trans(' can not be empty.'),
             'numeric'     => ':attribute' . trans(' must be a numeric.'),
             'check_exist' => ':attribute' . trans(' does not exist.'),
+            'min'         => ':attribute' . trans('  must be greater than 0'),
         ];
     }
 

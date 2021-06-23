@@ -122,10 +122,13 @@ class Member extends BaseMember{
     }
 
     /**
+     * @param $order_type
      * @return mixed
      */
-    public function getDraftOrder(){
-        return $this->orders->where('status', Order::STATUS_DRAFT)->first();
+    public function getDraftOrder($order_type){
+        return $this->orders->where('status', Order::STATUS_DRAFT)
+                            ->where('order_type', $order_type)
+                            ->first();
     }
 
     /**

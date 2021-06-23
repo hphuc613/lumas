@@ -9,6 +9,7 @@
     </div>
     <div class="input-group mt-5">
         <button type="submit" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
-        <button type="reset" class="btn btn-default" data-dismiss="modal">{{ trans('Cancel') }}</button>
+        <button type="reset" class="btn btn-default"
+                onclick='window.location.reload(true);'>{{ trans('Cancel') }}</button>
     </div>
 </form>

@@ -37,9 +37,12 @@
                                value="{{ $order_detail->productVoucher->id ?? NULL }}">
                     </td>
                     <td>
-                        <input type="number" name="product[{{$order_detail->id}}][quantity]"
-                               class="form-control item-quantity-cart"
-                               value="{{ $order_detail->quantity }}">
+                        <div class="form-group">
+                            <input type="number" name="product[{{$order_detail->id}}][quantity]"
+                                   class="form-control item-quantity-cart"
+                                   min="1"
+                                   value="{{ $order_detail->quantity }}">
+                        </div>
                     </td>
                     <td>
                         {{ moneyFormat($order_detail->price) }}
@@ -94,25 +97,63 @@
     $(document).on('click', '.btn-purchase', function (e) {
         e.preventDefault();
         var form = $(document).find('#cart-form');
-        swal.fire({
-            title: "{{ trans('Has the client paid yet?') }}",
-            text: "{{ trans("You will not be able to revert this!") }}",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "{{ trans('Purchase') }}",
-            confirmButtonColor: "#28a745",
-            cancelButtonText: "{{ trans('Cancel') }}",
-        }).then((willSubmit) => {
-            if (willSubmit.isConfirmed) {
-                form.submit()
-            }
-        });
-
-        $(document).on('keyup', '.item-quantity-cart', function () {
+        var validate = true;
+        $('.item-quantity-cart').each(function () {
             var value = $(this).val();
-            if (parseInt(value) < 0) {
-
+            var parent = $(this).parent('.form-group');
+            if (value === "") {
+                $(this).val(1);
+            }
+            if (parseInt(value) < 1) {
+                validate = checkInputMinNumber(value, parent);
             }
         });
+
+        if (validate) {
+            swal.fire({
+                title: "{{ trans('Has the client paid yet?') }}",
+                text: "{{ trans("You will not be able to revert this!") }}",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "{{ trans('Purchase') }}",
+                confirmButtonColor: "#28a745",
+                cancelButtonText: "{{ trans('Cancel') }}",
+            }).then((willSubmit) => {
+                if (willSubmit.isConfirmed) {
+                    form.submit()
+                }
+            });
+        }
     });
+
+    /** Validate Quantity */
+    $(document).on('change', '.item-quantity-cart', function () {
+        var value = $(this).val();
+        var parent = $(this).parent('.form-group');
+        checkInputMinNumber(value, parent)
+    });
+
+    /**
+     *
+     * @param value
+     * @param parent
+     * @returns {boolean}
+     */
+    function checkInputMinNumber(value, parent) {
+        var check = true;
+        if (parseInt(value) < 1) {
+            parent.addClass('has-error')
+            parent.removeClass('has-success');
+            if (parent.find('.help-block').length === 0) {
+                parent.append('<span id="quantity-error" class="help-block error-help-block">{{ trans("Quantity must be greater than 0") }}</span>')
+            }
+            check = false;
+        } else {
+            parent.removeClass('has-error');
+            parent.addClass('has-success')
+            parent.find('.help-block').remove();
+        }
+
+        return check;
+    }
 </script>

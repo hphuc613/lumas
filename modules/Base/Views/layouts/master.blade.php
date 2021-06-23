@@ -40,20 +40,26 @@
 </div>
 @if (session('error') || session('danger'))
     <div class="alert alert-danger alert-fade-out" style="display: none" role="alert">
-        <span class="alert-close"><i class="fas fa-times"></i></span>
-        {{ session('error') ?? session('danger') }}
+        <div class="alert-content">
+            <span class="alert-close"><i class="fas fa-times"></i></span>
+            {{ session('error') ?? session('danger') }}
+        </div>
     </div>
 @endif
 @if (session('success'))
     <div class="alert alert-primary alert-fade-out" style="display: none" role="alert">
-        <span class="alert-close"><i class="fas fa-times"></i></span>
-        {{ session('success') }}
+        <div class="alert-content">
+            <span class="alert-close"><i class="fas fa-times"></i></span>
+            {{ session('success') }}
+        </div>
     </div>
 @endif
 @if (session('warning'))
     <div class="alert alert-warning alert-fade-out" style="display: none" role="alert">
-        <span class="alert-close"><i class="fas fa-times"></i></span>
-        {{ session('warning') }}
+        <div class="alert-content">
+            <span class="alert-close"><i class="fas fa-times"></i></span>
+            {{ session('warning') }}
+        </div>
     </div>
 @endif
 <!-- Footer -->

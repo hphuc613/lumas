@@ -1,17 +1,19 @@
 @php
     use Modules\Member\Model\Member;
     use Modules\Member\Model\MemberCourse;
+    use Modules\Order\Model\Order;
     /**
      * @var Member $member
      * @var MemberCourse $member_course
      */
-    $member = $member ?? $member_course->member
+    $member = $member ?? $member_course->member;
+    $order_type = Order::COURSE_TYPE;
 @endphp
 <div class="card">
     <div class="card-header d-flex justify-content-between">
         <h5>{{ trans("Add Course") }}</h5>
         <div class="group-btn product-cart">
-            <a href="{{ route('get.order.add_to_cart',[\Modules\Order\Model\Order::COURSE_TYPE, $member->id]) }}"
+            <a href="{{ route('get.order.add_to_cart',[$order_type, $member->id]) }}"
                class="btn btn-outline-info p-0"
                data-toggle="modal"
                data-title="{{ trans('Order Detail') }}"
@@ -21,7 +23,7 @@
                         <i class="fas fa-cart-plus"></i> &nbsp;
                     </div>
                     <span
-                        class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder())->orderDetails)->count() ?? 0}}</span>
+                            class="number-item text-light bg-info">{{ optional(optional($member->getDraftOrder($order_type))->orderDetails)->count() ?? 0}}</span>
                 </div>
             </a>
             <a href="{{ route('get.course_voucher.create_popup') }}" class="btn btn-main-color"
@@ -51,7 +53,7 @@
                     'id' => 'course-form',
                     'class' => 'select2 form-control course course-relate',
                     'style' => 'width: 100%']) !!}
-                    <input type="hidden" name="order_type" value="{{ \Modules\Order\Model\Order::COURSE_TYPE }}">
+                    <input type="hidden" name="order_type" value="{{ $order_type }}">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="voucher">{{ trans("Voucher") }}</label>

@@ -132,7 +132,13 @@
 </div>
 
 <div class="container">
-    <button class="btn btn-primary print"><i class="fas fa-print"></i></button>
+    @if($order->status !== \Modules\Order\Model\Order::STATUS_DRAFT)
+        <button class="btn btn-primary print"><i class="fas fa-print"></i></button>
+    @else
+        @php($route = ($order->order_type === \Modules\Order\Model\Order::SERVICE_TYPE) ? route('get.member_service.add',$order->member->id) : route('get.member_course.add',$order->member->id))
+        <a href="{{ $route }}"
+           class="btn btn-warning text-light"> {{ trans('Go to Purchase') }}</a>
+    @endif
 </div>
 
 <script>
