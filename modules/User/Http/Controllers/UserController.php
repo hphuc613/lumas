@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
+use Modules\Order\Model\Order;
 use Modules\Role\Model\Role;
+use Modules\Setting\Model\CommissionRateSetting;
 use Modules\User\Http\Requests\UserValidation;
+use Modules\User\Model\Salary;
 use Modules\User\Model\User;
 
 class UserController extends Controller{
@@ -34,8 +37,9 @@ class UserController extends Controller{
         $filter   = $request->all();
         $users    = User::filter($filter)->paginate(15);
         $statuses = Status::getStatuses();
+        $roles    = Role::getArray(Status::STATUS_ACTIVE);
 
-        return view('User::index', compact('users', 'statuses', 'filter'));
+        return view('User::index', compact('users', 'statuses', 'filter', 'roles'));
     }
 
     /**
@@ -119,12 +123,15 @@ class UserController extends Controller{
      * @return Factory|View
      */
     public function getProfile(){
-        $id       = Auth::guard()->id();
-        $roles    = Role::getArray();
-        $user     = User::find($id);
-        $statuses = Status::getStatuses();
+        $roles          = Role::getArray();
+        $user           = User::find(Auth::guard()->id());
+        $statuses       = Status::getStatuses();
+        $orders         = Order::query()->where('updated_by', $user->id)
+                               ->whereMonth('updated_at', formatDate(time(), 'm'))
+                               ->paginate(15);
+        $order_statuses = Order::getStatus();
 
-        return view('User::update', compact('roles', 'user', 'statuses'));
+        return view('User::update', compact('roles', 'user', 'statuses', 'orders', 'order_statuses'));
     }
 
     /**
@@ -133,9 +140,8 @@ class UserController extends Controller{
      * @return RedirectResponse
      */
     public function postProfile(UserValidation $request){
-        $id   = Auth::guard()->id();
         $data = $request->all();
-        $user = User::find($id);
+        $user = User::find(Auth::guard()->id());
         if(empty($data['password'])){
             unset($data['password']);
         }
@@ -144,6 +150,134 @@ class UserController extends Controller{
         $request->session()->flash('success', trans('User updated successfully.'));
 
         return redirect()->route('dashboard');
+    }
+
+    /**
+     * @param $id
+     * @return Application|Factory|RedirectResponse|View
+     */
+    public function getSalary($id){
+        $user = User::find($id);
+        if($user->isAdmin()){
+            return redirect()->back();
+        }
+        $salary    = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
+        $target_by = $user->getTargetBy();
+        $orders    = Order::query();
+        if($target_by === CommissionRateSetting::PERSON_INCOME){
+            $orders->where('updated_by', $user->id);
+        }
+        $orders->whereMonth('updated_at', formatDate(time(), 'm'));
+        $orders         = $orders->paginate(15);
+        $order_statuses = Order::getStatus();
+
+        return view('User::salary.salary', compact('user', 'orders', 'order_statuses', 'salary', 'target_by'));
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return array|RedirectResponse|string
+     */
+    public function getUpdateSalary(Request $request, $id){
+        $user   = User::find($id);
+        $salary = Salary::query()
+                        ->where('user_id', $id)
+                        ->where('month', formatDate(time(), 'm/Y'))
+                        ->first();
+
+        if(!$request->ajax()){
+            return redirect()->back();
+        }
+
+        return $this->renderAjax('User::salary.form', compact('salary', 'user'));
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function postUpdateSalary(Request $request, $id){
+        $user               = User::find($id);
+        $user->basic_salary = $request->basic_salary;
+        $user->save();
+
+        $salary = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
+
+        if(empty($salary)){
+            $salary          = new Salary();
+            $salary->user_id = $id;
+            $salary->month   = formatDate(time(), 'm/Y');
+        }
+        $salary->basic_salary       = $user->basic_salary;
+        $salary->sale_commission    = $salary->getSaleCommission();
+        $salary->service_commission = $salary->getServiceCommission();
+        $salary->company_commission = $salary->getCompanyIncomeCommission();
+        $salary->total_commission   = $salary->getTotalCommission();
+        $salary->total_salary       = $salary->getTotalSalary();
+        $salary->save();
+
+        $request->session()->flash('success', trans('Update Basic Salary successfully.'));
+
+        return redirect()->back();
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function singleReloadSalary(Request $request, $id){
+        $user   = User::find($id);
+        $salary = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
+        if(empty($salary)){
+            $salary          = new Salary();
+            $salary->user_id = $id;
+            $salary->month   = formatDate(time(), 'm/Y');
+        }
+        $salary->basic_salary       = $user->basic_salary;
+        $salary->sale_commission    = $salary->getSaleCommission();
+        $salary->service_commission = $salary->getServiceCommission();
+        $salary->company_commission = $salary->getCompanyIncomeCommission();
+        $salary->total_commission   = $salary->getTotalCommission();
+        $salary->total_salary       = $salary->getTotalSalary();
+        $salary->save();
+
+        $request->session()->flash('success', trans('Reload successfully.'));
+
+        return redirect()->back();
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function bulkReloadSalary(Request $request){
+        $users = User::query()->whereHas('roles', function($qr){
+            $qr->where('role_id', '<>', Role::getAdminRole()->id);
+        })->get();
+
+        foreach($users as $user){
+            $salary = Salary::query()->where('user_id', $user->id)->where('month', formatDate(time(), 'm/Y'))->first();
+            if(empty($salary)){
+                $salary          = new Salary();
+                $salary->user_id = $user->id;
+                $salary->month   = formatDate(time(), 'm/Y');
+            }
+            $salary->basic_salary       = $user->basic_salary;
+            $salary->sale_commission    = $salary->getSaleCommission();
+            $salary->service_commission = $salary->getServiceCommission();
+            $salary->company_commission = $salary->getCompanyIncomeCommission();
+            $salary->total_commission   = $salary->getTotalCommission();
+            $salary->total_salary       = $salary->getTotalSalary();
+            $salary->save();
+        }
+
+        $request->session()->flash('success', trans('Reload successfully.'));
+
+        return redirect()->back();
     }
 
     /**

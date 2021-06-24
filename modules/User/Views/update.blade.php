@@ -1,7 +1,7 @@
 @extends('Base::layouts.master')
 @section('content')
     @php
-        $page = App\AppHelpers\Helper::segment(1) === 'profile' ? 'Profile' : 'Update User';
+        $page = App\AppHelpers\Helper::segment(1) === 'profile' ? trans('Profile') : trans('Update User')
     @endphp
     <div id="role-module">
         <div class="breadcrumb-line">
@@ -9,18 +9,32 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans('Home') }}</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('get.user.list') }}">{{ trans('User') }}</a></li>
-                    <li class="breadcrumb-item active">{{ trans($page) }}</li>
+                    <li class="breadcrumb-item active">{{ $page }}</li>
                 </ol>
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Update User") }}</h3></div>
+            <div class="page-title"><h3>{{ $page }}</h3></div>
         </div>
     </div>
-
     <div id="user" class="card">
         <div class="card-body">
-            @include('User::_form')
+            <ul class="nav nav-pills" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="profile-tab" href="javascript:">{{ trans('Profile') }}</a>
+                </li>
+                @if(!$user->isAdmin())
+                <li class="nav-item">
+                    <a class="nav-link" id="salary-tab"
+                       href="{{ route('get.profile.salary', $user->id) }}">{{ trans('Salary') }}</a>
+                </li>
+                @endif
+            </ul>
+            <div class="tab-content p-4">
+                <div class="tab-pane fade show active" id="profile">
+                    @include('User::_form')
+                </div>
+            </div>
         </div>
     </div>
 @endsection

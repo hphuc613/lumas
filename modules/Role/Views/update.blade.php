@@ -1,7 +1,7 @@
 @extends("Base::layouts.master")
 
 @section("content")
-    <div id="store-module">
+    <div id="role-module">
         <div class="breadcrumb-line">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -15,7 +15,7 @@
             <div class="page-title"><h3>{{ trans("Update Role") }}</h3></div>
         </div>
     </div>
-    <div id="store">
+    <div id="role">
         <div class="card">
             <div class="card-body">
                 <div class="row">

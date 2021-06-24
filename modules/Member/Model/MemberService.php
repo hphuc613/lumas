@@ -4,6 +4,7 @@ namespace Modules\Member\Model;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Modules\Base\Model\BaseModel;
@@ -193,6 +194,13 @@ class MemberService extends BaseModel{
      */
     public function voucher(){
         return $this->belongsTo(ServiceVoucher::class, "voucher_id");
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function histories(){
+        return $this->hasMany(MemberServiceHistory::class, "member_service_id");
     }
 
 }

@@ -49,7 +49,9 @@
                         @include('Member::backend.member_service.view')
                     @endif
                 </div>
-                @include('Member::backend.member_service.listing.list')
+                <div class="col-md-8">
+                    @include('Member::backend.member_service.listing.list')
+                </div>
                 <div class="col-md-12 mt-5">
                     @include('Member::backend.member_service.listing.history')
                 </div>

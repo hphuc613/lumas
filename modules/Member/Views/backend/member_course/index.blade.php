@@ -50,7 +50,9 @@
                         @include('Member::backend.member_course.view')
                     @endif
                 </div>
-                @include('Member::backend.member_course.listing.list')
+                <div class="col-md-8">
+                    @include('Member::backend.member_course.listing.list')
+                </div>
                 <div class="col-md-12 mt-5">
                     @include('Member::backend.member_course.listing.history')
                 </div>

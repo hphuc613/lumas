@@ -1,5 +1,7 @@
 @extends('Base::layouts.master')
-
+@php
+    $prompt = ['' => 'All']
+@endphp
 @section('content')
     <div id="user-module">
         <div class="breadcrumb-line">
@@ -13,6 +15,10 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans('User Listing') }}</h3></div>
             <div class="group-btn">
+                <a href="{{ route('get.salary.bulk_reload') }}" class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i>
+                    {{ 'Bulk Reload Salary' }}
+                </a>
                 <a href="{{ route('get.user.create') }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
                     &nbsp; {{ trans('Add New') }}</a>
             </div>
@@ -32,6 +38,18 @@
                                     <label for="text-input">{{ trans('User name') }}</label>
                                     <input type="text" class="form-control" id="text-input" name="name"
                                            value="{{$filter['name'] ?? null}}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="text-input">{{ trans('Role') }}</label>
+                                    {!! Form::select('role_id', $prompt + $roles, $filter['role_id'] ?? NULL, ['class' => 'select2 form-control w-100']) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="text-input">{{ trans('Status') }}</label>
+                                    {!! Form::select('status', $prompt + $statuses, $filter['status'] ?? NULL, ['class' => 'select2 form-control w-100']) !!}
                                 </div>
                             </div>
                         </div>
@@ -57,12 +75,13 @@
                                 <th>{{ trans('Name') }}</th>
                                 <th>{{ trans('Email') }}</th>
                                 <th>{{ trans('Role') }}</th>
+                                <th>{{ trans('Total Salary') }}</th>
                                 @can('update-user-role')
                                     <th width="200px">{{ trans('Status') }}</th>
                                 @endcan
                                 <th width="200px">{{ trans('Created At') }}</th>
                                 <th width="200px">{{ trans('Updated At') }}</th>
-                                <th width="200px" class="action">{{ trans('Action') }}</th>
+                                <th width="200px" class="action text-center">{{ trans('Action') }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -73,6 +92,12 @@
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->getRoleAttribute()->name ?? 'N/A' }}</td>
+                                    <td>
+                                        <a class="nav-link" id="salary-tab"
+                                           href="{{ route('get.profile.salary', $user->id) }}">
+                                            {{ moneyFormat(optional($user->getSalaryCurrentMonth())->total_salary ?? 0) }}
+                                        </a>
+                                    </td>
                                     @can('update-user-role')
                                         <td>
                                             <input type="checkbox" class="checkbox-style checkbox-item user-status"

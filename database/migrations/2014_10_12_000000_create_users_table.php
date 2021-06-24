@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration {
             $table->increments('id');
             $table->string('name');
             $table->string('email');
+            $table->double('basic_salary')->default(0);
             $table->integer('status')->default(1);
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();

@@ -35,6 +35,12 @@
                         <div>{{ trans('To configuration appointments') }}</div>
                     </a>
                 </div>
+                <div class="col-md-6 mb-2">
+                    <a href="{{ route("get.setting.commissionRateConfig") }}" class="btn btn-light btn-setting">
+                        <span>{{ trans('Commission Rate Setting') }} </span>
+                        <div>{{ trans('To configuration calculate commission') }}</div>
+                    </a>
+                </div>
                 @env('local')
                     <div class="col-md-6 mb-2">
                         <a href="{{ route("get.setting.langManagement") }}" class="btn btn-light btn-setting">

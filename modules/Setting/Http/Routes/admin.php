@@ -17,5 +17,10 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
 
         Route::get("appointment/", "SettingController@appointmentConfig")->name("get.setting.appointmentConfig");
         Route::post("appointment/", "SettingController@appointmentConfig")->name("post.setting.appointmentConfig");
+
+        Route::get("commission-rate/", "SettingController@commissionRateConfig")
+             ->name("get.setting.commissionRateConfig");
+        Route::post("commission-rate/", "SettingController@commissionRateConfig")
+             ->name("post.setting.commissionRateConfig");
     });
 });

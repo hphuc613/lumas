@@ -76,7 +76,7 @@ class Course extends BaseModel{
     /**
      * @return HasMany
      */
-    public function memberService(){
+    public function memberCourses(){
         return $this->hasMany(MemberCourse::class);
     }
 }

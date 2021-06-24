@@ -83,9 +83,22 @@ class AppServiceProvider extends ServiceProvider{
          */
         Validator::extend('check_past', function($attribute, $value, $parameters, $validator){
             if(strtotime($value) < strtotime(formatDate(time(), 'd-m-Y H:i'))){
-                return false;
+                return FALSE;
             }
-            return true;
+            return TRUE;
+        });
+
+        /**
+         * Check date format
+         */
+        Validator::extend('dateFormatCustom', function($attribute, $value, $formats){
+            foreach($formats as $format){
+                $parsed = date_parse_from_format($format, $value);
+                if($parsed['error_count'] === 0 && $parsed['warning_count'] === 0){
+                    return TRUE;
+                }
+            }
+            return FALSE;
         });
     }
 }

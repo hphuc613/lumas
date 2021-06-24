@@ -86,7 +86,7 @@ class Service extends BaseModel{
     /**
      * @return HasMany
      */
-    public function memberService(){
+    public function memberServices(){
         return $this->hasMany(MemberService::class);
     }
 }

@@ -9,7 +9,7 @@ namespace Modules\Setting\Model;
 class AppointmentSetting extends Setting
 {
 
-    const TIMER = 'TIMER';
+    const TIMER = 'APPOINTMENT_TIMER';
 
     const APPOINTMENT_CONFIG = [self::TIMER,];
 
