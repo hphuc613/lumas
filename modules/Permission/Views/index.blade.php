@@ -23,7 +23,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped access-control">
+                            <table class="table table-striped  table-hover access-control">
                                 <thead>
                                 <tr>
                                     <th width="50px">#</th>

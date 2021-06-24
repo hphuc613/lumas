@@ -30,7 +30,21 @@ class CreateRolesTable extends Migration{
             'updated_at'  => formatDate(time(), 'Y-m-d H:i:s')
         ]);
         DB::table('roles')->insert([
-            'name'        => 'Staff',
+            'name'        => 'Manager',
+            'status'      => 1,
+            'description' => '',
+            'created_at'  => formatDate(time(), 'Y-m-d H:i:s'),
+            'updated_at'  => formatDate(time(), 'Y-m-d H:i:s')
+        ]);
+        DB::table('roles')->insert([
+            'name'        => 'Therapist',
+            'status'      => 1,
+            'description' => '',
+            'created_at'  => formatDate(time(), 'Y-m-d H:i:s'),
+            'updated_at'  => formatDate(time(), 'Y-m-d H:i:s')
+        ]);
+        DB::table('roles')->insert([
+            'name'        => 'Front Desk',
             'status'      => 1,
             'description' => '',
             'created_at'  => formatDate(time(), 'Y-m-d H:i:s'),

@@ -94,7 +94,6 @@
             </div>
         </div>
 
-
         <div class="product-list">
             <div class="table-responsive mb-3">
                 <table class="table table-striped table-hover">

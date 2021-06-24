@@ -116,18 +116,16 @@ class AppointmentController extends Controller{
         $appointment_types = Appointment::getTypeList();
         $members           = Member::getArray(Status::STATUS_ACTIVE);
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
-        $users             = [];
-        if(Auth::user()->isAdmin()){
-            $users = User::with('roles')
-                         ->whereHas('roles', function($role_query){
-                             return $role_query->where('role_id', '<>', Role::getAdminRole()->id);
-                         })
-                         ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
-        }
+        $users             = User::with('roles')
+                                 ->whereHas('roles', function($role_query){
+                                     return $role_query->where('role_id', '<>', Role::getAdminRole()->id);
+                                 })
+                                 ->where('status', Status::STATUS_ACTIVE)
+                                 ->pluck('name', 'id');
         if(!$request->ajax()){
             return redirect()->back();
         }
-        return view("Appointment::form", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'users'));
+        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'users'));
     }
 
     /**
@@ -176,14 +174,11 @@ class AppointmentController extends Controller{
         $appointment->end_time =
             (!empty($appointment->end_time)) ? formatDate($appointment->end_time, 'd-m-Y H:i') : null;
 
-        $users = [];
-        if(Auth::user()->isAdmin()){
-            $users = User::with('roles')
-                         ->whereHas('roles', function($role_query){
-                             return $role_query->where('role_id', '<>', Role::getAdminRole()->id);
-                         })
-                         ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
-        }
+        $users                    = User::with('roles')
+                                        ->whereHas('roles', function($role_query){
+                                            return $role_query->where('role_id', '<>', Role::getAdminRole()->id);
+                                        })
+                                        ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
         $services                 =
             Service::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->service_ids, 1));
         $courses                  =
@@ -195,7 +190,7 @@ class AppointmentController extends Controller{
             return redirect()->back();
         }
 
-        return view("Appointment::form", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users'));
+        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users'));
     }
 
     /**

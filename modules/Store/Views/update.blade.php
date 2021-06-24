@@ -12,7 +12,7 @@
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Ipdate Store") }}</h3></div>
+            <div class="page-title"><h3>{{ trans("Update Store") }}</h3></div>
         </div>
     </div>
     <div id="store">

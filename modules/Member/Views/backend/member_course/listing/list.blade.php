@@ -120,9 +120,8 @@
                     </div>
                 </div>
             </div>
-            <div
-                    class="tab-pane fade @if(isset($filter['code_completed']) || isset($filter['course_search_completed'])) show active @endif"
-                    id="completed-section">
+            <div class="tab-pane fade @if(isset($filter['code_completed']) || isset($filter['course_search_completed'])) show active @endif"
+                 id="completed-section">
                 <div class="completed">
                     <form action="{{ $route_form_search }}" method="get" class="mb-3">
                         <div class="row">

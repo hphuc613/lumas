@@ -9,7 +9,6 @@ use Modules\Course\Model\Course;
 use Modules\Member\Model\Member;
 use Modules\Order\Model\Order;
 use Modules\Service\Model\Service;
-use Modules\User\Model\User;
 
 class Dashboard extends BaseModel{
 
@@ -19,7 +18,6 @@ class Dashboard extends BaseModel{
     public static function getCountData(){
         $count_data = [
             'client'  => Member::query()->where('status', Status::STATUS_ACTIVE)->count(),
-            'staff'   => User::getStaff()->count(),
             'service' => Service::query()->where('status', Status::STATUS_ACTIVE)->count(),
             'course'  => Course::query()->where('status', Status::STATUS_ACTIVE)->count(),
             'order'   => Order::query()->count()
