@@ -73,11 +73,9 @@
                                     <td>{{ \Carbon\Carbon::parse($role->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($role->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
-                                        @if(!in_array($role->name, ["Administrator", "Staff"]))
+                                        @if(!in_array($role->name, ["Administrator"]))
                                             <a href="{{ route('get.role.update',$role->id) }}"
-                                               class="btn btn-main-color mr-2"
-                                               data-toggle="modal" data-title="{{ trans('Update Role') }}"
-                                               data-target="#form-modal">
+                                               class="btn btn-main-color mr-2">
                                                 <i class="fas fa-pencil-alt"></i></a>
                                             <a href="{{ route('get.role.delete',$role->id) }}"
                                                class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>

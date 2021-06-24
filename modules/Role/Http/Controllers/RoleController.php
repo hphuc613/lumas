@@ -3,20 +3,25 @@
 namespace Modules\Role\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Modules\Base\Model\Status;
 use Modules\Role\Http\Requests\RoleValidation;
+use Modules\Role\Model\CommissionRate;
 use Modules\Role\Model\Permission;
 use Modules\Role\Model\Role;
 
-class RoleController extends Controller {
+class RoleController extends Controller{
 
     /**
      * Create a new authentication controller instance.
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct(){
         # parent::__construct();
     }
 
@@ -41,24 +46,37 @@ class RoleController extends Controller {
         return $this->renderAjax('Role::form', compact('statuses'));
     }
 
+    /**
+     * @param RoleValidation $request
+     * @return RedirectResponse
+     */
     public function postCreate(RoleValidation $request){
         $role = new Role($request->all());
         $role->save();
         $request->session()->flash('success', trans('Role created successfully.'));
 
-        return back();
+        return redirect()->route('get.role.update', $role->id);
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return Application|Factory|View
+     */
     public function getUpdate(Request $request, $id){
         $role     = Role::find($id);
         $statuses = Status::getStatuses();
-        if(!$request->ajax()){
-            return redirect()->back();
-        }
-        return $this->renderAjax('Role::form', compact('role', 'statuses'));
+
+        $rates = CommissionRate::query()->where('role_id', $role->id)->paginate(15);
+        return view('Role::update', compact('role', 'statuses', 'rates'));
     }
 
-    public function postUpdate(RoleValidation $request, $id) {
+    /**
+     * @param RoleValidation $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function postUpdate(RoleValidation $request, $id){
         $role = Role::find($id);
         $role->update($request->all());
         $request->session()->flash('success', trans('Role updated successfully.'));
@@ -66,13 +84,18 @@ class RoleController extends Controller {
         return redirect()->back();
     }
 
-    public function delete(Request $request, $id) {
+    /**
+     * @param Request $request
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function delete(Request $request, $id){
         $role = Role::find($id);
-        if($role->checkUserHasRole()) {
+        if($role->checkUserHasRole()){
+            $request->session()->flash('error', trans('This role cannot delete because has users belongs this role'));
+        }else{
             $role->delete();
             $request->session()->flash('success', trans('Role deleted successfully.'));
-        } else {
-            $request->session()->flash('error', trans('This role cannot delete because has users belongs this role'));
         }
 
         return back();

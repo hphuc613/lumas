@@ -23,8 +23,6 @@ class Role extends BaseModel{
 
     const ADMINISTRATOR = 'Administrator';
 
-    const STAFF = 'Staff';
-
     public static function filter($filter){
         $query = self::query();
         if(isset($filter['name'])){
@@ -51,10 +49,10 @@ class Role extends BaseModel{
      * @return bool
      */
     public function checkUserHasRole(){
-        if($this->users->first()->user->isEmpty()){
-            return true;
+        if($this->users->isEmpty()){
+            return FALSE;
         }
-        return FALSE;
+        return TRUE;
     }
 
     /**
@@ -67,7 +65,7 @@ class Role extends BaseModel{
     /**
      * @return mixed
      */
-    public static function getStaffRole(){
-        return self::where('name', self::STAFF)->first();
+    public function commissionRates(){
+        return $this->hasMany(CommissionRate::class, 'role_id');
     }
 }
