@@ -17,7 +17,6 @@ use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
 use Modules\Member\Model\Member;
-use Modules\Role\Model\Role;
 use Modules\Service\Model\Service;
 use Modules\Store\Model\Store;
 use Modules\User\Model\User;
@@ -118,7 +117,7 @@ class AppointmentController extends Controller{
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
         $users             = User::with('roles')
                                  ->whereHas('roles', function($role_query){
-                                     return $role_query->where('role_id', '<>', Role::getAdminRole()->id);
+                                     return $role_query->where('role_id', 3);
                                  })
                                  ->where('status', Status::STATUS_ACTIVE)
                                  ->pluck('name', 'id');
@@ -176,7 +175,7 @@ class AppointmentController extends Controller{
 
         $users                    = User::with('roles')
                                         ->whereHas('roles', function($role_query){
-                                            return $role_query->where('role_id', '<>', Role::getAdminRole()->id);
+                                            return $role_query->where('role_id', 3);
                                         })
                                         ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
         $services                 =

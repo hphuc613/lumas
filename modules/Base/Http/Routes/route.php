@@ -14,3 +14,7 @@ Route::get('/lalala', function(Request $request){
     $request->session()->flash('success', trans("Cache is cleared"));
     return redirect()->back();
 });
+
+Route::get('/notify-appointment', function(){
+    Artisan::call('notify:appointments');
+});

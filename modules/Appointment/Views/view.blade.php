@@ -49,15 +49,13 @@
     <div class="col-md-12">
         <hr>
     </div>
-    @if(Auth::user()->isAdmin())
-        <div class="col-md-6 form-group">
-            <label for="user-id">{{ trans('Staff') }}</label>
-            <div class="w-100">{{ $appointment->user->name }} </div>
-        </div>
-        <div class="col-md-12">
-            <hr>
-        </div>
-    @endif
+    <div class="col-md-6 form-group">
+        <label for="user-id">{{ trans('Staff') }}</label>
+        <div class="w-100">{{ $appointment->user->name }} </div>
+    </div>
+    <div class="col-md-12">
+        <hr>
+    </div>
     <div class="col-md-12 form-group">
         <label for="description">{{ trans('Description') }}</label>
         <textarea name="description" id="description" class="form-control" readonly=""

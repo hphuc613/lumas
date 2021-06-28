@@ -26,7 +26,7 @@
             <hr>
         </div>
         <div class="col-md-6 form-group">
-            <label for="booking-time">{{ trans('Time') }}</label>
+            <label for="booking-time">{{ trans('Appointment Time') }}</label>
             <input type="text" class="form-control datetime" id="booking-time" name="time"
                    placeholder="d-m-y h:m"
                    value="{{ $appointment->time ?? old('time') }}">
