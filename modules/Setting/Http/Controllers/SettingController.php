@@ -165,6 +165,7 @@ class SettingController extends Controller{
         $roles = Role::getArray();
         unset($roles[Role::getAdminRole()->id]);
         if($post){
+
             $role_keys       = array_keys($roles);
             $company_incomes = array_map('intval', $post[CommissionRateSetting::COMPANY_INCOME] ?? []);
             $person_incomes  =
@@ -188,6 +189,17 @@ class SettingController extends Controller{
             $person_income_data->value = json_encode($person_incomes);
             $person_income_data->save();
 
+            $service_rate_data = CommissionRateSetting::where('key', CommissionRateSetting::SERVICE_RATE)->first();
+            if(empty($service_rate_data)){
+                $service_rate_data      = new CommissionRateSetting();
+                $service_rate_data->key = CommissionRateSetting::SERVICE_RATE;
+            }
+            $service_rate_data->value = $post[CommissionRateSetting::SERVICE_RATE];
+            if(empty($post[CommissionRateSetting::SERVICE_RATE]) || (int)$post[CommissionRateSetting::SERVICE_RATE] < 0){
+                $service_rate_data->value = 0;
+            }
+            $service_rate_data->save();
+
             $request->session()->flash('success', 'Appointment Config updated successfully.');
 
             return redirect()->back();
@@ -203,6 +215,8 @@ class SettingController extends Controller{
             $person_income_roles = Role::query()->whereIn('id', $person_income_setting)->get();
         }
 
-        return view("Setting::setting.commission_rate", compact('roles', 'company_income_setting', 'person_income_roles'));
+        $service_rate = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE);
+
+        return view("Setting::setting.commission_rate", compact('roles', 'company_income_setting', 'person_income_roles', 'service_rate'));
     }
 }

@@ -60,7 +60,8 @@ class Salary extends BaseModel{
      */
     public function getServiceCommission(){
         if($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME){
-            $rate                     = $this->user->getCommissionRate();
+            $service_rate             =
+                (int)CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0;
             $member_service_histories = MemberServiceHistory::query()
                                                             ->whereMonth('updated_at', formatDate(time(), 'm'))
                                                             ->where('updated_by', $this->user->id)
@@ -70,7 +71,7 @@ class Salary extends BaseModel{
                 $data += $history->memberService->price;
             }
 
-            return $data * $rate / 100;
+            return $data * $service_rate / 100;
         }
 
         return 0;

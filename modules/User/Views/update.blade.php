@@ -1,8 +1,9 @@
 @extends('Base::layouts.master')
+@php
+    $segment = App\AppHelpers\Helper::segment(1);
+    $page = ($segment === 'profile') ? trans('Profile') : trans('Update User')
+@endphp
 @section('content')
-    @php
-        $page = App\AppHelpers\Helper::segment(1) === 'profile' ? trans('Profile') : trans('Update User')
-    @endphp
     <div id="role-module">
         <div class="breadcrumb-line">
             <nav aria-label="breadcrumb">
@@ -21,13 +22,13 @@
         <div class="card-body">
             <ul class="nav nav-pills" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="profile-tab" href="javascript:">{{ trans('Profile') }}</a>
+                    <a class="nav-link active" id="profile-tab" href="javascript:">{{ $page }}</a>
                 </li>
                 @if(!$user->isAdmin())
-                <li class="nav-item">
-                    <a class="nav-link" id="salary-tab"
-                       href="{{ route('get.profile.salary', $user->id) }}">{{ trans('Salary') }}</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="salary-tab"
+                           href="{{ route('get.user.salary', [$user->id, 'previous_page' => $segment]) }}">{{ trans('Salary') }}</a>
+                    </li>
                 @endif
             </ul>
             <div class="tab-content p-4">

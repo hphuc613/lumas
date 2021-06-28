@@ -17,7 +17,7 @@
             <div class="group-btn">
                 <a href="{{ route('get.salary.bulk_reload') }}" class="btn btn-primary">
                     <i class="fas fa-sync-alt"></i>
-                    {{ 'Bulk Reload Salary' }}
+                    {{ 'Bulk Calculate Salary' }}
                 </a>
                 <a href="{{ route('get.user.create') }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
                     &nbsp; {{ trans('Add New') }}</a>
@@ -94,7 +94,7 @@
                                     <td>{{ $user->getRoleAttribute()->name ?? 'N/A' }}</td>
                                     <td>
                                         <a class="nav-link" id="salary-tab"
-                                           href="{{ route('get.profile.salary', $user->id) }}">
+                                           href="{{ route('get.user.salary', $user->id) }}">
                                             <h6>{{ moneyFormat(optional($user->getSalaryCurrentMonth())->total_salary ?? $user->basic_salary) }}</h6>
                                         </a>
                                     </td>

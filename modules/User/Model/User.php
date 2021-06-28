@@ -99,6 +99,39 @@ class User extends BaseUser{
     }
 
     /**
+     * @return int
+     */
+    public function getNextCommissionRate(){
+        $rates = $this->getRoleAttribute()->commissionRates;
+        $data  = 0;
+
+        $target_by = $this->getTargetBy();
+
+        if($target_by === CommissionRateSetting::PERSON_INCOME){
+            $income = $this->orders()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
+        }else{
+            $income = Order::query()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
+        }
+
+        $count = count($rates);
+
+        foreach($rates as $key => $rate){
+            if((int)$income < (int)$rates[0]->target){
+                return moneyFormat((int)$rates[0]->target) . ' - ' . (int)$rates[0]->rate . '%';
+            }
+            if((int)$income >= (int)$rate->target){
+                if($key + 1 < $count){
+                    $data = moneyFormat((int)$rates[$key + 1]->target) . ' - ' . (int)$rates[$key + 1]->rate . '%';
+                }else{
+                    $data = 0;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * @return HigherOrderBuilderProxy|mixed
      */
     public function getTargetBy(){
@@ -116,7 +149,7 @@ class User extends BaseUser{
     }
 
     /**
-     *
+     * @return Model|HasMany|object|null
      */
     public function getSalaryCurrentMonth(){
         return $this->salaries()->where('month', formatDate(time(), 'm/Y'))->first();

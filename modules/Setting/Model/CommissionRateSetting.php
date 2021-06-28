@@ -10,4 +10,5 @@ class CommissionRateSetting extends Setting{
 
     const PERSON_INCOME = 'COMMISSION_PERSON_INCOME';
     const COMPANY_INCOME = 'COMMISSION_COMPANY_INCOME';
+    const SERVICE_RATE = 'COMMISSION_SERVICE_RATE';
 }

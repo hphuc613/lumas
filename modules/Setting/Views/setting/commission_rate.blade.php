@@ -39,6 +39,13 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="logo">{{ trans('Service Rate') }}</label>
+                            <input type="number" name="{{ \Modules\Setting\Model\CommissionRateSetting::SERVICE_RATE }}"
+                                   class="form-control" value="{{ $service_rate }}">
+                        </div>
+                    </div>
                 </div>
                 <div class="input-group mt-5 d-flex justify-content-between">
                     <div class="mb-3">

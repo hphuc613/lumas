@@ -20,6 +20,8 @@ class CreateSalariesTable extends Migration{
             $table->double('company_commission')->default(0);
             $table->double('total_commission')->default(0);
             $table->double('total_salary')->default(0);
+            $table->integer('payment_rate')->default(0);
+            $table->integer('service_rate')->default(0);
             $table->unsignedInteger('user_id');
             $table->timestamps();
         });
