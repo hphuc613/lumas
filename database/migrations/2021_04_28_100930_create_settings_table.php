@@ -20,23 +20,23 @@ class CreateSettingsTable extends Migration{
             $table->string('value')->nullable();
         });
 
-        DB::table('roles')->insert([
+        DB::table('settings')->insert([
             'key'   => AppointmentSetting::TIMER,
             'value' => 60
         ]);
 
-        DB::table('roles')->insert([
+        DB::table('settings')->insert([
             'key'   => CommissionRateSetting::COMPANY_INCOME,
             'value' => '[4,2]'
         ]);
 
-        DB::table('roles')->insert([
+        DB::table('settings')->insert([
             'key'   => CommissionRateSetting::PERSON_INCOME,
             'value' => '[3]'
         ]);
 
 
-        DB::table('roles')->insert([
+        DB::table('settings')->insert([
             'key'   => CommissionRateSetting::SERVICE_RATE,
             'value' => 0
         ]);
