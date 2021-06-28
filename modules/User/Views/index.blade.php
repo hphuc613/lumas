@@ -95,7 +95,7 @@
                                     <td>
                                         <a class="nav-link" id="salary-tab"
                                            href="{{ route('get.profile.salary', $user->id) }}">
-                                            {{ moneyFormat(optional($user->getSalaryCurrentMonth())->total_salary ?? 0) }}
+                                            <h6>{{ moneyFormat(optional($user->getSalaryCurrentMonth())->total_salary ?? $user->basic_salary) }}</h6>
                                         </a>
                                     </td>
                                     @can('update-user-role')

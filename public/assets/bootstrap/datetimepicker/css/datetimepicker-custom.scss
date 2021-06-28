@@ -120,3 +120,7 @@
     }
   }
 }
+
+[class*=" datetimepicker-dropdown"]:after {
+  border-bottom: 6px solid $main-color;
+}

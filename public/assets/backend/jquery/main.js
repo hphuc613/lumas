@@ -10,8 +10,20 @@ function setTheme(theme) {
     }
 }*/
 $(document).ready(function () {
-    //Select2
+    /***** Pjax Paginate *****/
+    if ($.support.pjax) {
+        $(document).on('pjax:timeout', function (event) {
+            // Prevent default timeout redirection behavior
+            event.preventDefault()
+        })
 
+        $(document).on('click', '.pjax-table ul.pagination a', function (event) {
+            console.log('.pjax-table')
+            $.pjax.click(event, {container: '.pjax-table', push: false})
+        })
+    }
+
+    //Select2
     $(document).find('.select2').select2();
     $('input.datetime, input.date, input.time, input.month, input.year').attr("autocomplete", "off")
     /***** Action delete *****/
@@ -36,6 +48,7 @@ $(document).ready(function () {
             }
         });
     });
+
     /***** Action Clear Search *****/
     $(document).on('click', 'button.clear', function (event) {
         event.preventDefault();
@@ -44,6 +57,7 @@ $(document).ready(function () {
         form.find('select').attr('disabled', 'disabled');
         form.trigger('submit');
     });
+
     /***** Action Check all item in table *****/
     $(document).on('click', '.select-all', function () {
         var class_child = $(this).attr('id');
@@ -195,7 +209,7 @@ function showAlert(selector) {
         $('.alert-danger').css('top', '120px');
     }
     $('.alert-close').click(function () {
-        var parent = $(this).parent('.alert-fade-out');
+        var parent = $(this).parents('.alert-fade-out');
         parent.animate({
             right: "-500px"
         }, 1000);
@@ -204,3 +218,4 @@ function showAlert(selector) {
         }, 2100);
     });
 }
+

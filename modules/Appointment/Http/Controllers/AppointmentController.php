@@ -45,7 +45,7 @@ class AppointmentController extends Controller{
                                         ->with('user');
 
         /** Created_by */
-        if(!Auth::user()->isAdmin()){
+        if(Auth::user()->getRoleAttribute()->id == 3){
             $appointments = $appointments->where('user_id', Auth::id());
         }
 
@@ -89,7 +89,7 @@ class AppointmentController extends Controller{
         $appointments      = Appointment::filter($filter);
 
         /** Created_by */
-        if(!Auth::user()->isAdmin()){
+        if(Auth::user()->getRoleAttribute()->id == 3){
             $appointments = $appointments->where('user_id', Auth::id());
         }
 

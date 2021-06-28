@@ -49,8 +49,4 @@
             @endif
         </ul>
     </nav>
-
-    <ul class="pagination" role="navigation">
-
-    </ul>
 @endif

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $('.modal-ajax').on('hidden.bs.modal', function () {
         $(document).find('.datetime-modal').html('');
-        $(document).find('.modal-ajax .modal-body').html('');
+        $(this).find('.modal-body').html('');
         loadScriptTag();
     })
     /** Modal Ajax */

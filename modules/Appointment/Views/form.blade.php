@@ -31,13 +31,34 @@
                    placeholder="d-m-y h:m"
                    value="{{ $appointment->time ?? old('time') }}">
         </div>
-        @if(Auth::user()->isAdmin() && isset($appointment))
-            <div class="col-md-6 form-group">
-                <label for="end-time">{{ trans('End Time') }}</label>
-                <input type="text" class="form-control datetime" id="end-time" name="end_time"
-                       placeholder="d-m-y h:m"
-                       value="{{ $appointment->end_time ?? old('end_time') }}">
-            </div>
+        @if(isset($appointment))
+            @if(Auth::user()->isAdmin())
+                <div class="col-md-12">
+                    <hr>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="booking-time">{{ trans('Check In Time') }}</label>
+                    <div class="w-100">{{ $appointment->start_time }} </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="end-time">{{ trans('Check Out Time') }}</label>
+                    <input type="text" class="form-control datetime" id="end-time" name="end_time"
+                           placeholder="d-m-y h:m"
+                           value="{{ $appointment->end_time ?? old('end_time') }}">
+                </div>
+            @else
+                <div class="col-md-12">
+                    <hr>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="booking-time">{{ trans('Check In Time') }}</label>
+                    <div class="w-100">{{ $appointment->start_time }} </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="booking-time">{{ trans('Check Out Time') }}</label>
+                    <div class="w-100">{{ $appointment->end_time }} </div>
+                </div>
+            @endif
         @endif
         <div class="col-md-12">
             <hr>

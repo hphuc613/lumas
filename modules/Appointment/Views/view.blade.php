@@ -20,6 +20,9 @@
         <h4 class="w-100 text-info">{{ $appointment->time }}</h4>
     </div>
     <div class="col-md-6 form-group"></div>
+    <div class="col-md-12">
+        <hr>
+    </div>
     <div class="col-md-6 form-group">
         <label for="booking-time">{{ trans('Check In Time') }}</label>
         <div class="w-100">{{ $appointment->start_time }} </div>
@@ -107,27 +110,29 @@
         </div>
     </div>
     <div class="col-md-12 mt-5 d-flex justify-content-between">
-        @if(!$route_is_member_product)
-            <div>
-                <button type="button" id="edit-btn" class="btn btn-main-color mr-2">{{ trans('Edit') }}</button>
-            </div>
-        @endif
-        @if($appointment->checkProgressing() && $route_is_member_product)
-            <div class="w-100">
-                <a href="{{ route("get.appointment.check_out", $appointment->member_id) }}"
-                   class="btn btn-warning w-100 text-light">
-                    {{ trans('Check Out') }}
-                </a>
-            </div>
-        @else
-            <div>
-                <a href="{{ route("get.appointment.check_in", [$appointment->id, $appointment->member_id]) }}"
-                   class="btn btn-outline-info">
-                    {{ trans('Check In') }}
-                </a>
-                <a href="{{ route("get.appointment.delete", $appointment->id) }}"
-                   class="btn btn-danger btn-delete">{{ trans('Delete') }}</a>
-            </div>
+        @if($route_previous !== "get.user.salary")
+            @if(!$route_is_member_product)
+                <div>
+                    <button type="button" id="edit-btn" class="btn btn-main-color mr-2">{{ trans('Edit') }}</button>
+                </div>
+            @endif
+            @if($appointment->checkProgressing() && $route_is_member_product)
+                <div class="w-100">
+                    <a href="{{ route("get.appointment.check_out", $appointment->member_id) }}"
+                       class="btn btn-warning w-100 text-light">
+                        {{ trans('Check Out') }}
+                    </a>
+                </div>
+            @else
+                <div>
+                    <a href="{{ route("get.appointment.check_in", [$appointment->id, $appointment->member_id]) }}"
+                       class="btn btn-outline-info">
+                        {{ trans('Check In') }}
+                    </a>
+                    <a href="{{ route("get.appointment.delete", $appointment->id) }}"
+                       class="btn btn-danger btn-delete">{{ trans('Delete') }}</a>
+                </div>
+            @endif
         @endif
     </div>
 </div>

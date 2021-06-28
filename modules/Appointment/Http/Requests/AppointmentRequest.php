@@ -55,7 +55,7 @@ class AppointmentRequest extends FormRequest{
             'member_id' => trans('Client'),
             'store_id'  => trans('Store'),
             'time'      => trans('Time'),
-            'end_time'  => trans('End Time'),
+            'end_time'  => trans('Check Out Time'),
         ];
     }
 }
