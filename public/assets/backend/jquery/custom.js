@@ -10,9 +10,9 @@ function changeLanguage() {
 /** Elfinder Popup */
 function openElfinder(btn, url, soundPath, csrf) {
     var modal = '\n' +
-        '    <div class="modal fade" id="elfinder-show">\n' +
+        '    <div class="modal fade" style="z-index: 12000" id="elfinder-show">\n' +
         '        <div class="modal-dialog modal-lg" style="max-width: 90%">\n' +
-        '            <div class="modal-content">\n' +
+        '            <div class="modal-content bg-transparent border-0">\n' +
         '                <div class="modal-body">\n' +
         '                    <div id="elfinder"></div>\n' +
         '                </div>\n' +
@@ -53,6 +53,10 @@ function openElfinder(btn, url, soundPath, csrf) {
         url: url,
         getFileCallback: function (file) {
             $(btn).parents('.input-group').find('input').val(file.url)
+            console.log($(btn));
+            if ($(btn).hasClass('cke_dialog_ui_input_text')) {
+                $(btn).val(file.url)
+            }
             $('#elfinder-show').modal('hide');
         },
         resizable: false

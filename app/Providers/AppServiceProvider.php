@@ -45,15 +45,21 @@ class AppServiceProvider extends ServiceProvider{
             if(!empty($parameters)){
                 $table = reset($parameters);
                 $id    = (int)array_pop($parameters);
+                $value = trim($value);
                 if($id !== $table && is_numeric($id)){
                     $result      = DB::select(DB::raw("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'"));
                     $primary_key = $result[0]->Column_name;
-                    $query       = DB::table($table)->where($attribute, $value)->where($primary_key, '<>',
-                        $id)->where('deleted_at',
-                        null)->exists();
+                    $query       = DB::table($table)->where($attribute, $value)->where($primary_key, '<>', $id);
                 }else{
-                    $query = DB::table($table)->where($attribute, $value)->where('deleted_at', null)->exists();
+                    $query = DB::table($table)->where($attribute, $value);
                 }
+
+                if(Schema::hasColumn($table, 'deleted_at')){
+                    $query = $query->where('deleted_at', null)->exists();
+                }else{
+                    $query = $query->exists();
+                }
+
 
                 if(!$query){
                     return true;

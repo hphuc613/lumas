@@ -74,6 +74,7 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script src="https://js.pusher.com/4.4/pusher.min.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
 <script src="{{ asset('assets/printjs/print.min.js') }}"></script>
 <script src="{{ asset('assets/jquery/chart.js') }}"></script>
 <script src="{{ asset('assets/jquery/jquery.pjax.js') }}"></script>
@@ -97,6 +98,14 @@
         showAlert($('.alert-fade-out'));
         /** Popup Notification */
         pusherNotification("{{ env('PUSHER_APP_KEY') }}", {{ Auth::id() }}, "{{ route("get.member.appointment","") }}");
+
+        $(window).on('click', function (event) {
+            var click_over = $(event.target);
+            var parent = click_over.parents('.cke_dialog_image_url');
+            if (parent.length > 0) {
+                openElfinder(click_over, '{{ route("elfinder.connector") }}', '{{ asset("packages/barryvdh/elfinder/sounds") }}', '{{ csrf_token() }}');
+            }
+        })
     });
 </script>
 <script class="master-script">
