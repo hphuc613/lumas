@@ -5,7 +5,7 @@ return [
     'route'      => route('get.course.list'),
     'sort'       => 4,
     'active'     => true,
-    'icon'       => 'fas fa-book',
+    'icon'       => 'fas fa-book-open',
     'middleware' => ['course'],
     'group'      => [
         [

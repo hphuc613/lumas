@@ -12,8 +12,7 @@ use Modules\User\Model\User;
 use Pusher\ApiErrorException;
 use Pusher\PusherException;
 
-class NotificationAppointmentCommand extends Command
-{
+class NotificationAppointmentCommand extends Command{
 
     /**
      * The name and signature of the console command.
@@ -34,7 +33,7 @@ class NotificationAppointmentCommand extends Command
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct(){
         parent::__construct();
     }
 
@@ -43,13 +42,13 @@ class NotificationAppointmentCommand extends Command
      *
      * @return void
      */
-    public function handle() {
-        try {
+    public function handle(){
+        try{
             $count = $this->getNotification();
             $this->info($count . ' has been sent.');
-        } catch (GuzzleException $e) {
+        }catch(GuzzleException $e){
             $this->info((string)$e->getMessage());
-        } catch (ApiErrorException | PusherException $e) {
+        }catch(ApiErrorException | PusherException $e){
             $this->info((string)$e->getMessage());
         }
     }
@@ -60,27 +59,29 @@ class NotificationAppointmentCommand extends Command
      * @throws GuzzleException
      * @throws PusherException
      */
-    public function getNotification() {
+    public function getNotification(){
         $timer = (int)Setting::getValueByKey(AppointmentSetting::TIMER) * 60;
         $users = User::all();
         $data  = [];
-        foreach ($users as $user) {
+        foreach($users as $user){
             $notifications = $user->notifications;
-            foreach ($notifications as $notification) {
-                $appointment = $notification['data'];
-                $time        = strtotime($appointment['time']);
-                if ($appointment['status'] == Status::STATUS_PENDING) {
-                    if ($time > time() && $time <= (time() + $timer)) {
-                        $data[]                   = $appointment;
-                        $appointment['status']    = Status::STATUS_ACTIVE;
-                        $appointment['time_show'] = formatDate(time(), 'd-m-Y H:i:s');
-                        $notification->update(['data' => $appointment]);
+            if($notifications->isNotEmpty()){
+                foreach($notifications as $notification){
+                    $appointment = $notification['data'];
+                    $time        = strtotime($appointment['time']);
+                    if($appointment['status'] == Status::STATUS_PENDING){
+                        if($time > time() && $time <= (time() + $timer)){
+                            $data[]                   = $appointment;
+                            $appointment['status']    = Status::STATUS_ACTIVE;
+                            $appointment['time_show'] = formatDate(time(), 'd-m-Y H:i:s');
+                            $notification->update(['data' => $appointment]);
+                        }
                     }
                 }
             }
         }
 
-        foreach ($data as $item) {
+        foreach($data as $item){
             Helper::dataPusher($item);
         }
 

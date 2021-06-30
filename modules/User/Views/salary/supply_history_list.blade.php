@@ -23,7 +23,7 @@
                     <td>{{ $history->signature }}</td>
                     <td><a href="{{ route("get.appointment.update",$history->appointment->id) }}"
                            id="update-booking" data-toggle="modal"
-                           data-target="#ahihi"
+                           data-target="#salary-modal"
                            data-title="{{ trans('View Appointment') }}">{{ $history->appointment->name }}</a></td>
                     <td>{{ $history->memberService->service->name }}</td>
                     <td>{{ moneyFormat($history->memberService->price) }}</td>

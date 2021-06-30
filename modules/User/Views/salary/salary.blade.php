@@ -115,7 +115,7 @@
                                         <label for="">{{ trans('Payment rate') }}:</label>
                                     </div>
                                     <div class="col-6">
-                                        <span class="text-success">{{ $salary->payment_rate }}%</span>
+                                        <span class="text-success">{{ $salary->payment_rate ?? 0 }}%</span>
                                         <span class="text-info">(Next target: {{ $user->getNextCommissionRate() }})</span>
                                     </div>
                                 </div>
@@ -133,7 +133,7 @@
                                             <label for="">{{ trans('Service rate') }}:</label>
                                         </div>
                                         <div class="col-6">
-                                            <span class="text-success">{{ $salary->service_rate }}%</span>
+                                            <span class="text-success">{{ $salary->service_rate ?? 0 }}%</span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -260,7 +260,7 @@
                     </div>
                 </div>
                 {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'size' => 'modal-lg'])  !!}
-                {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'id' => 'ahihi', 'size' => 'modal-lg'])  !!}
+                {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'id' => 'salary-modal', 'size' => 'modal-lg'])  !!}
             </div>
         </div>
     </div>

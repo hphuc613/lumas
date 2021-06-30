@@ -85,9 +85,7 @@ class Appointment extends BaseModel{
             $user         = User::find($this->user_id);
             $notification = $this->getNotification();
             if($notification){
-                $data = $notification->data;
-                $data = reset($data);
-                if((int)strtotime($this->time) > (int)strtotime($data['time'])){
+                if((int)strtotime($this->time) > time()){
                     $data = [
                         'appointment_id' => (int)$this->id,
                         'title'          => $this->name,

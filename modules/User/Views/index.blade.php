@@ -110,8 +110,10 @@
                                     <td>{{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($user->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
+                                        @if(!$user->isAdmin())
                                         <a href="{{ route('get.user.appointment',$user->id) }}"
                                            class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
+                                        @endif
                                         <a href="{{ route('get.user.update',$user->id) }}"
                                            class="btn btn-main-color mr-2">
                                             <i class="fas fa-pencil-alt"></i></a>
