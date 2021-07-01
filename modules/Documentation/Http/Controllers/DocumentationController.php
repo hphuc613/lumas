@@ -24,7 +24,7 @@ class DocumentationController extends Controller{
     }
 
     public function index(){
-        $documents = Documentation::query()->orderBy('name')->get();
+        $documents = Documentation::query()->orderBy('sort')->get();
 
         return view("Documentation::index", compact('documents'));
     }
@@ -104,6 +104,23 @@ class DocumentationController extends Controller{
     public function delete($id){
         $document = Documentation::query()->find($id);
         $document->delete();
+
+        return redirect()->back();
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function sort(Request $request){
+        if($data = $request->post()){
+            $sort_list = json_decode($data['sort'], 1);
+            foreach($sort_list as $key => $item){
+                $query       = Documentation::query()->find($item['id']);
+                $query->sort = $key;
+                $query->save();
+            }
+        }
 
         return redirect()->back();
     }

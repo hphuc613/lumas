@@ -10,5 +10,6 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
         Route::get("view/{id}", "DocumentationController@getView")->name("get.documentation.view");
         Route::post("update/{id}", "DocumentationController@postUpdate")->name("post.documentation.update");
         Route::get("delete/{id}", "DocumentationController@delete")->name("get.documentation.delete");
+        Route::post("sort", "DocumentationController@sort")->name("post.documentation.sort");
     });
 });

@@ -18,3 +18,5 @@ Route::get('/lalala', function(Request $request){
 Route::get('/notify-appointment', function(){
     Artisan::call('notify:appointments');
 });
+
+Route::get('documentation', 'BaseController@getDocumentation')->name('documentation');

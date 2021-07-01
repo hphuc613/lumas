@@ -67,7 +67,6 @@ class AppointmentController extends Controller{
                 'id'    => $appointment->id,
                 'title' => $title,
                 'start' => formatDate($appointment->time, 'Y-m-d H:i'),
-                'end'   => (!empty($appointment->end_time)) ? formatDate($appointment->end_time, 'Y-m-d H:i') : null,
                 'color' => $appointment->getColorStatus()
             ];
         }

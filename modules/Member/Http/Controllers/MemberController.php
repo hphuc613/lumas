@@ -234,10 +234,7 @@ class MemberController extends Controller{
             $events[] = [
                 'id'    => $appointment->id,
                 'title' => $title,
-                'start' => Carbon::parse($appointment->time)
-                                 ->format('Y-m-d H:i'),
-                'end'   => (!empty($appointment->end_time)) ? Carbon::parse($appointment->end_time)
-                                                                    ->format('Y-m-d H:i') : null,
+                'start' => Carbon::parse($appointment->time)->format('Y-m-d H:i'),
                 'color' => $appointment->getColorStatus()
             ];
         }

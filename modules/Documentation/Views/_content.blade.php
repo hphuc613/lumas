@@ -39,7 +39,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="name"> {{ trans('Content') }}</label>
-                                <textarea name="content" class="ckeditor-document-form"
+                                <textarea name="content" class="form-control" rows="100"
                                           id="content-{{ $document->key }}">{{ $document->content }}</textarea>
                             </div>
                         </div>
@@ -50,9 +50,3 @@
     </div>
 </div>
 {!! JsValidator::formRequest('Modules\Documentation\Http\Requests\DocumentationRequest') !!}
-<script>
-    CKEDITOR.replace($('.ckeditor-document-form').attr('id'), {
-        height: 800,
-        language: $('html').attr('lang')
-    })
-</script>

@@ -16,6 +16,7 @@ class CreateDocumentationsTable extends Migration{
             $table->string('name');
             $table->string('key');
             $table->text('content')->nullable();
+            $table->integer('sort')->default(0);
             $table->timestamps();
         });
     }

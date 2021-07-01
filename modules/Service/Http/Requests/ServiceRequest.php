@@ -21,10 +21,11 @@ class ServiceRequest extends FormRequest{
      */
     public function rules(){
         return [
-            'name'    => 'required',
-            'price'   => 'required',
-            'status'  => 'required',
-            'type_id' => 'required|check_exist:service_types,id',
+            'name'        => 'required',
+            'price'       => 'required',
+            'status'      => 'required',
+            'type_id'     => 'required|check_exist:service_types,id',
+            'intend_time' => 'required'
         ];
     }
 
@@ -37,10 +38,11 @@ class ServiceRequest extends FormRequest{
 
     public function attributes(){
         return [
-            'name'    => trans('Service name'),
-            'price'   => trans('Price'),
-            'status'  => trans('Status'),
-            'type_id' => trans('Service Type')
+            'name'        => trans('Service name'),
+            'price'       => trans('Price'),
+            'status'      => trans('Status'),
+            'type_id'     => trans('Service Type'),
+            'intend_time' => trans('Intend Time'),
         ];
     }
 }
