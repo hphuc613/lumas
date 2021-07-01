@@ -158,8 +158,10 @@ class SalaryController extends Controller{
         DB::beginTransaction();
         try{
             foreach($users as $user){
-                $salary =
-                    Salary::query()->where('user_id', $user->id)->where('month', formatDate(time(), 'm/Y'))->first();
+                $salary = Salary::query()
+                                ->where('user_id', $user->id)
+                                ->where('month', formatDate(time(), 'm/Y'))
+                                ->first();
                 if(empty($salary)){
                     $salary          = new Salary();
                     $salary->user_id = $user->id;

@@ -93,8 +93,6 @@
         $('.change-language').select2();
         $('[data-toggle="tooltip"]').tooltip()
 
-        /** Change Language */
-        changeLanguage();
         showAlert($('.alert-fade-out'));
         /** Popup Notification */
         pusherNotification("{{ env('PUSHER_APP_KEY') }}", {{ Auth::id() }}, "{{ route("get.member.appointment","") }}");

@@ -27,4 +27,8 @@
 <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/custom.js') }}"></script>
+<script>
+    /** Change Language */
+    changeLanguage();
+</script>
 </html>
