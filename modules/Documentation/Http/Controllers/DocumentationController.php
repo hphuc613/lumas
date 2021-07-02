@@ -4,9 +4,12 @@ namespace Modules\Documentation\Http\Controllers;
 
 use App\AppHelpers\Helper;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Modules\Documentation\Http\Requests\DocumentationRequest;
 use Modules\Documentation\Model\Documentation;
 use Throwable;
@@ -123,5 +126,15 @@ class DocumentationController extends Controller{
         }
 
         return redirect()->back();
+    }
+
+
+    /**
+     * @return Application|Factory|View
+     */
+    public function getDocumentation(){
+        $documents = Documentation::query()->orderBy('sort')->get();
+
+        return view("Documentation::master", compact('documents'));
     }
 }

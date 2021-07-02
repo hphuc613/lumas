@@ -67,7 +67,7 @@
                     <div class="card" id="intro">
                         <div class="card-body">
                             <div class="display-5 text-center text-success">
-                                Welcome
+                                LUMAS USER GUIDE
                             </div>
                         </div>
                     </div>

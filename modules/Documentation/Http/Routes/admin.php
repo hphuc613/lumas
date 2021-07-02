@@ -13,3 +13,5 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
         Route::post("sort", "DocumentationController@sort")->name("post.documentation.sort");
     });
 });
+
+Route::get('documentation', 'DocumentationController@getDocumentation')->name('documentation');
