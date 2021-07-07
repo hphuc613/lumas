@@ -23,6 +23,12 @@ class ServiceProvider extends BaseServiceProvider{
                         $this->loadRoutesFrom($route_path);
                     }
 
+                    /** Route api */
+                    $route_path = $module_path . '/Http/Routes/api.php';
+                    if(file_exists($route_path)){
+                        $this->loadRoutesFrom($route_path);
+                    }
+
                     /** Route admin */
                     $route_path_admin = $module_path . '/Http/Routes/admin.php';
                     if(file_exists($route_path_admin)){

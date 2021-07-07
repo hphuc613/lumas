@@ -39,19 +39,25 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver'   => 'session',
             'provider' => 'users',
-        ],
-
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
         ],
 
         'member' => [
-            'driver' => 'session',
+            'driver'   => 'session',
             'provider' => 'members',
+        ],
+
+        'api-user' => [
+            'driver'   => 'jwt',
+            'provider' => 'users',
+            'hash'     => false,
+        ],
+
+        'api-member' => [
+            'driver'   => 'jwt',
+            'provider' => 'members',
+            'hash'     => false,
         ],
     ],
 

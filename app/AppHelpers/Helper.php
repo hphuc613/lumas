@@ -5,6 +5,7 @@ namespace App\AppHelpers;
 use App\AppHelpers\Mail\SendMail;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Modules\Setting\Model\Setting;
@@ -372,13 +373,23 @@ class Helper {
         $options = [
             'cluster' => 'ap1', 'encrypted' => true
         ];
-        try {
+        try{
             $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), $options);
-        } catch (PusherException $e) {
+        }catch(PusherException $e){
             $request->session()->flash('error', $e->getMessage());
         }
         $pusher->trigger('NotificationEvent', 'send-message', $data);
 
         return true;
+    }
+
+    /**
+     * Response api
+     *
+     * @param $request
+     */
+    public static function apiResponseByLanguage($request){
+        $locale = $request->header('lang') ?? "en";
+        App::setLocale($locale);
     }
 }
