@@ -66,18 +66,18 @@
             labels: labels,
             datasets: [{
                 label: "{{ trans('Total') }}",
-                backgroundColor: 'rgb(0,55,255)',
-                borderColor: 'rgb(0,55,255)',
+                backgroundColor: '#03a9f3',
+                borderColor: '#03a9f3',
                 data: appointment_data.all,
             }, {
                 label: "{{ trans('Completed') }}",
-                backgroundColor: 'rgb(5,219,0)',
-                borderColor: 'rgb(5,219,0)',
+                backgroundColor: '#00c292',
+                borderColor: '#00c292',
                 data: appointment_data.completed,
             }, {
                 label: "{{ trans('Abort') }}",
-                backgroundColor: 'rgb(255,0,0)',
-                borderColor: 'rgb(255,0,51)',
+                backgroundColor: '#dc3545',
+                borderColor: '#dc3545',
                 data: appointment_data.abort
             }]
         };

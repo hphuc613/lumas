@@ -63,7 +63,34 @@
                             @endif
                         </div>
                     </div>
-                    <div id="fullcalendar"></div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="card-body pt-0">
+                                <h5 class="card-title">{{ trans('Appointment Status Color') }}</h5>
+                                <div id="appointment-status" class="">
+                                    <div class="p-2">
+                                        <i class="fa fa-circle" style="color: #00c292"></i> {{ trans('Success') }}
+                                    </div>
+                                    <div class="p-2">
+                                        <i class="fa fa-circle text-info"></i> {{ trans('Waiting') }}
+                                    </div>
+                                    <div class="p-2">
+                                        <i class="fa fa-circle text-danger"></i> {{ trans('Missing') }}
+                                    </div>
+                                    <div class="p-2">
+                                        <i class="fa fa-circle text-warning"></i> {{ trans('Progressing') }}
+                                    </div>
+                                    <div class="p-2">
+                                        <i class="fa fa-circle" style="color: #aaaaaa"></i> {{ trans('Abort') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-10">
+                            <div id="fullcalendar"></div>
+                        </div>
+                    </div>
                     <input type="hidden" id="get-date" value="{{ formatDate(time(),'d-m-Y H:i') }}">
                     <textarea id="event" class="d-none">{{ $events }}</textarea>
                 </div>

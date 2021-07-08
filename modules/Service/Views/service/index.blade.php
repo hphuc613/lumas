@@ -39,7 +39,7 @@
                             <div class="form-group">
                                 <label for="type-id">{{ trans("Service Type") }}</label>
                                 {!! Form::select('type_id',
-                                    [NULL => 'Please Select'] + $service_types, $filter['type_id'] ?? NULL,
+                                    [NULL => trans("Select")] + $service_types, $filter['type_id'] ?? NULL,
                                     ['id' => 'type-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
                             </div>
                         </div>

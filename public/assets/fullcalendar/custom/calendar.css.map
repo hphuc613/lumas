@@ -1,10 +1,1 @@
-{
-  "version": 3,
-  "sourceRoot": "",
-  "sources": [
-    "calendar.scss"
-  ],
-  "names": [],
-  "mappings": "AAEA,cACE,iBAGF,iBACE,qCAIA,WACE,oCACA,gCAEA,iBACE,8BAGF,4BACE,oCACA",
-  "file": "calendar.css"
-}
+{"version":3,"sourceRoot":"","sources":["calendar.scss"],"names":[],"mappings":"AAEA,cACE,iBAGF,iBACE,qCAIA,WACE,oCACA,gCAEA,iBACE,8BAGF,4BACE,oCACA,gCAMJ,qBACE,2BAII,6CACE","file":"calendar.css"}

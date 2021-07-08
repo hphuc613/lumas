@@ -5,8 +5,15 @@
     </div>
     <div class="col-md-3 form-group">
         <label for="status">{{ trans('Status') }}</label>
-        <div class="w-100"
-             style="color: {{ $appointment->getColorStatus() }}">{{ $statuses[$appointment->status] }} </div>
+        <div class="w-100">
+            <span class="status-box" style="background-color: {{ $appointment->getColorStatus() }}">
+                @if($appointment->status === \Modules\Appointment\Model\Appointment::WAITING_STATUS && strtotime($appointment->time) < time())
+                    {{ trans('Missing') }}
+                @else
+                    {{ $statuses[$appointment->status] }}
+                @endif
+            </span>
+        </div>
     </div>
     <div class="col-md-3 form-group">
         <label for="type">{{ trans('Appointment Type') }}</label>

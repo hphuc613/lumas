@@ -1,7 +1,7 @@
 @import "../../backend/css/main_seting";
 
 #fullcalendar {
-  max-height: 700px;
+  max-height: 800px;
 }
 
 button.fc-button {
@@ -20,6 +20,20 @@ button.fc-button {
     &.fc-button-active {
       background-color: $main-fade-color !important;
       border-color: $main-fade-color !important;
+    }
+  }
+}
+
+.fc-scrollgrid {
+  thead {
+    background-color: #ffccc87a;
+
+    .fc-col-header {
+      tbody {
+        th {
+          padding: 20px 0;
+        }
+      }
     }
   }
 }

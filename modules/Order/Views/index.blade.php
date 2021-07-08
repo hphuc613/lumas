@@ -115,15 +115,17 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                                 <td>{{ $key++ }}</td>
                                 <td><h5>{{ $order->code }}</h5></td>
                                 <td>{{ $order_types[$order->order_type] }}</td>
+                                @php
+                                    $bg_status = "bg-danger";
+                                    if($order->status === \Modules\Order\Model\Order::STATUS_DRAFT)
+                                        $bg_status = 'bg-warning';
+                                    elseif($order->status === \Modules\Order\Model\Order::STATUS_PAID)
+                                       $bg_status = 'bg-success';
+                                @endphp
                                 <td>
-                                    <span class="@if($order->status === \Modules\Order\Model\Order::STATUS_DRAFT)
-                                            text-warning
-@elseif($order->status === \Modules\Order\Model\Order::STATUS_PAID)
-                                            text-success
-@else
-                                            text-danger
-@endif ">
-                                        <h5>{{ $statuses[$order->status] }}</h5>
+                                    <span class="status-box {{ $bg_status }}">
+
+                                        {{ $statuses[$order->status] }}
                                     </span>
                                 </td>
                                 <td>

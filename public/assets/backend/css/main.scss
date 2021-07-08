@@ -394,6 +394,12 @@ a {
   }
 }
 
+.status-box {
+  padding: 0.3rem 1.5rem;
+  color: white;
+  border-radius: 1rem;
+}
+
 .form-control:focus {
   border-color: $main-fade-color;
   box-shadow: 0 0 0 0.2rem #9a9a9a33;

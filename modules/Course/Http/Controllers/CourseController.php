@@ -30,9 +30,10 @@ class CourseController extends Controller{
      * @return Application|Factory|View
      */
     public function index(Request $request){
-        $filter  = $request->all();
-        $courses = Course::filter($filter)->orderBy('name')->paginate(15);
-        return view("Course::course.index", compact('filter', 'courses'));
+        $filter            = $request->all();
+        $courses           = Course::filter($filter)->orderBy('name')->paginate(15);
+        $course_categories = Course::getArray(Status::STATUS_ACTIVE);
+        return view("Course::course.index", compact('filter', 'courses', 'course_categories'));
     }
 
     /**

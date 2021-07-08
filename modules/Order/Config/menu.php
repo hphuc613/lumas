@@ -1,7 +1,7 @@
 <?php
 return [
     'id'         => 'order',
-    'name'       => trans('Order'),
+    'name'       => trans('Orders'),
     'route'      => route('get.order.list'),
     'sort'       => 6,
     'active'     => true,

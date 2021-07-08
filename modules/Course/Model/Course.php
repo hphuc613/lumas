@@ -32,6 +32,9 @@ class Course extends BaseModel{
         if(isset($filter['name'])){
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
+        if(isset($filter['category_id'])){
+            $query->where('category_id', $filter['category_id']);
+        }
 
         return $query;
     }

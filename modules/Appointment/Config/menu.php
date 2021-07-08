@@ -1,7 +1,7 @@
 <?php
 return [
     'id'         => 'appointment',
-    'name'       => trans('Appointment'),
+    'name'       => trans('Appointments'),
     'route'      => route('get.appointment.list'),
     'sort'       => 6,
     'active'     => true,

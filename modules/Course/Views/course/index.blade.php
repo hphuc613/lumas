@@ -35,6 +35,14 @@
                                            value="{{$filter['name'] ?? null}}">
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="type-id">{{ trans("Course Category") }}</label>
+                                    {!! Form::select('category_id',
+                                        [NULL => trans("Select")] + $course_categories, $filter['category_id'] ?? NULL,
+                                        ['id' => 'type-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
+                                </div>
+                            </div>
                         </div>
                         <div class="input-group">
                             <button type="submit" class="btn btn-main-color mr-2">{{ trans('Search') }}</button>

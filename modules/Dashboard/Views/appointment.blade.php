@@ -17,15 +17,16 @@
                                                     <p class="text-uppercase">{{ trans('Total') }}</p>
                                                 </div>
                                                 <div class="ml-auto">
-                                                    <h2 class="counter text-primary">{{ count($appointment_data['all']) }}</h2>
+                                                    <h2 class="counter"
+                                                        style="color:#03a9f3;">{{ count($appointment_data['all']) }}</h2>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="progress">
-                                                <div class="progress-bar tooltip-content bg-primary"
+                                                <div class="progress-bar tooltip-content"
                                                      title=""
-                                                     style="width: {{ count($appointment_data['all'])/$appointment_all*100 }}%"></div>
+                                                     style="background-color: #03a9f3; width: {{ count($appointment_data['all'])/$appointment_all*100 }}%"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -104,15 +105,16 @@
                                                     <p class="text-uppercase">{{ trans('Completed') }}</p>
                                                 </div>
                                                 <div class="ml-auto">
-                                                    <h2 class="counter text-success">{{ count($appointment_data['completed']) }}</h2>
+                                                    <h2 class="counter"
+                                                        style="color: #00c292">{{ count($appointment_data['completed']) }}</h2>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="progress">
-                                                <div class="progress-bar tooltip-content bg-success"
+                                                <div class="progress-bar tooltip-content"
                                                      title=""
-                                                     style="width: {{ count($appointment_data['completed'])/$appointment_all*100 }}%"></div>
+                                                     style="background-color: #00c292; width: {{ count($appointment_data['completed'])/$appointment_all*100 }}%"></div>
                                             </div>
                                         </div>
                                     </div>
