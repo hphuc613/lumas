@@ -33,7 +33,7 @@ class ApiRequest extends FormRequest{
             }
         }
 
-        $response = new Response(['error' => 'Failed validation.', 'validate' => $translated_errors], 422);
+        $response = new Response(['status' => 422, 'error' => 'Failed validation.', 'validate' => $translated_errors]);
 
         throw new ValidationException($validator, $response);
     }

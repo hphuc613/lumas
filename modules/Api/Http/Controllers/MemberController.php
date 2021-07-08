@@ -8,14 +8,12 @@ use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Modules\Api\Http\Requests\ForgotPasswordRequest;
 use Modules\Api\Http\Requests\MemberRequest;
+use Modules\Base\Model\Status;
 use Modules\Member\Model\Member;
 
 
@@ -47,11 +45,15 @@ class MemberController extends Controller{
         Helper::apiResponseByLanguage($request);
         $data = $request->only("username", "password");
         if(empty($request->username) || empty($request->password)){
-            return response()->json(['error' => trans('Incorrect username or password')]);
+            return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
         }
-
         if(!$token = $this->auth->attempt($data)){
-            return response()->json(['error' => trans('Your account is inactive. Please contact with admin page to get more information.')], 400);
+            return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
+        }
+        $member = $this->auth->user();
+        if(!empty($member->deleted_at) && $member->status !== Status::STATUS_ACTIVE){
+            return response()->json(['status' => 400,
+                                     'error'  => trans('Your account is inactive. Please contact with admin page to get more information.')]);
         }
 
         return $this->respondWithToken($token);
@@ -64,7 +66,7 @@ class MemberController extends Controller{
      */
     public function logout(){
         $this->auth->logout();
-        return response()->json(['message' => trans('Successfully logged out')]);
+        return response()->json(['status' => 200, 'message' => trans('Successfully logged out')]);
     }
 
     /**
@@ -72,7 +74,7 @@ class MemberController extends Controller{
      * @return JsonResponse
      */
     public function validateRegister(MemberRequest $request){
-        return response()->json(['message' => 'Validated']);
+        return response()->json(['status' => 200, 'message' => 'Validated']);
     }
 
     /**
@@ -85,14 +87,17 @@ class MemberController extends Controller{
         $member = new Member($data);
         $member->save();
 
-        return response()->json(['message' => trans('Registered Successfully'), 'client_info' => $data]);
+        return response()->json(['status'      => 200,
+                                 'message'     => trans('Registered Successfully'),
+                                 'client_info' => $data]);
     }
 
     /**
-     * @return Builder|Builder[]|Collection|Model|null
+     * @return JsonResponse
      */
     public function profile(){
-        return Member::query()->find($this->auth->id());
+        $data = Member::query()->find($this->auth->id());
+        return response()->json(['status' => 200, 'client_info' => $data]);
     }
 
     /**
@@ -107,7 +112,9 @@ class MemberController extends Controller{
         }
         $member->update($data);
 
-        return response()->json(['message' => trans('Updated Successfully'), 'client_info' => $member]);
+        return response()->json(['status'      => 200,
+                                 'message'     => trans('Updated Successfully'),
+                                 'client_info' => $member]);
     }
 
     /**
@@ -127,15 +134,14 @@ class MemberController extends Controller{
                 $member->password = $password;
                 $member->save();
 
-                return response()->json([
-                    'message' => trans('Sent mail successfully.')]);
+                return response()->json(['status' => 200, 'message' => trans('Sent mail successfully.')]);
             }
         }else{
-            return response()->json(['error' => trans('Email does not exist in system.')], 400);
+            return response()->json(['status' => 400, 'error' => trans('Email does not exist in system.')]);
         }
 
 
-        return response()->json(['error' => trans('Cannot send mail.')], 502);
+        return response()->json(['status' => 502, 'error' => trans('Cannot send mail.')]);
     }
 
     /**
@@ -147,6 +153,7 @@ class MemberController extends Controller{
      */
     protected function respondWithToken($token){
         return response()->json([
+            'status'       => 200,
             'client_info'  => Member::query()->find($this->auth->id()),
             'token_type'   => 'bearer',
             'expires_in'   => $this->auth->factory()->getTTL() * 60,

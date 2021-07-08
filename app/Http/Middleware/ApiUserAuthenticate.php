@@ -22,7 +22,7 @@ class ApiUserAuthenticate{
         Helper::apiResponseByLanguage($request);
 
         if(empty($request->user('api-user'))){
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['status' => 401, 'error' => 'Unauthorized']);
         }
 
         return $next($request);
