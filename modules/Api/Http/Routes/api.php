@@ -9,4 +9,7 @@ Route::prefix('api')->group(function(){
 
     /** Member API */
     include 'member.php';
+
+    /** Appointment API */
+    include 'appointment.php';
 });

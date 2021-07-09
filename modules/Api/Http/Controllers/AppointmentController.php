@@ -28,6 +28,9 @@ class AppointmentController extends Controller{
      */
     public function list(Request $request){
         $data = Appointment::query();
+        if(isset($request->status)){
+            $data = $data->where('status', $request->status);
+        }
         if(isset($request->user_id)){
             $data = $data->where('user_id', $request->user_id);
         }
@@ -38,8 +41,8 @@ class AppointmentController extends Controller{
         $data = $data->get();
 
         return response()->json([
-            'status'       => 200,
-            'appointments' => $data
+            'status' => 200,
+            'data'   => $data
         ]);
     }
 
@@ -54,8 +57,8 @@ class AppointmentController extends Controller{
         $data['appointment']['course']  = $appointment->getCourseList();
 
         return response()->json([
-            'status'      => 200,
-            'appointment' => $data['appointment']
+            'status' => 200,
+            'data'   => $data['appointment']
         ]);
     }
 }
