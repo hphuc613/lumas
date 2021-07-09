@@ -16,8 +16,8 @@ class ForgotPasswordRequest extends ApiRequest{
 
     public function messages(){
         return [
-            'email.required' => trans('Email can not be empty.'),
-            'email.email'    => trans('Email must be a email.')
+            'email.required' => trans('The Email can not be empty.'),
+            'email.email'    => trans('The Email must be a email.')
         ];
     }
 

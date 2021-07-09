@@ -25,12 +25,9 @@ class ApiRequest extends FormRequest{
      */
     protected function failedValidation(Validator $validator){
         $translated_errors = [];
-        $errors            = $validator->errors();
-
-        foreach(array_keys($this->attributes()) as $attr){
-            foreach($errors->get($attr) as $validate){
-                $translated_errors[$attr][] = trans($validate);
-            }
+        $errors            = $validator->errors()->toArray();
+        foreach($errors as $attr => $error){
+            $translated_errors[$attr] = reset($error);
         }
 
         $response = new Response(['status' => 422, 'error' => 'Failed validation.', 'validate' => $translated_errors]);

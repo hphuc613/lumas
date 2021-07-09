@@ -43,19 +43,20 @@ class MemberRequest extends ApiRequest{
 
     public function messages(){
         return [
-            'username.required'        => trans('Username can not be empty.'),
-            'username.validate_unique' => trans('Username was exist.'),
-            'username.regex'           => trans('Username contains invalid characters.'),
-            'phone.required'           => trans('Phone can not be empty.'),
-            'phone.validate_unique'    => trans('Phone was exist.'),
-            'phone.regex'              => trans('Phone contains invalid characters.'),
-            'email.validate_unique'    => trans('Email was exist.'),
-            'email'                    => trans('Email must be a email.'),
-            'email.required'           => trans('Email can not be empty.'),
-            'password.required'        => trans('Password can not be empty.'),
-            'min'                      => trans('Password too short.'),
-            're_enter_password'        => trans('Wrong password'),
-            'required_with'            => trans('Re-enter Password can not be empty.'),
+            'username.required'        => trans('The Username can not be empty.'),
+            'username.validate_unique' => trans('The Username was exist.'),
+            'username.regex'           => trans('The Username contains invalid characters.'),
+            'phone.required'           => trans('The Phone can not be empty.'),
+            'phone.validate_unique'    => trans('The Phone was exist.'),
+            'phone.regex'              => trans('The Phone contains invalid characters.'),
+            'phone.size'               => trans('The Phone must be 8 characters.'),
+            'email.validate_unique'    => trans('The Email was exist.'),
+            'email'                    => trans('The Email must be a email.'),
+            'email.required'           => trans('The Email can not be empty.'),
+            'password.required'        => trans('The Password can not be empty.'),
+            'min'                      => trans('The Password too short.'),
+            're_enter_password'        => trans('The Wrong password'),
+            'required_with'            => trans('The Re-enter Password can not be empty.'),
         ];
     }
 
