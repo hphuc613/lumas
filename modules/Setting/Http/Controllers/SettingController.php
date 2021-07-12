@@ -85,7 +85,7 @@ class SettingController extends Controller{
      * @return RedirectResponse
      */
     public function testSendMail(Request $request){
-        $mail_to = 'phuchp.613@gmai.com';
+        $mail_to = MailConfig::getValueByKey(MailConfig::MAIL_ADDRESS);
         $subject = 'Test email';
         $title   = 'Test email function';
         $body    = 'We are testing email!';

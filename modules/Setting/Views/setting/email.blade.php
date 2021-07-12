@@ -50,7 +50,7 @@
                         </div>
                         <div class="form-group">
                             <label for="MAIL_PASSWORD">{{ trans('Password') }}</label>
-                            <input type="text" class="form-control" id="MAIL_PASSWORD"
+                            <input type="password" class="form-control" id="MAIL_PASSWORD"
                                    name="{{ \Modules\Setting\Model\MailConfig::MAIL_PASSWORD }}"
                                    value="{{ $mail_config[\Modules\Setting\Model\MailConfig::MAIL_PASSWORD]  ?? NULL }}">
                         </div>
