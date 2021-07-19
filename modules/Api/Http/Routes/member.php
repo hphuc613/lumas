@@ -15,4 +15,14 @@ Route::prefix('client')->group(function(){
         Route::get('profile', 'MemberController@profile');
         Route::post('profile-update', 'MemberController@updateProfile');
     });
+
+    Route::prefix('service')->group(function(){
+        Route::get('list/{member_id}', 'MemberController@getServiceList');
+        Route::get('detail/{id}', 'MemberController@getServiceDetail');
+    });
+
+    Route::prefix('course')->group(function(){
+        Route::get('list/{member_id}', 'MemberController@getCourseList');
+        Route::get('detail/{id}', 'MemberController@getCourseDetail');
+    });
 });

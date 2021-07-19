@@ -12,4 +12,7 @@ Route::prefix('api')->group(function(){
 
     /** Appointment API */
     include 'appointment.php';
+
+    /** Product API */
+    include 'product.php';
 });
