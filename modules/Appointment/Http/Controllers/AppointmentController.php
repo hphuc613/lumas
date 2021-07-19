@@ -91,13 +91,6 @@ class AppointmentController extends Controller{
             $appointments = $appointments->where('user_id', Auth::id());
         }
 
-        /** Type of appointment */
-        if(isset($filter['type'])){
-            $appointments = $appointments->where('type', $filter['type']);
-        }else{
-            $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
-        }
-
         $appointments = $appointments->paginate(6);
 
         return view("Appointment::overview", compact('appointments', 'appointment_types', 'filter', 'members', 'statuses', 'stores'));

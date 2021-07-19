@@ -50,17 +50,20 @@ class Appointment extends BaseModel{
         if(isset($filter['member_id'])){
             $query->where('member_id', $filter['member_id']);
         }
-        if(isset($filter['status'])){
+        if (isset($filter['status'])) {
             $query->where('status', $filter['status']);
 
         }
-        if(isset($filter['store_id'])){
+        if (isset($filter['store_id'])) {
             $query->where('store_id', $filter['store_id']);
         }
-        if(isset($filter['month'])){
+        if (isset($filter['month'])) {
             $time = explode('-', $filter['month']);
             $query->whereMonth('created_at', $time[0])
                   ->whereYear('created_at', $time[1]);
+        }
+        if (isset($filter['type'])) {
+            $query->where('type', $filter['type']);
         }
 
         return $query;

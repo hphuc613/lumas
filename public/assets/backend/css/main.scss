@@ -116,33 +116,34 @@ a {
     }
 
     @include mobile {
-      width: 100px;
-      background-color: transparent;
+        width: 100px;
+        background-color: transparent;
+        padding-left: 0;
     }
   }
 
   .right-sidebar {
-    a.text-light {
-      text-shadow: black 0.1em 0.1em 0.2em;
-      font-weight: 600
-    }
+      a.text-light {
+          text-shadow: black 0.1em 0.1em 0.2em;
+          font-weight: 600
+      }
 
-    color: $text-color;
-    padding: 20px;
-    width: 140px;
-    height: 60px;
-    position: relative;
+      color: $text-color;
+      padding: 20px;
+      min-width: 140px;
+      height: 60px;
+      position: relative;
 
-    ul {
-      background-color: white;
-      padding: 10px;
-      position: absolute;
-      right: 0;
-      top: 60px;
-      width: 140px;
-      box-shadow: -4px 3px 9px #88888847;
-      z-index: 9999;
-    }
+      ul {
+          background-color: white;
+          padding: 10px;
+          position: absolute;
+          right: 0;
+          top: 60px;
+          width: 140px;
+          box-shadow: -4px 3px 9px #88888847;
+          z-index: 9999;
+      }
   }
 
   .notification-belling {

@@ -1,1 +1,31 @@
-#fullcalendar{max-height:800px}button.fc-button{text-transform:capitalize !important}.fc button{background-color:#efa6a1 !important;border-color:#efa6a1 !important}.fc button:focus{box-shadow:inherit !important}.fc button.fc-button-active{background-color:#ffccc8 !important;border-color:#ffccc8 !important}.fc-scrollgrid thead{background-color:#ffccc87a}.fc-scrollgrid thead .fc-col-header tbody th{padding:20px 0}/*# sourceMappingURL=calendar.css.map */
+#fullcalendar {
+    max-height: 800px;
+}
+
+button.fc-button {
+    text-transform: capitalize !important;
+}
+
+.fc button {
+    background-color: #efa6a1 !important;
+    border-color: #efa6a1 !important;
+}
+
+.fc button:focus {
+    box-shadow: inherit !important;
+}
+
+.fc button.fc-button-active {
+    background-color: #ffccc8 !important;
+    border-color: #ffccc8 !important;
+}
+
+.fc-scrollgrid thead {
+    background-color: #ffccc87a;
+}
+
+.fc-scrollgrid thead .fc-col-header tbody th {
+    padding: 20px 0;
+}
+
+/*# sourceMappingURL=calendar.css.map */

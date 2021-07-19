@@ -38,6 +38,11 @@
                                              ['id' => 'member-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
                         </div>
                         <div class="col-md-3 form-group">
+                            <label for="appointment-type">{{ trans('Type') }}</label>
+                            {{ Form::select('type', [null => 'Select'] + $appointment_types, $filter['type'] ?? null,
+                                             ['id' => 'appointment-type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
+                        </div>
+                        <div class="col-md-3 form-group">
                             <label for="status-search">{{ trans('Status') }}</label>
                             {{ Form::select('status', [null => 'Select'] + $statuses, $filter['status'] ?? null,
                                              ['id' => 'status-search', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
@@ -73,6 +78,7 @@
                         <tr>
                             <th width="50px">#</th>
                             <th>{{ trans('Subject') }}</th>
+                            <th>{{ trans('Type') }}</th>
                             <th style="width: 10%">{{ trans('Client') }}</th>
                             <th style="width: 10%">{{ trans('Appointment Time') }}</th>
                             <th>{{ trans('Check In') }}</th>
@@ -90,6 +96,7 @@
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $appointment->name }}</td>
+                                <td class="text-capitalize"><h6>{{ $appointment->type }}</h6></td>
                                 <td>
                                     <a href="{{ route('get.member.update',$appointment->member_id) }}" target="_blank">
                                         {{ $members[$appointment->member_id] }}
@@ -105,7 +112,7 @@
                                 </td>
                                 <td>{{ $appointment->store->name }}</td>
                                 <td>{{ $appointment->user->name }}</td>
-                                <td>{{ $appointment->getTotalIntendTimeService() . trans(' minutes') }}</td>
+                                <td>{{ ($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE) ? $appointment->getTotalIntendTimeService() . trans(' minutes') : NULL }}</td>
                                 <td class="text-center">
                                     <a href="{{ route("get.appointment.update",$appointment->id) }}"
                                        class="btn btn-main-color"

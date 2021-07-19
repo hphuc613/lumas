@@ -28,7 +28,7 @@ class Course extends BaseModel{
      * @return Builder
      */
     public static function filter($filter){
-        $query = self::query();
+        $query = self::query()->with('category');
         if(isset($filter['name'])){
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
