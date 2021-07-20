@@ -100,12 +100,11 @@ class SalaryController extends Controller{
             $salary->save();
 
             DB::commit();
+            $request->session()->flash('success', trans('Update Basic Salary successfully.'));
         }catch(Throwable $th){
             DB::rollBack();
             $request->session()->flash('danger', trans('Update Basic Salary failed.'));
         }
-
-        $request->session()->flash('success', trans('Update Basic Salary successfully.'));
 
         return redirect()->back();
     }
@@ -135,13 +134,13 @@ class SalaryController extends Controller{
             $salary->service_rate       =
                 CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0;
             $salary->save();
+
             DB::commit();
+            $request->session()->flash('success', trans('Calculate Salary successfully.'));
         }catch(Throwable $th){
             DB::rollBack();
             $request->session()->flash('danger', trans('Calculate Salary failed.'));
         }
-
-        $request->session()->flash('success', trans('Calculate Salary successfully.'));
 
         return redirect()->back();
     }
@@ -178,13 +177,13 @@ class SalaryController extends Controller{
                     CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0;
                 $salary->save();
             }
+
             DB::commit();
+            $request->session()->flash('success', trans('Bulk Calculate Salary successfully.'));
         }catch(Throwable $th){
             DB::rollBack();
             $request->session()->flash('danger', trans('Bulk Calculate Salary failed.'));
         }
-
-        $request->session()->flash('success', trans('Bulk Calculate Salary successfully.'));
 
         return redirect()->back();
     }

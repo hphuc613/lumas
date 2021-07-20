@@ -66,8 +66,8 @@ class MemberCourse extends BaseModel{
      */
     public static function getStatus(){
         return [
-            self::COMPLETED_STATUS => 'Completed',
-            self::PROGRESSING_STATUS => 'Progressing'
+            self::COMPLETED_STATUS   => trans('Finish'),
+            self::PROGRESSING_STATUS => trans('Using')
         ];
     }
 

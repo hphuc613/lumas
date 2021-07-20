@@ -209,7 +209,7 @@ class MemberCourseController extends Controller{
             $member_course->status          = MemberCourse::COMPLETED_STATUS;
             $member_course->save();
 
-            $request->session()->flash('success', "Signed successfully.");
+            $request->session()->flash('success', trans("Signed successfully."));
             return redirect()->back();
         }
 
@@ -228,13 +228,13 @@ class MemberCourseController extends Controller{
     public function intoProgress(Request $request, $id){
         $member_course = MemberCourse::find($id);
         if(!$member_course->member->getAppointmentInProgressing()){
-            $request->session()->flash('error', "Please check in an appointment.");
+            $request->session()->flash('error', trans("Please check in an appointment."));
 
             return redirect()->back();
         }
         $member_course->status = MemberCourse::PROGRESSING_STATUS;
         $member_course->save();
-        $request->session()->flash('success', "Client using this course.");
+        $request->session()->flash('success', trans("Client using this course."));
 
         return redirect()->back();
     }
@@ -248,7 +248,7 @@ class MemberCourseController extends Controller{
         $member_course         = MemberCourse::find($id);
         $member_course->status = MemberCourse::COMPLETED_STATUS;
         $member_course->save();
-        $request->session()->flash('success', "Course has been removed from Course progressing list.");
+        $request->session()->flash('success', trans("Course has been removed from Course progressing list."));
 
         return redirect()->back();
     }

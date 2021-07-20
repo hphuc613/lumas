@@ -155,6 +155,7 @@ class MemberServiceController extends Controller{
     public function eSign(Request $request, $id){
         $member_service = MemberService::find($id);
 
+
         if($request->post()){
             $data        = $request->all();
             $appointment = Appointment::query()

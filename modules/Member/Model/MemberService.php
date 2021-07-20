@@ -72,8 +72,8 @@ class MemberService extends BaseModel{
      */
     public static function getStatus(){
         return [
-            self::COMPLETED_STATUS   => trans('Completed'),
-            self::PROGRESSING_STATUS => trans('Progressing')
+            self::COMPLETED_STATUS   => trans('Finish'),
+            self::PROGRESSING_STATUS => trans('Using')
         ];
     }
 
