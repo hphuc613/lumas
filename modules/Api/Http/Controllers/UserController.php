@@ -73,8 +73,13 @@ class UserController extends Controller{
      * @return JsonResponse
      */
     public function profile(){
-
         $data = User::query()->find($this->auth->id());
+        $role = $data->getRoleAttribute()->toArray();
+        $data = $data->toArray();
+        unset($data['roles']);
+        unset($role['commission_rates']);
+        $data['role'] = $role;
+
         return response()->json(['status' => 200, 'user' => $data]);
     }
 
