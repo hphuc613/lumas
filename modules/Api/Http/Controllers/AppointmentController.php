@@ -27,14 +27,17 @@ class AppointmentController extends Controller{
      * https:domain.hp/api/appointment/list?user_id=5&member_id=1
      */
     public function list(Request $request){
-        $data = Appointment::query();
-        if(isset($request->status)){
+        $data = Appointment::query()
+                           ->with('store')
+                           ->with('member')
+                           ->with('user');
+        if (isset($request->status)) {
             $data = $data->where('status', $request->status);
         }
-        if(isset($request->user_id)){
+        if (isset($request->user_id)) {
             $data = $data->where('user_id', $request->user_id);
         }
-        if(isset($request->member_id)){
+        if (isset($request->member_id)) {
             $data = $data->where('member_id', $request->member_id);
         }
 
@@ -51,7 +54,12 @@ class AppointmentController extends Controller{
      * @return JsonResponse
      */
     public function detail($id){
-        $appointment                    = Appointment::query()->find($id);
+        $appointment = Appointment::query()
+                                  ->with('store')
+                                  ->with('member')
+                                  ->with('user')
+                                  ->find($id);
+
         $data['appointment']            = $appointment->toArray();
         $data['appointment']['service'] = $appointment->getServiceList();
         $data['appointment']['course']  = $appointment->getCourseList();
