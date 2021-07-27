@@ -5,6 +5,7 @@ namespace Modules\Api\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Modules\Appointment\Model\Appointment;
 
 
@@ -33,6 +34,14 @@ class AppointmentController extends Controller{
                            ->with('user');
         if (isset($request->status)) {
             $data = $data->where('status', $request->status);
+        }
+        if (isset($request->today) && $request->today == 1) {
+            $data = $data->whereDate('time', DB::raw('CURDATE()'));
+        }
+        if (isset($request->time)) {
+            if (!isset($request->today) || (isset($request->today) && $request->today != 1)) {
+                $data = $data->whereDate('time', formatDate(strtotime($request->time), "Y-m-d"));
+            }
         }
         if (isset($request->user_id)) {
             $data = $data->where('user_id', $request->user_id);
