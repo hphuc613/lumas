@@ -50,7 +50,7 @@ class AppointmentController extends Controller{
             $data = $data->where('member_id', $request->member_id);
         }
 
-        $data = $data->get();
+        $data = $data->orderBy('time', 'desc')->get();
 
         return response()->json([
             'status' => 200,
