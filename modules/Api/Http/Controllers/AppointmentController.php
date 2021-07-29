@@ -69,9 +69,9 @@ class AppointmentController extends Controller{
                                   ->with('user')
                                   ->find($id);
 
-        $data['appointment']            = $appointment->toArray();
-        $data['appointment']['service'] = $appointment->getServiceList();
-        $data['appointment']['course']  = $appointment->getCourseList();
+        $data['appointment']             = $appointment->toArray();
+        $data['appointment']['services'] = $appointment->getServiceList();
+        $data['appointment']['courses']  = $appointment->getCourseList();
 
         return response()->json([
             'status' => 200,
