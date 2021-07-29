@@ -50,9 +50,14 @@ class AppointmentController extends Controller{
             $data = $data->where('member_id', $request->member_id);
         }
 
-        $data = $data->orderBy('time', 'desc')->get();
+        $item_qty = 10;
+        if (isset($request->item_qty)) {
+            $item_qty = $request->item_qty;
+        }
+        $data = $data->orderBy('time', 'desc')->paginate($item_qty);
 
         return response()->json([
+            'lenght' => count($data),
             'status' => 200,
             'data'   => $data
         ]);
