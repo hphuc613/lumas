@@ -26,11 +26,6 @@ class MemberController extends Controller{
     private $auth;
 
     /**
-     * @var Request
-     */
-    private $request;
-
-    /**
      * Create a new authentication controller instance.
      *
      * @return void
@@ -247,7 +242,33 @@ class MemberController extends Controller{
 
         return response()->json([
             'status' => 200,
-            'data' => $data
+            'data'   => $data
+        ]);
+    }
+
+
+    /**
+     * @param \Modules\Member\Http\Requests\MemberRequest $request
+     * @return array|string
+     */
+    public function updateAvatar(MemberRequest $request){
+        $member = Member::find($this->auth->id());
+
+        if ($request->hasFile('avatar')) {
+            $image = $request->avatar;
+
+            $upload_folder = 'upload/member/' . $member->id . '-' . $member->username . '/avatar';
+            $image_name    = $member->username . time() . '.png';
+
+            $member->avatar = $upload_folder . '/' . $image_name;
+            $member->save();
+
+            $image->storeAs('public/' . $upload_folder, $image_name);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $member
         ]);
     }
 }

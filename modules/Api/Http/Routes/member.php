@@ -14,6 +14,7 @@ Route::prefix('client')->group(function(){
         Route::post('logout', 'MemberController@logout');
         Route::get('profile', 'MemberController@profile');
         Route::post('profile-update', 'MemberController@updateProfile');
+        Route::post('update-avatar', 'MemberController@updateAvatar');
     });
 
     Route::prefix('service')->group(function(){

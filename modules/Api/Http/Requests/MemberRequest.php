@@ -13,7 +13,13 @@ class MemberRequest extends ApiRequest{
     public function rules(){
         $segment = Helper::segment(2);
         $auth_id = auth('api-member')->id();
-        if($segment === "profile-update"){
+        if ($segment === 'update-avatar') {
+            return [
+                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            ];
+        }
+
+        if ($segment === "profile-update") {
             return [
                 'username'          => [
                     'required',
