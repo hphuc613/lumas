@@ -119,16 +119,17 @@ class AuthMemberController extends Controller
                 $password = Str::random(6);
                 $body     = '';
                 $body     .= "<div><p>" . trans("Your password: ") . $password . "</p></div>";
-                $body     .= '<div><i><p style="color: red">' . trans("You should change password after login.") . '</p></i></div>';
+                $body     .= '<div><i><p style="color: red">' . trans("You should change password after login.") .
+                             '</p></i></div>';
                 $send     = Helper::sendMail($member->email, trans('Reset password'), trans('Reset password'), $body);
-                if($send){
+                if ($send) {
                     $member->password = $password;
                     $member->save();
                     $request->session()->flash('success', trans('Send email successfully. Please check your email'));
-                }else{
+                } else {
                     $request->session()->flash('error', trans('Can not send email. Please contact with admin.'));
                 }
-            }else{
+            } else {
                 $request->session()->flash('error', trans('Your email not exist.'));
             }
 
@@ -136,5 +137,21 @@ class AuthMemberController extends Controller
         }
 
         return view('Auth::frontend.forgot_password');
+    }
+
+    /**
+     * @param $code
+     * @return Application|Factory|View
+     */
+    public function getSuccessRegister($code){
+        $member = Member::query()->where('verify_code', $code)->first();
+        if (empty($member)) {
+            abort(404);
+        }
+        $member->status            = Status::STATUS_ACTIVE;
+        $member->verify_code       = null;
+        $member->email_verified_at = time();
+        $member->save();
+        return view('Auth::frontend.success_register');
     }
 }

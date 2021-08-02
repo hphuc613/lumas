@@ -19,6 +19,7 @@
 </body>
 <script src="{{ asset('assets/jquery/jquery-3.5.1.min.js') }}"></script>
 <script src="{{ asset('assets/bootstrap/datetimepicker/js/datetimepicker.min.js') }}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/custom.js') }}"></script>

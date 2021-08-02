@@ -10,3 +10,6 @@ Route::post('/forgot-password', 'AuthMemberController@forgotPassword')->name('fr
 
 Route::get('/signup', 'AuthMemberController@getSignUp')->name('frontend.get.signup.member');
 Route::post('/signup', 'AuthMemberController@postSignUp')->name('frontend.post.signup.member');
+
+Route::get('/success-register/{code}', 'AuthMemberController@getSuccessRegister')
+     ->name('frontend.get.success_register');

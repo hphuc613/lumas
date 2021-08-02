@@ -54,9 +54,16 @@ class MemberController extends Controller{
         }
         $member = $this->auth->user();
         if (!empty($member->deleted_at) && $member->status !== Status::STATUS_ACTIVE) {
+            if ($member->status == Status::STATUS_PENDING) {
+                return response()->json([
+                    'status' => 402,
+                    'error'  => trans('Please verify your account.')
+                ]);
+            }
+
             return response()->json([
                 'status' => 400,
-                'error' => trans('Your account is inactive. Please contact with admin page to get more information.')
+                'error'  => trans('Your account is inactive. Please contact with admin page to get more information.')
             ]);
         }
 
@@ -105,12 +112,30 @@ class MemberController extends Controller{
     public function register(Request $request){
         $data = $request->all();
         unset($data['password_re_enter']);
-        $member = new Member($data);
+        $member              = new Member($data);
+        $member->status      = Status::STATUS_PENDING;
+        $member->verify_code = Str::random(40);
         $member->save();
+        $body = '<div><a style="background-color: #4CAF50;
+                              border: none;
+                              color: white;
+                              padding: 10px 32px;
+                              text-align: center;
+                              text-decoration: none;
+                              display: inline-block;
+                              font-size: 16px;" href="' . route('frontend.get.success_register', $member->verify_code) .
+                '">' . trans("Verify") . '</a></div>';
+        $send = Helper::sendMail($member->email, trans('LUMAS - Register Account'), 'Verify Account', $body);
+        if (!$send) {
+            return response()->json([
+                'status'  => 400,
+                'message' => trans('Can not send email. Please contact to administrator.')
+            ]);
+        }
 
         return response()->json([
-            'status' => 200,
-            'message' => trans('Registered Successfully'),
+            'status'      => 200,
+            'message'     => trans('Registered Successfully'),
             'client_info' => $data
         ]);
     }
