@@ -54,16 +54,16 @@ class MemberController extends Controller{
         }
         $member = $this->auth->user();
         if (!empty($member->deleted_at) && $member->status !== Status::STATUS_ACTIVE) {
-            if ($member->status == Status::STATUS_PENDING) {
-                return response()->json([
-                    'status' => 402,
-                    'error'  => trans('Please verify your account.')
-                ]);
-            }
-
             return response()->json([
                 'status' => 400,
                 'error'  => trans('Your account is inactive. Please contact with admin page to get more information.')
+            ]);
+        }
+
+        if ($member->status == Status::STATUS_PENDING) {
+            return response()->json([
+                'status' => 402,
+                'error'  => trans('Please verify your account.')
             ]);
         }
 
@@ -222,7 +222,6 @@ class MemberController extends Controller{
             'data' => $data
         ]);
     }
-
 
     /**
      * @param $member_id
