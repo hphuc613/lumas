@@ -24,12 +24,16 @@ class CourseController extends Controller{
      * @return JsonResponse
      */
     public function list(Request $request){
-        $params = $request->all();
-        $data = Course::filter($params)->with('vouchers')->get();
+        $params   = $request->all();
+        $item_qty = 10;
+        if (isset($request->item_qty)) {
+            $item_qty = $request->item_qty;
+        }
+        $data = Course::filter($params)->with('vouchers')->paginate($item_qty);
 
         return response()->json([
             'status' => 200,
-            'data' => $data
+            'data'   => $data
         ]);
     }
 
