@@ -3,8 +3,11 @@
 namespace Modules\Api\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\Base\Model\Status;
 use Modules\Service\Model\Service;
+use Modules\Service\Model\ServiceType;
 
 
 class ServiceController extends Controller{
@@ -20,7 +23,7 @@ class ServiceController extends Controller{
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function list(Request $request){
         $params   = $request->all();
@@ -38,14 +41,26 @@ class ServiceController extends Controller{
 
     /**
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function detail($id){
         $data = Service::query()->with('type', 'vouchers')->find($id);
 
         return response()->json([
             'status' => 200,
-            'data' => $data
+            'data'   => $data
+        ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getServiceType(){
+        $data = ServiceType::query()->where('status', Status::STATUS_ACTIVE)->get();
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $data
         ]);
     }
 }

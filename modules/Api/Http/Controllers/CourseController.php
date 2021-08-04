@@ -5,7 +5,9 @@ namespace Modules\Api\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
+use Modules\Course\Model\CourseCategory;
 
 
 class CourseController extends Controller{
@@ -46,7 +48,19 @@ class CourseController extends Controller{
 
         return response()->json([
             'status' => 200,
-            'data' => $data
+            'data'   => $data
+        ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getCourseCate(){
+        $data = CourseCategory::query()->where('status', Status::STATUS_ACTIVE)->get();
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $data
         ]);
     }
 }
