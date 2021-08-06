@@ -28,10 +28,15 @@ class ServiceController extends Controller{
     public function list(Request $request){
         $params   = $request->all();
         $item_qty = 10;
+        $data     = Service::filter($params)->with('vouchers');
+        if (isset($request->price_sort)) {
+            $data = $data->orderBy('price', $request->price_sort);
+        }
         if (isset($request->item_qty)) {
             $item_qty = $request->item_qty;
         }
-        $data = Service::filter($params)->with('vouchers')->paginate($item_qty);
+
+        $data = $data->paginate($item_qty);
 
         return response()->json([
             'status' => 200,
