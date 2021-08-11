@@ -194,12 +194,23 @@ class MemberController extends Controller{
      * @param $member_id
      * @return JsonResponse
      */
-    public function getServiceList($member_id){
-        $data = MemberService::with('service', 'voucher')->where('member_id', $member_id)->get();
+    public function getServiceList(Request $request, $member_id){
+        $data = MemberService::with('service', 'voucher')
+                             ->where('member_id', $member_id)
+                             ->whereRaw('deduct_quantity < quantity')
+                             ->orderBy("created_at", "DESC");
+        if (isset($request->key)) {
+            $data = $data->whereHas('service', function($query) use ($request){
+                return $query->where('name', 'LIKE', '%' . $request->key . '%');
+            });
+            $data = $data->orWhere('code', 'LIKE', '%' . $request->key . '%');
+        }
+
+        $data = $data->get();
 
         return response()->json([
             'status' => 200,
-            'data' => $data
+            'data'   => $data
         ]);
     }
 
@@ -214,7 +225,7 @@ class MemberController extends Controller{
 
         return response()->json([
             'status' => 200,
-            'data' => $data
+            'data'   => $data
         ]);
     }
 
@@ -222,12 +233,24 @@ class MemberController extends Controller{
      * @param $member_id
      * @return JsonResponse
      */
-    public function getCourseList($member_id){
-        $data = MemberCourse::with('course', 'voucher')->where('member_id', $member_id)->get();
+    public function getCourseList(Request $request, $member_id){
+        $data = MemberCourse::with('course', 'voucher')
+                            ->where('member_id', $member_id)
+                            ->whereRaw('deduct_quantity < quantity')
+                            ->orderBy("created_at", "DESC");
+
+        if (isset($request->key)) {
+            $data = $data->whereHas('course', function($query) use ($request){
+                return $query->where('name', 'LIKE', '%' . $request->key . '%');
+            });
+            $data = $data->orWhere('code', 'LIKE', '%' . $request->key . '%');
+        }
+
+        $data = $data->get();
 
         return response()->json([
             'status' => 200,
-            'data' => $data
+            'data'   => $data
         ]);
     }
 
