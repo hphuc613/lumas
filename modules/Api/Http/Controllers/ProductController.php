@@ -4,6 +4,10 @@ namespace Modules\Api\Http\Controllers;
 
 use App\AppHelpers\Helper;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Auth\Factory;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Appointment\Model\Appointment;
@@ -14,6 +18,10 @@ use Modules\Member\Model\MemberServiceHistory;
 
 
 class ProductController extends Controller{
+    /**
+     * @var Factory|Guard|StatefulGuard|Application|null
+     */
+    private $auth;
 
     /**
      * Create a new authentication controller instance.
@@ -21,7 +29,7 @@ class ProductController extends Controller{
      * @return void
      */
     public function __construct(){
-        # parent::__construct();
+        $this->auth = auth('api-user');
     }
 
 
@@ -54,7 +62,8 @@ class ProductController extends Controller{
             ]);
         }
 
-        $member_product->status = $status_progressing;
+        $member_product->status     = $status_progressing;
+        $member_product->updated_by = $this->auth->id();
         $member_product->save();
 
         return response()->json([
@@ -158,6 +167,58 @@ class ProductController extends Controller{
                 'member_product' => $member_product,
                 'history'        => $history
             ],
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $user_id
+     * @return JsonResponse
+     */
+    public function getServiceUsingList(Request $request, $user_id){
+        $data = MemberService::with('service', 'voucher')
+                             ->where('updated_by', $user_id)
+                             ->where('status', MemberService::PROGRESSING_STATUS)
+                             ->orderBy("updated_at");
+
+        if (isset($request->key)) {
+            $data = $data->whereHas('service', function($query) use ($request){
+                return $query->where('name', 'LIKE', '%' . $request->key . '%');
+            });
+            $data = $data->orWhere('code', 'LIKE', '%' . $request->key . '%');
+        }
+
+        $data = $data->get();
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $data
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $user_id
+     * @return JsonResponse
+     */
+    public function getCourseUsingList(Request $request, $user_id){
+        $data = MemberCourse::with('course', 'voucher')
+                            ->where('updated_by', $user_id)
+                            ->where('status', MemberCourse::PROGRESSING_STATUS)
+                            ->orderBy("updated_at");
+
+        if (isset($request->key)) {
+            $data = $data->whereHas('course', function($query) use ($request){
+                return $query->where('name', 'LIKE', '%' . $request->key . '%');
+            });
+            $data = $data->orWhere('code', 'LIKE', '%' . $request->key . '%');
+        }
+
+        $data = $data->get();
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $data
         ]);
     }
 

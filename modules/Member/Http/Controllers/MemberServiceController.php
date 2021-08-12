@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
@@ -194,7 +195,8 @@ class MemberServiceController extends Controller{
 
             return redirect()->back();
         }
-        $member_service->status = MemberService::PROGRESSING_STATUS;
+        $member_service->status     = MemberService::PROGRESSING_STATUS;
+        $member_service->updated_by = Auth::id();
         $member_service->save();
         $request->session()->flash('success', trans("Client using this service."));
 

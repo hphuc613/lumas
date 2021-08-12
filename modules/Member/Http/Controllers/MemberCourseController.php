@@ -8,6 +8,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
@@ -232,7 +233,8 @@ class MemberCourseController extends Controller{
 
             return redirect()->back();
         }
-        $member_course->status = MemberCourse::PROGRESSING_STATUS;
+        $member_course->status     = MemberCourse::PROGRESSING_STATUS;
+        $member_course->updated_by = Auth::id();
         $member_course->save();
         $request->session()->flash('success', trans("Client using this course."));
 
