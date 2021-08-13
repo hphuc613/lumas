@@ -55,7 +55,7 @@ class ProductController extends Controller{
             ]);
         }
 
-        if (!$member_product->member->getAppointmentInProgressing()) {
+        if (!$member_product->member->getAppointmentInProgressing($product)) {
             return response()->json([
                 'status' => 405,
                 'error'  => trans("Please check in an appointment."),
