@@ -47,7 +47,18 @@
                                 {{$history->memberService->code}}
                             </a>
                         </td>
-                        <td>{{ $history->signature }}</td>
+                        <td>
+                            @if(file_exists(public_path('storage/'.$history->signature)))
+                                <a href="javascript:" class="tooltip-content"
+                                   data-tooltip="<img src='{{ asset('storage/'.$history->signature) }}'
+                                   alt='{{ $history->memberService->member->username_signature }}' width='280'>"
+                                   title="">
+                                    {{ trans('Signature Image') }}
+                                </a>
+                            @else
+                                {{ $history->signature }}
+                            @endif
+                        </td>
                         <td><a href="{{ route("get.appointment.update",$history->appointment->id) }}"
                                id="update-booking" data-toggle="modal"
                                data-target="#form-modal"

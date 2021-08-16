@@ -147,12 +147,23 @@ class ProductController extends Controller{
         $data['start']          = formatDate(strtotime($member_product->updated_at), 'Y-m-d H:i:s');
         $data['end']            = formatDate(time(), 'Y-m-d H:i:s');
         $data['appointment_id'] = $appointment->id;
-        if ($product === 'service') {
+        if($product === 'service'){
             $data['member_service_id'] = $member_product->id;
             $history                   = new MemberServiceHistory($data);
-        } else {
+        }else{
             $data['member_course_id'] = $member_product->id;
             $history                  = new MemberCourseHistory($data);
+        }
+        if($request->hasFile('signature')){
+            $image = $request->signature;
+
+            $upload_folder =
+                'upload/member/' . $member_product->member->id . '-' . $member_product->member->username . '/signature';
+            $image_name    = 'signature-' . $member_product->member->username . '-' . time() . '.png';
+
+            $history->signature = $upload_folder . '/' . $image_name;
+
+            $image->storeAs('public/' . $upload_folder, $image_name);
         }
         $history->save();
 
