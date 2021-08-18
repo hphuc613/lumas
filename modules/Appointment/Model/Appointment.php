@@ -33,10 +33,10 @@ class Appointment extends BaseModel{
 
     const COURSE_TYPE = "course";
 
-    const ABORT_STATUS = -1;
-    const WAITING_STATUS = 0;
+    const ABORT_STATUS       = -1;
+    const WAITING_STATUS     = 0;
     const PROGRESSING_STATUS = 1;
-    const COMPLETED_STATUS = 2;
+    const COMPLETED_STATUS   = 2;
 
 
     public static function filter($filter){
@@ -44,10 +44,10 @@ class Appointment extends BaseModel{
                             ->with('member')
                             ->with('store')
                             ->with('user');
-        if(isset($filter['name'])){
+        if (isset($filter['name'])) {
             $query->where('name', $filter['name']);
         }
-        if(isset($filter['member_id'])){
+        if (isset($filter['member_id'])) {
             $query->where('member_id', $filter['member_id']);
         }
         if (isset($filter['status'])) {
@@ -84,42 +84,48 @@ class Appointment extends BaseModel{
      */
     public function afterSave(){
         /** Add Notification*/
-        if($this->status == self::WAITING_STATUS){
+        if ($this->status == self::WAITING_STATUS) {
             $user         = User::find($this->user_id);
             $notification = $this->getNotification();
-            if($notification){
-                if((int)strtotime($this->time) > time()){
+            if ($notification) {
+                if ((int)strtotime($this->time) > time()) {
                     $data = [
-                        'appointment_id' => (int)$this->id,
-                        'title'          => $this->name,
-                        'member'         => $this->member->name,
-                        'member_id'      => (int)$this->member_id,
-                        'user_id'        => (int)$this->user_id,
-                        'time'           => $this->time,
-                        'type'           => $this->type,
-                        'status'         => Status::STATUS_PENDING,
-                        'time_show'      => NULL,
+                        'appointment_id'   => (int)$this->id,
+                        'title'            => $this->name,
+                        'member'           => $this->member->name,
+                        'member_id'        => (int)$this->member_id,
+                        'user_id'          => (int)$this->user_id,
+                        'time'             => $this->time,
+                        'type'             => $this->type,
+                        'status'           => Status::STATUS_PENDING,
+                        'time_show'        => NULL,
+                        'user_time_show'   => NULL,
+                        'client_read_at'   => NULL,
+                        'client_time_show' => NULL,
                     ];
                     $notification->update(['data' => $data, 'read_at' => NULL]);
                 }
-            }else{
+            } else {
                 $data = [
-                    'appointment_id' => (int)$this->id,
-                    'title'          => $this->name,
-                    'member'         => $this->member->name,
-                    'member_id'      => (int)$this->member_id,
-                    'user_id'        => (int)$this->user_id,
-                    'time'           => $this->time,
-                    'type'           => $this->type,
-                    'status'         => Status::STATUS_PENDING,
-                    'time_show'      => NULL,
+                    'appointment_id'   => (int)$this->id,
+                    'title'            => $this->name,
+                    'member'           => $this->member->name,
+                    'member_id'        => (int)$this->member_id,
+                    'user_id'          => (int)$this->user_id,
+                    'time'             => $this->time,
+                    'type'             => $this->type,
+                    'status'           => Status::STATUS_PENDING,
+                    'time_show'        => NULL,
+                    'user_time_show'   => NULL,
+                    'client_read_at'   => NULL,
+                    'client_time_show' => NULL,
                 ];
                 $user->notify(new Notification($data));
             }
         }
 
-        if($this->status == self::ABORT_STATUS || !empty($this->deleted_at)){
-            if($this->getNotification()){
+        if ($this->status == self::ABORT_STATUS || !empty($this->deleted_at)) {
+            if ($this->getNotification()) {
                 $this->getNotification()->markAsRead();
             }
         }
@@ -130,7 +136,7 @@ class Appointment extends BaseModel{
      */
     public function getNotification(){
         $notification = $this->user->notifications->where('data.appointment_id', $this->id)->first();
-        if(!empty($notification)){
+        if (!empty($notification)) {
             return $notification;
         }
 
@@ -162,8 +168,8 @@ class Appointment extends BaseModel{
     public function getServiceList(){
         $data = Helper::isJson($this->service_ids, 1);
         $list = [];
-        if($data){
-            foreach($data as $id){
+        if ($data) {
+            foreach($data as $id) {
                 $list[] = Service::find($id);
             }
         }
@@ -176,10 +182,10 @@ class Appointment extends BaseModel{
      */
     public function getTotalIntendTimeService(){
         $total = 0;
-        if(is_string($this->service_ids)){
+        if (is_string($this->service_ids)) {
             $this->service_ids = $this->getServiceList();
         }
-        foreach($this->service_ids as $val){
+        foreach($this->service_ids as $val) {
             $total = $total + (int)$val->intend_time;
         }
 
@@ -192,8 +198,8 @@ class Appointment extends BaseModel{
     public function getCourseList(){
         $data = Helper::isJson($this->course_ids, 1);
         $list = [];
-        if($data){
-            foreach($data as $id){
+        if ($data) {
+            foreach($data as $id) {
                 $list[] = Course::find($id);
             }
         }
@@ -206,14 +212,14 @@ class Appointment extends BaseModel{
      */
     public function getColorStatus(){
         $color = '#fec107';
-        if($this->status === self::WAITING_STATUS){
+        if ($this->status === self::WAITING_STATUS) {
             $color = '#03a9f3';
-            if(strtotime($this->time) < time()){
+            if (strtotime($this->time) < time()) {
                 $color = '#e46a76';
             }
-        }elseif($this->status === self::COMPLETED_STATUS){
+        } elseif ($this->status === self::COMPLETED_STATUS) {
             $color = '#00c292';
-        }elseif($this->status === self::ABORT_STATUS){
+        } elseif ($this->status === self::ABORT_STATUS) {
             $color = '#aaa';
         }
 
@@ -224,7 +230,7 @@ class Appointment extends BaseModel{
      * @return bool
      */
     public function checkProgressing(){
-        if($this->status === self::PROGRESSING_STATUS){
+        if ($this->status === self::PROGRESSING_STATUS) {
             return true;
         }
 

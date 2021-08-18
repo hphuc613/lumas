@@ -69,8 +69,8 @@ class NotificationAppointmentCommand extends Command{
                 foreach($notifications as $notification){
                     $appointment = $notification['data'];
                     $time        = strtotime($appointment['time']);
-                    if($appointment['status'] == Status::STATUS_PENDING){
-                        if($time > time() && $time <= (time() + $timer)){
+                    if (empty($appointment['time_show'])) {
+                        if ($time > time() && $time <= (time() + $timer)) {
                             $data[]                   = $appointment;
                             $appointment['status']    = Status::STATUS_ACTIVE;
                             $appointment['time_show'] = formatDate(time(), 'd-m-Y H:i:s');

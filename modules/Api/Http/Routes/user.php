@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('test', 'ApiController@test');
-
 Route::prefix('user')->group(function(){
     Route::post('login', 'UserController@login');
     Route::post('forgot-password', 'UserController@forgotPassword');

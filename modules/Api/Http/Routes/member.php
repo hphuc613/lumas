@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('test', 'ApiController@test');
-
 Route::prefix('client')->group(function(){
     Route::post('login', 'MemberController@login');
     Route::post('register-validate', 'MemberController@validateRegister');
@@ -24,6 +22,5 @@ Route::prefix('client')->group(function(){
 
     Route::prefix('course')->group(function(){
         Route::get('list/{member_id}', 'MemberController@getCourseList');
-        Route::get('detail/{id}', 'MemberController@getCourseDetail');
     });
 });
