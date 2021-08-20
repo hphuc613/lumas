@@ -53,7 +53,7 @@ class NotificationController extends Controller{
                      ->get();
 
 
-        $appointments          = [];
+        $appointments          = null;
         $count_client_not_read = 0;
         $count_user_not_read   = 0;
         foreach($data as $key => $value) {
@@ -88,7 +88,7 @@ class NotificationController extends Controller{
                                         ->where('data->time', '>', formatDate(time(), 'Y-m-d H:i'))
                                         ->where('data->time', '<=', formatDate(time() + $timer, 'Y-m-d H:i'))
                                         ->first();
-        $appointment = [];
+        $appointment = null;
         if (!empty($data)) {
             $appointment                   = json_decode($data->data, 1);
             $appointment['status']         = Status::STATUS_ACTIVE;
@@ -114,7 +114,7 @@ class NotificationController extends Controller{
                                         ->where('data->time', '>', formatDate(time(), 'Y-m-d H:i'))
                                         ->where('data->time', '<=', formatDate(time() + $timer, 'Y-m-d H:i'))
                                         ->first();
-        $appointment = [];
+        $appointment = null;
         if (!empty($data)) {
             $appointment                     = json_decode($data->data, 1);
             $appointment['status']           = Status::STATUS_ACTIVE;
