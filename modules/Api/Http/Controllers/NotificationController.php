@@ -145,7 +145,8 @@ class NotificationController extends Controller{
             $appointment           = json_decode($data->data, 1);
             $appointment['status'] = Status::STATUS_ACTIVE;
             if ($user_mobile == 'user') {
-                $data->read_at = formatDate(time(), 'd-m-Y H:i:s');
+                $data->read_at               = formatDate(time(), 'd-m-Y H:i:s');
+                $appointment['user_read_at'] = formatDate(time(), 'd-m-Y H:i:s');
             } else {
                 $appointment['client_read_at'] = formatDate(time(), 'd-m-Y H:i:s');
             }

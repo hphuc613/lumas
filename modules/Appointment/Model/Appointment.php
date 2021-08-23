@@ -100,6 +100,7 @@ class Appointment extends BaseModel{
                         'status'           => Status::STATUS_PENDING,
                         'time_show'        => NULL,
                         'user_time_show'   => NULL,
+                        'user_read_at'     => NULL,
                         'client_read_at'   => NULL,
                         'client_time_show' => NULL,
                     ];
@@ -117,6 +118,7 @@ class Appointment extends BaseModel{
                     'status'           => Status::STATUS_PENDING,
                     'time_show'        => NULL,
                     'user_time_show'   => NULL,
+                    'user_read_at'     => NULL,
                     'client_read_at'   => NULL,
                     'client_time_show' => NULL,
                 ];

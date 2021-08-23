@@ -70,6 +70,8 @@ function generateCalendarAppointment(url_update_time, member_id) {
         }
     });
     calendar.render();
+
+    return calendar;
 }
 
 /** Update time appointment when drop event */

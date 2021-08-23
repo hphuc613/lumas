@@ -116,10 +116,21 @@
             });
 
             /** Generate Calendar Appointment */
-            generateCalendarAppointment("{{ route("post.appointment.update_time",'') }}", "{{ $member->id ?? NULL }}")
+            var calendar = generateCalendarAppointment("{{ route("post.appointment.update_time",'') }}", "{{ $member->id ?? NULL }}");
+
+            $(document).on('click', 'button.fc-button', function () {
+                var button = $(this).attr('aria-label');
+                if (button === "next" || button === "prev") {
+                    var cdate = calendar.getDate();
+                    var date = new Date(cdate);
+                    console.log(date.getMonth() + 1);
+                }
+            });
 
             /** Appointment Form get product list by type*/
             getProductByType("{{ \Modules\Appointment\Model\Appointment::SERVICE_TYPE }}");
+
+
         })
     </script>
 @endpush
