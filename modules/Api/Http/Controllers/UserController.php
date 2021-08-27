@@ -47,7 +47,7 @@ class UserController extends Controller{
         if(empty($request->email) || empty($request->password)){
             return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
         }
-        if(!$token = $this->auth->attempt($data)){
+        if(!$token = $this->auth->setTTL(60 * 7 * 24)->attempt($data)){
             return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
         }
         $user = $this->auth->user();
