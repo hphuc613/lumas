@@ -32,7 +32,7 @@
             </tbody>
         </table>
         <div class="mt-5 pagination-style">
-            {{ $rates->render('vendor.pagination.default') }}
+            {{ $rates->withQueryString()->render('vendor.pagination.default') }}
         </div>
     </div>
 

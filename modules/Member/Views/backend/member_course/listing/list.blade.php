@@ -116,7 +116,7 @@
                         </tbody>
                     </table>
                     <div class="mt-5 pagination-style">
-                        {{ $member_courses->render('vendor.pagination.default') }}
+                        {{ $member_courses->withQueryString()->render('vendor.pagination.default') }}
                     </div>
                 </div>
             </div>
@@ -199,7 +199,7 @@
                             </tbody>
                         </table>
                         <div class="mt-5 pagination-style">
-                            {{ $completed_member_courses->render('vendor.pagination.default') }}
+                            {{ $completed_member_courses->withQueryString()->render('vendor.pagination.default') }}
                         </div>
                     </div>
                 </div>

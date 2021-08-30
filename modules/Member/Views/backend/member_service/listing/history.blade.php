@@ -73,7 +73,7 @@
                 </tbody>
             </table>
             <div class="mt-5 pagination-style">
-                {{ $histories->render('vendor.pagination.default') }}
+                {{ $histories->withQueryString()->render('vendor.pagination.default') }}
             </div>
         </div>
     </div>

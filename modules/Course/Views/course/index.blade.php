@@ -93,7 +93,7 @@
                             </tbody>
                         </table>
                         <div class="mt-5 pagination-style">
-                            {{ $courses->render('vendor.pagination.default') }}
+                            {{ $courses->withQueryString()->render('vendor.pagination.default') }}
                         </div>
                     </div>
                 </div>

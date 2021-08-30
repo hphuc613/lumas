@@ -126,7 +126,7 @@
                         </tbody>
                     </table>
                     <div class="mt-5 pagination-style">
-                        {{ $appointments->render('vendor.pagination.default') }}
+                        {{ $appointments->withQueryString()->render('vendor.pagination.default') }}
                     </div>
                 </div>
             </div>

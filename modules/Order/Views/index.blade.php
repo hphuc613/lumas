@@ -147,7 +147,7 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                         </tbody>
                     </table>
                     <div class="mt-5 pagination-style">
-                        {{ $orders->render('vendor.pagination.default') }}
+                        {{ $orders->withQueryString()->render('vendor.pagination.default') }}
                     </div>
                 </div>
             </div>

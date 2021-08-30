@@ -256,7 +256,7 @@
                         </tbody>
                     </table>
                     <div class="mt-5 pagination-style">
-                        {{ $orders->render('vendor.pagination.default') }}
+                        {{ $orders->withQueryString()->render('vendor.pagination.default') }}
                     </div>
                 </div>
                 {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'size' => 'modal-lg'])  !!}

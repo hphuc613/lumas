@@ -86,7 +86,7 @@
                             </tbody>
                         </table>
                         <div class="mt-5 pagination-style">
-                            {{ $service_types->render('vendor.pagination.default') }}
+                            {{ $service_types->withQueryString()->render('vendor.pagination.default') }}
                         </div>
                     </div>
                 </div>
