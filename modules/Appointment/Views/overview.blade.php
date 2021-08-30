@@ -103,8 +103,8 @@
                                     </a>
                                 </td>
                                 <td>{{ formatDate($appointment->time, 'd-m-Y H:i:s') }}</td>
-                                <td>{{ formatDate($appointment->start_time, 'd-m-Y H:i:s') }}</td>
-                                <td>{{ formatDate($appointment->end_time, 'd-m-Y H:i:s') }}</td>
+                                <td>{{ !empty($appointment->start_time) ? formatDate($appointment->start_time, 'd-m-Y H:i:s') : ''}}</td>
+                                <td>{{ !empty($appointment->start_time) ? formatDate($appointment->end_time, 'd-m-Y H:i:s') : ''}}</td>
                                 <td>
                                     <span style="font-weight:500; color: {{ $appointment->getColorStatus() }}">
                                         {{ $statuses[$appointment->status] }}

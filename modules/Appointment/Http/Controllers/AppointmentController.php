@@ -91,7 +91,7 @@ class AppointmentController extends Controller{
             $appointments = $appointments->where('user_id', Auth::id());
         }
 
-        $appointments = $appointments->paginate(6);
+        $appointments = $appointments->orderBy('time', 'DESC')->paginate(6);
 
         return view("Appointment::overview", compact('appointments', 'appointment_types', 'filter', 'members', 'statuses', 'stores'));
     }
