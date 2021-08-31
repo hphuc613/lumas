@@ -15,7 +15,7 @@ use Modules\Documentation\Model\Documentation;
 use Throwable;
 
 
-class DocumentationController extends Controller{
+class DocumentationMobileController extends Controller{
 
     /**
      * Create a new authentication controller instance.
@@ -27,9 +27,9 @@ class DocumentationController extends Controller{
     }
 
     public function index(){
-        $documents = Documentation::query()->where('type', Documentation::WEB_TYPE)->orderBy('sort')->get();
+        $documents = Documentation::query()->where('type', Documentation::MOBILE_TYPE)->orderBy('sort')->get();
 
-        return view("Documentation::index", compact('documents'));
+        return view("Documentation::mobile.index", compact('documents'));
     }
 
     /**
@@ -38,10 +38,10 @@ class DocumentationController extends Controller{
      */
     public function getCreate(Request $request){
 
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
-        return $this->renderAjax("Documentation::_form");
+        return $this->renderAjax("Documentation::mobile._form");
     }
 
     /**
@@ -51,15 +51,15 @@ class DocumentationController extends Controller{
     public function postCreate(DocumentationRequest $request){
         $data = $request->all();
         DB::beginTransaction();
-        try{
+        try {
             $data['key']  = Helper::slug($data['name']);
-            $data['type'] = Documentation::WEB_TYPE;
+            $data['type'] = Documentation::MOBILE_TYPE;
             $document     = new Documentation($data);
             $document->save();
 
             $request->session()->flash('success', 'Created Successfully');
             DB::commit();
-        }catch(Throwable $th){
+        } catch(Throwable $th) {
 
             $request->session()->flash('danger', 'Create Failed');
             DB::rollBack();
@@ -74,7 +74,7 @@ class DocumentationController extends Controller{
      */
     public function getView($id){
         $document = Documentation::query()->find($id);
-        return $this->renderAjax("Documentation::_content", compact('document'));
+        return $this->renderAjax("Documentation::mobile._content", compact('document'));
     }
 
     /**
@@ -86,13 +86,13 @@ class DocumentationController extends Controller{
         $data = $request->all();
 
         DB::beginTransaction();
-        try{
+        try {
             $document = Documentation::query()->find($id);
             $document->update($data);
             DB::commit();
 
-            return $this->renderAjax("Documentation::_content", compact('document'));
-        }catch(Throwable $th){
+            return $this->renderAjax("Documentation::mobile._content", compact('document'));
+        } catch(Throwable $th) {
 
             DB::rollBack();
 
@@ -117,9 +117,9 @@ class DocumentationController extends Controller{
      * @return RedirectResponse
      */
     public function sort(Request $request){
-        if($data = $request->post()){
+        if ($data = $request->post()) {
             $sort_list = json_decode($data['sort'], 1);
-            foreach($sort_list as $key => $item){
+            foreach($sort_list as $key => $item) {
                 $query       = Documentation::query()->find($item['id']);
                 $query->sort = $key;
                 $query->save();
@@ -134,8 +134,8 @@ class DocumentationController extends Controller{
      * @return Application|Factory|View
      */
     public function getDocumentation(){
-        $documents = Documentation::query()->where('type', Documentation::WEB_TYPE)->orderBy('sort')->get();
+        $documents = Documentation::query()->where('type', Documentation::MOBILE_TYPE)->orderBy('sort')->get();
 
-        return view("Documentation::master", compact('documents'));
+        return view("Documentation::mobile.master", compact('documents'));
     }
 }

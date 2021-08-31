@@ -4,15 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateMemberCoursesTable extends Migration{
+class UpdateDocumentationsTable extends Migration{
     /**
      * Run the migrations.
      *
      * @return void
      */
     public function up(){
-        Schema::table('member_courses', function(Blueprint $table){
-            $table->integer('updated_by')->unsigned()->nullable();
+        Schema::table('documentations', function(Blueprint $table){
+            $table->string('type')->default('WEB');
         });
     }
 
@@ -22,8 +22,8 @@ class UpdateMemberCoursesTable extends Migration{
      * @return void
      */
     public function down(){
-        Schema::table('member_courses', function(Blueprint $table){
-            $table->removeColumn('updated_by');
+        Schema::table('documentations', function(Blueprint $table){
+            $table->removeColumn('type');
         });
     }
 }

@@ -12,4 +12,8 @@ class Documentation extends Model{
     protected $guarded = [];
 
     public $timestamps = true;
+
+    const WEB_TYPE = 'WEB';
+
+    const MOBILE_TYPE = 'MOBILE';
 }
