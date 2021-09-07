@@ -25,8 +25,14 @@ class Store extends BaseModel{
      */
     public static function filter($filter){
         $query = self::query();
-        if(isset($filter['name'])){
+        if (isset($filter['name'])) {
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
+        }
+        if (isset($filter['address'])) {
+            $query->where('address', 'LIKE', '%' . $filter['address'] . '%');
+        }
+        if (isset($filter['phone'])) {
+            $query->where('phone', 'LIKE', '%' . $filter['phone'] . '%');
         }
 
         return $query;

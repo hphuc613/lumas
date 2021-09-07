@@ -31,7 +31,22 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="text-input">{{ trans("Store name") }}</label>
-                                <input type="text" class="form-control" id="text-input" name="name" value="">
+                                <input type="text" class="form-control" id="text-input-name" name="name"
+                                       value="{{ $filter['name'] ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="text-input">{{ trans("Address") }}</label>
+                                <input type="text" class="form-control" id="text-input-address" name="address"
+                                       value="{{ $filter['address'] ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="text-input">{{ trans("Phone") }}</label>
+                                <input type="text" class="form-control" id="text-input-phone" name="phone"
+                                       value="{{ $filter['phone'] ?? '' }}">
                             </div>
                         </div>
                     </div>
@@ -56,6 +71,7 @@
                             <th width="50px">#</th>
                             <th>{{ trans("Name") }}</th>
                             <th>{{ trans("Address") }}</th>
+                            <th>{{ trans("Phone") }}</th>
                             <th>{{ trans("Open/Close Time") }}</th>
                             <th>{{ trans("Status") }}</th>
                             <th width="200px" class="action">{{ trans("Action") }}</th>
@@ -68,6 +84,7 @@
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $store->name }}</td>
                                 <td>{{ $store->address }}</td>
+                                <td>{{ $store->phone }}</td>
                                 <td>{{ $store->open_close_time }}</td>
                                 <td>{{ \Modules\Base\Model\Status::getStatus($store->status)}}</td>
                                 <td class="link-action">

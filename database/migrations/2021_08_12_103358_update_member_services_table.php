@@ -23,7 +23,7 @@ class UpdateMemberServicesTable extends Migration{
      */
     public function down(){
         Schema::table('member_services', function(Blueprint $table){
-            $table->removeColumn('updated_by');
+            $table->dropColumn('updated_by');
         });
     }
 }

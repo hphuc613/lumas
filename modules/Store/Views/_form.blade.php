@@ -16,6 +16,11 @@
                                    value="{{ $store->location ?? old('location') }}">
                         </div>
                         <div class="col-md-6 form-group">
+                            <label for="open-close-time">{{ trans('Phone') }}</label>
+                            <input type="text" name="phone" class="form-control" id="phone"
+                                   value="{{ $store->phone ?? old('phone') }}">
+                        </div>
+                        <div class="col-md-6 form-group">
                             <label for="open-close-time">{{ trans('Open/Close Time') }}</label>
                             <input type="text" name="open_close_time" class="form-control" id="open-close-time"
                                    value="{{ $store->open_close_time ?? old('open_close_time') }}">

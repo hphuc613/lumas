@@ -23,7 +23,7 @@ class UpdateDocumentationsTable extends Migration{
      */
     public function down(){
         Schema::table('documentations', function(Blueprint $table){
-            $table->removeColumn('type');
+            $table->dropColumn('type');
         });
     }
 }

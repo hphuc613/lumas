@@ -23,7 +23,7 @@ class UpdateMemberCoursesTable extends Migration{
      */
     public function down(){
         Schema::table('member_courses', function(Blueprint $table){
-            $table->removeColumn('updated_by');
+            $table->dropColumn('updated_by');
         });
     }
 }
