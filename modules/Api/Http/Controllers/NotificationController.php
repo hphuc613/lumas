@@ -42,12 +42,12 @@ class NotificationController extends Controller{
 
         if (isset($request->member_id)) {
             $data = $data->where('data->member_id', $request->member_id)
-                         ->where('data->client_time_show', '<>', null);
+                         ->where('data->time_show', '<>', null);
         }
 
         if (isset($request->user_id)) {
             $data = $data->where('data->user_id', $request->user_id)
-                         ->where('data->user_time_show', '<>', null);
+                         ->where('data->time_show', '<>', null);
         }
 
         $data = $data->orderBy('created_at', 'DESC')
