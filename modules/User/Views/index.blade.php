@@ -17,7 +17,7 @@
             <div class="group-btn">
                 <a href="{{ route('get.salary.bulk_reload') }}" class="btn btn-primary">
                     <i class="fas fa-sync-alt"></i>
-                    {{ 'Bulk Calculate Salary' }}
+                    {{ trans('Bulk Calculate Salary') }}
                 </a>
                 <a href="{{ route('get.user.create') }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
                     &nbsp; {{ trans('Add New') }}</a>

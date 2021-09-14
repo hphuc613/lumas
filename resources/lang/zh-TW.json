@@ -447,5 +447,8 @@
     "Course Voucher Listing": "課程代幣券列表",
     "Update Voucher": "更新代幣券",
     "Image": "圖像",
-    "Service Voucher Listing": "服務代幣券列表"
+    "Service Voucher Listing": "服務代幣券列表",
+    "Services In Progress": "服務進行中",
+    "Courses In Progress": "課程進行中",
+    "Bulk Calculate Salary": "批量計算工資"
 }

@@ -1,7 +1,7 @@
 @if($progressing_courses->isNotEmpty())
     <div class="card mb-2">
         <div class="card-header">
-            <h4>Course Progressing</h4>
+            <h4>{{ trans('Courses In Progress') }}</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">

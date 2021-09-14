@@ -157,7 +157,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title"><span
-                            class="text-primary font-size-clearfix">{{ count($appointment_data['progressing']) }}</span> {{ trans('Appointment(s) In Progress (Today)') }}
+                        class="text-primary font-size-clearfix">{{ trans('Appointment(s) In Progress (Today)') }}
                 </h5>
                 <div class="table-responsive">
                     <table class="table table-fixed progressing-appointment">

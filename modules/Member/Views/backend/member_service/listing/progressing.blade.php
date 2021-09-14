@@ -1,7 +1,7 @@
 @if($progressing_services->isNotEmpty())
     <div class="card mb-2">
         <div class="card-header">
-            <h4>Service Progressing</h4>
+            <h4>{{ trans('Services In Progress') }}</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">
