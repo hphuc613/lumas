@@ -23,4 +23,27 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
         Route::get("delete/{id}", "DocumentationMobileController@delete")->name("get.documentation_mobile.delete");
         Route::post("sort", "DocumentationMobileController@sort")->name("post.documentation_mobile.sort");
     });
+
+    Route::prefix("documentation-ct")->group(function(){
+        Route::get("/", "DocumentationWebCTController@index")->name("get.documentation_ct.list");
+        Route::get("create/", "DocumentationWebCTController@getCreate")->name("get.documentation_ct.create");
+        Route::post("create/", "DocumentationWebCTController@postCreate")->name("post.documentation_ct.create");
+        Route::get("view/{id}", "DocumentationWebCTController@getView")->name("get.documentation_ct.view");
+        Route::post("update/{id}", "DocumentationWebCTController@postUpdate")
+             ->name("post.documentation_ct.update");
+        Route::get("delete/{id}", "DocumentationWebCTController@delete")->name("get.documentation_ct.delete");
+        Route::post("sort", "DocumentationWebCTController@sort")->name("post.documentation_ct.sort");
+    });
+
+    Route::prefix("documentation-mobile-ct")->group(function(){
+        Route::get("/", "DocumentationMobileCTController@index")->name("get.documentation_mobile_ct.list");
+        Route::get("create/", "DocumentationMobileCTController@getCreate")->name("get.documentation_mobile_ct.create");
+        Route::post("create/", "DocumentationMobileCTController@postCreate")
+             ->name("post.documentation_mobile_ct.create");
+        Route::get("view/{id}", "DocumentationMobileCTController@getView")->name("get.documentation_mobile_ct.view");
+        Route::post("update/{id}", "DocumentationMobileCTController@postUpdate")
+             ->name("post.documentation_mobile_ct.update");
+        Route::get("delete/{id}", "DocumentationMobileCTController@delete")->name("get.documentation_mobile_ct.delete");
+        Route::post("sort", "DocumentationMobileCTController@sort")->name("post.documentation_mobile_ct.sort");
+    });
 });

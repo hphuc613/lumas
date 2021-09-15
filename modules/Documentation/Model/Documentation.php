@@ -16,4 +16,9 @@ class Documentation extends Model{
     const WEB_TYPE = 'WEB';
 
     const MOBILE_TYPE = 'MOBILE';
+
+    const WEB_CT_TYPE = 'WEB_CT';
+
+    const MOBILE_CT_TYPE = 'MOBILE_CT';
+
 }
