@@ -21,4 +21,12 @@ class Documentation extends Model{
 
     const MOBILE_CT_TYPE = 'MOBILE_CT';
 
+    const CLIENT_GUIDE = 'CLIENT_GUIDE';
+
+    const CLIENT_GUIDE_CT = 'CLIENT_GUIDE_CT';
+
+    const STAFF_GUIDE = 'STAFF_GUIDE';
+
+    const STAFF_GUIDE_CT = 'STAFF_GUIDE_CT';
+
 }

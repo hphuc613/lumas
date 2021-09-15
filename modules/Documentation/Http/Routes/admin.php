@@ -46,4 +46,52 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
         Route::get("delete/{id}", "DocumentationMobileCTController@delete")->name("get.documentation_mobile_ct.delete");
         Route::post("sort", "DocumentationMobileCTController@sort")->name("post.documentation_mobile_ct.sort");
     });
+
+    Route::prefix("guide-client")->group(function(){
+        Route::get("/", "GuideClientController@index")->name("get.guide_client.list");
+        Route::get("create/", "GuideClientController@getCreate")->name("get.guide_client.create");
+        Route::post("create/", "GuideClientController@postCreate")
+             ->name("post.guide_client.create");
+        Route::get("view/{id}", "GuideClientController@getView")->name("get.guide_client.view");
+        Route::post("update/{id}", "GuideClientController@postUpdate")
+             ->name("post.guide_client.update");
+        Route::get("delete/{id}", "GuideClientController@delete")->name("get.guide_client.delete");
+        Route::post("sort", "GuideClientController@sort")->name("post.guide_client.sort");
+    });
+
+    Route::prefix("guide-client-tc")->group(function(){
+        Route::get("/", "GuideClientTCController@index")->name("get.guide_client_tc.list");
+        Route::get("create/", "GuideClientTCController@getCreate")->name("get.guide_client_tc.create");
+        Route::post("create/", "GuideClientTCController@postCreate")
+             ->name("post.guide_client_tc.create");
+        Route::get("view/{id}", "GuideClientTCController@getView")->name("get.guide_client_tc.view");
+        Route::post("update/{id}", "GuideClientTCController@postUpdate")
+             ->name("post.guide_client_tc.update");
+        Route::get("delete/{id}", "GuideClientTCController@delete")->name("get.guide_client_tc.delete");
+        Route::post("sort", "GuideClientTCController@sort")->name("post.guide_client_tc.sort");
+    });
+
+    Route::prefix("guide-staff")->group(function(){
+        Route::get("/", "GuideStaffController@index")->name("get.guide_staff.list");
+        Route::get("create/", "GuideStaffController@getCreate")->name("get.guide_staff.create");
+        Route::post("create/", "GuideStaffController@postCreate")
+             ->name("post.guide_staff.create");
+        Route::get("view/{id}", "GuideStaffController@getView")->name("get.guide_staff.view");
+        Route::post("update/{id}", "GuideStaffController@postUpdate")
+             ->name("post.guide_staff.update");
+        Route::get("delete/{id}", "GuideStaffController@delete")->name("get.guide_staff.delete");
+        Route::post("sort", "GuideStaffController@sort")->name("post.guide_staff.sort");
+    });
+
+    Route::prefix("guide-staff-tc")->group(function(){
+        Route::get("/", "GuideStaffTCController@index")->name("get.guide_staff_tc.list");
+        Route::get("create/", "GuideStaffTCController@getCreate")->name("get.guide_staff_tc.create");
+        Route::post("create/", "GuideStaffTCController@postCreate")
+             ->name("post.guide_staff_tc.create");
+        Route::get("view/{id}", "GuideStaffTCController@getView")->name("get.guide_staff_tc.view");
+        Route::post("update/{id}", "GuideStaffTCController@postUpdate")
+             ->name("post.guide_staff_tc.update");
+        Route::get("delete/{id}", "GuideStaffTCController@delete")->name("get.guide_staff_tc.delete");
+        Route::post("sort", "GuideStaffTCController@sort")->name("post.guide_staff_tc.sort");
+    });
 });
