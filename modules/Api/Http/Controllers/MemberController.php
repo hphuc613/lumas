@@ -48,7 +48,7 @@ class MemberController extends Controller{
             return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
         }
         $member = $this->auth->user();
-        if (!empty($member->deleted_at) && $member->status !== Status::STATUS_ACTIVE) {
+        if (!empty($member->deleted_at) || $member->status !== Status::STATUS_ACTIVE) {
             return response()->json([
                 'status' => 400,
                 'error'  => trans('Your account is inactive. Please contact with admin page to get more information.')

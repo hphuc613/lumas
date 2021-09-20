@@ -81,7 +81,8 @@ class AuthMemberController extends Controller
         ];
         $request->session()->put('username', $request->input('username'));
         if(Auth::guard('member')->attempt($login, $request->has('remember'))){
-            if(empty(Auth::guard('member')->user()->deleted_at)  && Auth::guard('member')->user()->status == Status::STATUS_ACTIVE){
+            if (empty(Auth::guard('member')->user()->deleted_at) ||
+                Auth::guard('member')->user()->status == Status::STATUS_ACTIVE) {
                 return redirect()->route("frontend.dashboard");
             }
             $request->session()->flash('error',
