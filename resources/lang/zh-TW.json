@@ -221,7 +221,7 @@
     "Quantity": "數量",
     "Voucher": "代幣券",
     " must be an image.": "必須是圖像。",
-    " must be 10 digits.": "必須是10位數。",
+    " must be 8 digits.": "必須是10位數。",
     " extention must be one of the following: jpeg, png, jpg, gif, svg.": "擴展必須是以下之一：JPEG，PNG，JPG，GIF，SVG。",
     "Member Type": "會員類型",
     "Avatar": "頭像",
@@ -450,5 +450,8 @@
     "Service Voucher Listing": "服務代幣券列表",
     "Services In Progress": "服務進行中",
     "Courses In Progress": "課程進行中",
-    "Bulk Calculate Salary": "批量計算工資"
+    "Bulk Calculate Salary": "批量計算工資",
+    "Go Back": "回去",
+    "Go to Appointment Listing": "轉到約會列表",
+    "The Password must at least 1 number or 1 english letter": "密碼必須至少為 1 個數字或 1 個英文字母"
 }

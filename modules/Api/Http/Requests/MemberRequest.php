@@ -28,7 +28,7 @@ class MemberRequest extends ApiRequest{
                 ],
                 'phone'             => 'required|size:8|validate_unique:members, ' . $auth_id,
                 'email'             => 'required|email|validate_unique:members, ' . $auth_id,
-                'password'          => 'min:6|nullable',
+                'password'          => 'min:6|required|regex:/^.*(?=.{2,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/',
                 'password_re_enter' => 're_enter_password|required_with:password'
             ];
         }
@@ -41,7 +41,7 @@ class MemberRequest extends ApiRequest{
             ],
             'phone'             => 'required|size:8|validate_unique:members',
             'email'             => 'required|email|validate_unique:members',
-            'password'          => 'min:6|required',
+            'password'          => 'min:6|required|regex:/^.*(?=.{2,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/',
             'password_re_enter' => 're_enter_password|required_with:password'
         ];
 
@@ -60,6 +60,7 @@ class MemberRequest extends ApiRequest{
             'email'                    => trans('The Email must be a email.'),
             'email.required'           => trans('The Email can not be empty.'),
             'password.required'        => trans('The Password can not be empty.'),
+            'password.regex'           => trans('The Password must at least 1 number or 1 english letter'),
             'min'                      => trans('The Password too short.'),
             're_enter_password'        => trans('The Wrong password'),
             'required_with'            => trans('The Re-enter Password can not be empty.'),

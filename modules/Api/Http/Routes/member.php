@@ -22,5 +22,6 @@ Route::prefix('client')->group(function(){
 
     Route::prefix('course')->group(function(){
         Route::get('list/{member_id}', 'MemberController@getCourseList');
+        Route::get('detail/{id}', 'MemberController@getCourseDetail');
     });
 });
