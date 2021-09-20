@@ -16,6 +16,9 @@
         </div>
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ $page }}</h3></div>
+            <div>
+                <a href="{{ url()->previous() }}" class="btn btn-info">{{ trans('Go Back') }}</a>
+            </div>
         </div>
     </div>
     <div id="user" class="card">

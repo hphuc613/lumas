@@ -441,7 +441,7 @@ table {
 .left-sidebar {
     background-color: #ffffff;
     width: 220px;
-    max-height: 800px;
+    height: 100vh;
     overflow-y: scroll;
     padding-top: 60px;
     position: fixed;
@@ -452,6 +452,10 @@ table {
         left: -220px;
         display: none;
     }
+}
+
+.hide-menu {
+    overflow-y: inherit;
 }
 
 .menu-sidebar {
@@ -506,6 +510,8 @@ table {
             left: 30px;
             z-index: 999;
             background: white;
+            overflow-y: scroll;
+            max-height: 300px;
             width: 220px;
             top: 0;
             box-shadow: 4px 5px 15px #ababab;

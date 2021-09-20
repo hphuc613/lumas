@@ -84,12 +84,12 @@
                         <tr>
                             <th width="50px">#</th>
                             <th>{{ trans('Name') }}</th>
+                            <th>{{ trans('Username') }}</th>
                             <th>{{ trans('Email') }}</th>
                             <th>{{ trans('Phone Number') }}</th>
                             <th>{{ trans('Client Type') }}</th>
                             <th width="200px">{{ trans('Status') }}</th>
                             <th>{{ trans('Created At') }}</th>
-                            <th>{{ trans('Updated At') }}</th>
                             <th style="width: 200px;" class="text-center">{{ trans('Action') }}</th>
                         </tr>
                         </thead>
@@ -99,6 +99,7 @@
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $member->name }}</td>
+                                <td>{{ $member->username }}</td>
                                 <td>{{ $member->email }}</td>
                                 <td>{{ $member->phone }}</td>
                                 <td>{{ $member->type->name }}</td>

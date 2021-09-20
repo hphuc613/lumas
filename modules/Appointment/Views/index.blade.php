@@ -20,6 +20,9 @@
             <div class="p-3">
                 <a href="{{ route("get.appointment.overview", ['member_id' => $member->id ?? NULL]) }}"
                    class="btn btn-main-color">{{ trans('Overview') }}</a>
+                @if(isset($member) || isset($user))
+                    <a href="{{ url()->previous() }}" class="btn btn-info">{{ trans('Go Back') }}</a>
+                @endif
             </div>
         </div>
         <div class="appointment">

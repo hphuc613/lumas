@@ -16,7 +16,7 @@
             <div class="page-title">
                 <h3>{{ trans('Salary') }}</h3>
             </div>
-            <div class="group-btn">
+            <div>
                 <a href="{{ route('get.salary.single_reload', $user->id) }}"
                    class="btn btn-primary">
                     <i class="fas fa-sync-alt"></i>
@@ -27,6 +27,7 @@
                    data-target="#form-modal">
                     {{ trans('Update Basic Salary') }}
                 </a>
+                <a href="{{ route('get.user.list') }}" class="btn btn-info">{{ trans('Go Back') }}</a>
             </div>
         </div>
     </div>
@@ -116,7 +117,8 @@
                                     </div>
                                     <div class="col-6">
                                         <span class="text-success">{{ $salary->payment_rate ?? 0 }}%</span>
-                                        <span class="text-info">(Next target: {{ $user->getNextCommissionRate() }})</span>
+                                        <span
+                                            class="text-info">(Next target: {{ $user->getNextCommissionRate() }})</span>
                                     </div>
                                 </div>
                                 @if($target_by === \Modules\Setting\Model\CommissionRateSetting::PERSON_INCOME)
@@ -235,12 +237,12 @@
                                 <td class="text-capitalize">{{ $order->order_type }}</td>
                                 <td>
                                     <span class="@if($order->status === \Modules\Order\Model\Order::STATUS_DRAFT)
-                                            text-warning
-                                        @elseif($order->status === \Modules\Order\Model\Order::STATUS_PAID)
-                                            text-success
-                                        @else
-                                            text-danger
-                                        @endif ">
+                                        text-warning
+@elseif($order->status === \Modules\Order\Model\Order::STATUS_PAID)
+                                        text-success
+@else
+                                        text-danger
+@endif ">
                                         <h5>{{ $order_statuses[$order->status] }}</h5>
                                     </span>
                                 </td>

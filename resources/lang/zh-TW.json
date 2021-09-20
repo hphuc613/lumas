@@ -453,5 +453,6 @@
     "Bulk Calculate Salary": "批量計算工資",
     "Go Back": "回去",
     "Go to Appointment Listing": "轉到約會列表",
-    "The Password must at least 1 number or 1 english letter": "密碼必須至少為 1 個數字或 1 個英文字母"
+    "The Password must at least 1 number or 1 english letter": "密碼必須至少為 1 個數字或 1 個英文字母",
+    "This appointment was deleted": "此約會已刪除"
 }

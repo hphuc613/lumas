@@ -2,7 +2,7 @@
 return [
     'id'         => 'setting',
     'name'       => trans('Settings'),
-    'sort'       => 12,
+    'sort'       => 13,
     'active'     => true,
     'icon'       => 'fas fa-cog',
     'middleware' => [],

@@ -39,7 +39,7 @@ class MemberRequest extends FormRequest{
                     'validate_unique:members,' . Auth::guard('member')->id()
                 ],
                 'email'             => 'required|email|validate_unique:members,' . Auth::guard('member')->id(),
-                'phone'             => 'required|digits:10|validate_unique:members,' . Auth::guard('member')->id(),
+                'phone'             => 'required|digits:8|validate_unique:members,' . Auth::guard('member')->id(),
                 'password'          => 'min:6|nullable',
                 'password_re_enter' => 're_enter_password|required_with:password',
             ];
@@ -56,7 +56,7 @@ class MemberRequest extends FormRequest{
                     ],
                     'email'    => 'required|email|validate_unique:members',
                     'password' => 'required|min:6',
-                    'phone'    => 'digits:10|nullable|validate_unique:members',
+                    'phone'    => 'digits:8|nullable|validate_unique:members',
                 ];
             case 'create':
                 return [
@@ -70,7 +70,7 @@ class MemberRequest extends FormRequest{
                     'email'             => 'required|email|validate_unique:members',
                     'password'          => 'required|min:6',
                     'avatar'            => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
-                    'phone'             => 'digits:10|nullable|validate_unique:members',
+                    'phone'             => 'digits:8|nullable|validate_unique:members',
                     'password_re_enter' => 're_enter_password|required_with:password',
                 ];
             case 'update':
@@ -84,7 +84,7 @@ class MemberRequest extends FormRequest{
                     'type_id'           => 'required|check_exist:member_types,id',
                     'email'             => 'required|email|validate_unique:members,' . $this->id,
                     'avatar'            => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
-                    'phone'             => 'digits:10|nullable|validate_unique:members,' . $this->id,
+                    'phone'             => 'digits:8|nullable|validate_unique:members,' . $this->id,
                     'password'          => 'min:6|nullable',
                     'password_re_enter' => 're_enter_password|required_with:password',
                 ];
@@ -101,8 +101,9 @@ class MemberRequest extends FormRequest{
             'required_with'     => ':attribute' . trans(' can not be empty.'),
             'validate_unique'   => ':attribute' . trans(' was exist.'),
             'image'             => ':attribute' . trans(' must be an image.'),
-            'digits'            => ':attribute' . trans(' must be 10 digits.'),
-            'mimes'             => ':attribute' . trans(' extention must be one of the following: jpeg, png, jpg, gif, svg.'),
+            'digits'            => ':attribute' . trans(' must be 8 digits.'),
+            'mimes'             => ':attribute' .
+                                   trans(' extention must be one of the following: jpeg, png, jpg, gif, svg.'),
             'check_exist'       => ':attribute' . trans(' does not exist.'),
         ];
     }

@@ -59,10 +59,16 @@
                                 {{ $history->signature }}
                             @endif
                         </td>
-                        <td><a href="{{ route("get.appointment.update",$history->appointment->id) }}"
-                               id="update-booking" data-toggle="modal"
-                               data-target="#form-modal"
-                               data-title="{{ trans('View Appointment') }}">{{ $history->appointment->name }}</a></td>
+                        <td>
+                            @if(empty($history->appointment))
+                                {{ trans('This appointment was deleted') }}
+                            @else
+                                <a href="{{ route("get.appointment.update",$history->appointment->id) }}"
+                                   id="update-booking" data-toggle="modal"
+                                   data-target="#form-modal"
+                                   data-title="{{ trans('View Appointment') }}">{{ $history->appointment->name }}</a>
+                            @endif
+                        </td>
                         <td>{{ $history->memberCourse->course->name }}</td>
                         <td>{{ formatDate(strtotime($history->start), 'd/m/Y H:i:s')}}</td>
                         <td>{{ formatDate(strtotime($history->end), 'd/m/Y H:i:s')}}</td>

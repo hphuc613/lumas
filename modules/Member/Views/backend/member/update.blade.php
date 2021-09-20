@@ -17,6 +17,7 @@
                    class="btn btn-outline-primary"><i class="fas fa-file-invoice"></i></a>
                 <a href="{{ route('get.member.appointment',$member->id) }}"
                    class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
+                <a href="{{ url()->previous() }}" class="btn btn-info">{{ trans('Go Back') }}</a>
             </div>
         </div>
     </div>

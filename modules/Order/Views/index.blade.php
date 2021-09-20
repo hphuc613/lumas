@@ -19,6 +19,9 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
         </div>
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Order Listing") }}</h3></div>
+            <div>
+                <a href="{{ url()->previous() }}" class="btn btn-info">{{ trans('Go Back') }}</a>
+            </div>
         </div>
     </div>
     <!--Search box-->

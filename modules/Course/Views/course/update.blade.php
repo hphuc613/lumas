@@ -14,6 +14,9 @@
         </div>
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Update Course") }}</h3></div>
+            <div>
+                <a href="{{ url()->previous() }}" class="btn btn-info">{{ trans('Go Back') }}</a>
+            </div>
         </div>
     </div>
     <div id="course" class="card">

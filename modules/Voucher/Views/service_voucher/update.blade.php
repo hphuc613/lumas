@@ -7,7 +7,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
                     <li class="breadcrumb-item"><a
-                                href="{{ route('get.service_voucher.list') }}">{{ trans("Service Voucher") }}</a>
+                            href="{{ route('get.service_voucher.list') }}">{{ trans("Service Voucher") }}</a>
                     </li>
                     <li class="breadcrumb-item active"><a href="#">{{ trans("Update Voucher") }}</a></li>
                 </ol>
@@ -15,6 +15,9 @@
         </div>
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Update Voucher") }}</h3></div>
+            <div>
+                <a href="{{ url()->previous() }}" class="btn btn-info">{{ trans('Go Back') }}</a>
+            </div>
         </div>
     </div>
     <!--Search box-->

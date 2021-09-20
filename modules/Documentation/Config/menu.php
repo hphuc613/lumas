@@ -2,7 +2,7 @@
 return [
     'name'       => trans('Documentations'),
     'route'      => route('get.documentation.list'),
-    'sort'       => 13,
+    'sort'       => 11,
     'active'     => TRUE,
     'id'         => 'documentations',
     'icon'       => 'fas fa-book',

@@ -66,7 +66,7 @@ class CourseController extends Controller{
         $course            = Course::find($id);
         $statuses          = Status::getStatuses();
         $course_categories = CourseCategory::getArray(Status::STATUS_ACTIVE);
-        return view("Course::course.create", compact('statuses', 'course_categories', 'course'));
+        return view("Course::course.update", compact('statuses', 'course_categories', 'course'));
     }
 
     /**
