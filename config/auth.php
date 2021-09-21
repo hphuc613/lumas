@@ -113,15 +113,15 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => 'password_resets',
-            'expire' => 60,
+            'table'    => 'password_resets',
+            'expire'   => 60 * 24 * 7,
             'throttle' => 60,
         ],
 
         'members' => [
             'provider' => 'members',
-            'table' => 'password_resets',
-            'expire' => 60,
+            'table'    => 'password_resets',
+            'expire'   => 60 * 24 * 7,
             'throttle' => 60,
         ],
     ],
