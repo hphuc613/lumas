@@ -43,11 +43,6 @@ class AppointmentController extends Controller{
                                         ->with('store')
                                         ->with('user');
 
-        /** Created_by */
-        if(Auth::user()->getRoleAttribute()->id == 3){
-            $appointments = $appointments->where('user_id', Auth::id());
-        }
-
         /** Type of appointment */
         if(isset($filter['type'])){
             $appointments = $appointments->where('type', $filter['type']);
