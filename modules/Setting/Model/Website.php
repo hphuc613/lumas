@@ -8,12 +8,14 @@ namespace Modules\Setting\Model;
  */
 class Website extends Setting{
 
-    const LOGO     = 'LOGO';
-    const BG_LOGIN = 'BG_LOGIN';
+    const LOGO         = 'LOGO';
+    const BG_LOGIN     = 'BG_LOGIN';
+    const PHONE_NUMBER = 'PHONE_NUMBER';
 
     const WEBSITE_CONFIG = [
         self::LOGO,
-        self::BG_LOGIN
+        self::BG_LOGIN,
+        self::PHONE_NUMBER
     ];
 
     /**

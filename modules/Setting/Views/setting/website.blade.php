@@ -62,6 +62,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <label for="phone_number">{{ trans('Phone Number') }}</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="background"
+                                           name="{{ \Modules\Setting\Model\Website::PHONE_NUMBER }}"
+                                           value="{{ $setting[\Modules\Setting\Model\Website::PHONE_NUMBER] ?? null}}">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="input-group mt-5 d-flex justify-content-between">

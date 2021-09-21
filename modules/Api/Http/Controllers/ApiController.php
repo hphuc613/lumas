@@ -3,6 +3,7 @@
 namespace Modules\Api\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Setting\Model\Website;
 
 
 class ApiController extends Controller{
@@ -16,7 +17,12 @@ class ApiController extends Controller{
         # parent::__construct();
     }
 
-    public function test(){
-        echo 'Hi Boss, I am Lumas!';
+    public function getHelperCenter(){
+        $setting = Website::getWebsiteConfig();
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $setting[\Modules\Setting\Model\Website::PHONE_NUMBER] ?? null
+        ]);
     }
 }

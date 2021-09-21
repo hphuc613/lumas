@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function(){
 
+    Route::get('helper-center', 'ApiController@getHelperCenter');
+
     /** User API */
     include 'user.php';
 
