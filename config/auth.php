@@ -114,14 +114,14 @@ return [
         'users' => [
             'provider' => 'users',
             'table'    => 'password_resets',
-            'expire'   => 60 * 24 * 7,
+            'expire'   => 10080,
             'throttle' => 60,
         ],
 
         'members' => [
             'provider' => 'members',
             'table'    => 'password_resets',
-            'expire'   => 60 * 24 * 7,
+            'expire'   => 10080,
             'throttle' => 60,
         ],
     ],
