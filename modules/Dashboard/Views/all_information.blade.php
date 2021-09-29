@@ -47,7 +47,7 @@
                     </div>
                     <div class="align-self-center">
                         <h2 class="mb-0 font-weight-normal">{{ $count_data->order }}</h2>
-                        <h5 class="text-muted font-weight-normal mb-0">{{ trans('Order') }}</h5>
+                        <h5 class="text-muted font-weight-normal mb-0">{{ trans('Invoice') }}</h5>
                     </div>
                 </div>
             </div>

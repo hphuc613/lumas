@@ -185,7 +185,7 @@
             @php($key = ($orders->currentpage() - 1) * $orders->perpage() + 1)
             <div id="order-list" class="p-4">
                 <div class="d-flex justify-content-between mb-3">
-                    <h4>{{ trans('Order of This Month') }}</h4>
+                    <h4>{{ trans('Invoice of This Month') }}</h4>
                     @if($user->getTargetBy() === \Modules\Setting\Model\CommissionRateSetting::PERSON_INCOME)
                         <a href="{{ route('get.user.supply_history', $user->id) }}" class="btn btn-info"
                            data-toggle="modal" data-title="{{ trans('Supply History Service') }}"
@@ -228,7 +228,7 @@
                                 <td>
                                     <h5>
                                         <a href="{{ route('get.order.order_detail',$order->id) }}"
-                                           data-toggle="modal" data-title="{{ trans('Order Detail') }}"
+                                           data-toggle="modal" data-title="{{ trans('Invoice Detail') }}"
                                            data-target="#form-modal">
                                             {{ $order->code }}
                                         </a>

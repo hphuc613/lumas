@@ -35,7 +35,7 @@
                                    placeholder="dd-mm-yyyy">
                         </div>
                         <div class="col-md-4 form-group">
-                            <label>Radio</label>
+                            <label>{{ trans('Sex') }}</label>
                             <div class="row">
                                 <div class="col-md-6 radio">
                                     <input type="radio" id="sex-male" class="radio-style" name="sex" value="1"
@@ -59,12 +59,12 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 form-group">
-                            <label for="name">{{ trans('Username') }}</label>
+                            <label for="username">{{ trans('Username') }}</label>
                             <input type="text" id="username" class="form-control" name="username"
                                    value="{{ $member->username ?? old('username') }}">
                         </div>
                         <div class="col-md-4 form-group">
-                            <label for="type-id">Member Type</label>
+                            <label for="type-id">{{ trans('Member Type') }}</label>
                             {{ Form::select('type_id', [null => 'Select'] + $member_types, $member->type_id ?? NULL,
                                              ['id' => 'type-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
                         </div>
@@ -78,12 +78,22 @@
                             </select>
                         </div>
                         <div class="col-md-4 form-group">
+                            <label for="referrer">{{ trans('Referrer') }}</label>
+                            <input type="text" id="referrer" class="form-control" name="referrer"
+                                   value="{{ $member->referrer ?? old('referrer') }}">
+                        </div>
+                        <div class="col-md-4 form-group">
                             <label for="password">{{ trans('Password') }}</label>
                             <input type="password" id="password" class="form-control" name="password">
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="password_re_enter">{{ trans('Re-enter Password') }}</label>
                             <input type="password" id="password_re_enter" class="form-control" name="password_re_enter">
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <label for="how_to_know">{{ trans('How to know us') }}</label>
+                            <textarea id="how_to_know" class="form-control" rows="5"
+                                      name="how_to_know">{{ $member->how_to_know ?? old('how_to_know') }}</textarea>
                         </div>
                     </div>
                 </div>

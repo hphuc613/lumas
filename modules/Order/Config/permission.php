@@ -1,6 +1,6 @@
 <?php
 return [
     'name'         => 'order',
-    'display_name' => trans('Order'),
+    'display_name' => trans('Invoice'),
     'group'        => []
 ];

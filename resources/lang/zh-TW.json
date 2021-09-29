@@ -30,6 +30,7 @@
     "The Password too short.": "密碼太短。",
     "The Wrong password": "錯誤的密碼",
     "The Re-enter Password can not be empty.": "重新輸入密碼不能為空。",
+    "Sex": "性別",
     "Username": "用戶名",
     "Password": "密碼",
     "Re-enter Password": "重新輸入密碼",
@@ -453,5 +454,7 @@
     "Go Back": "回去",
     "Go to Appointment Listing": "轉到約會列表",
     "The Password must at least 1 number or 1 english letter": "密碼必須至少為 1 個數字或 1 個英文字母",
-    "This appointment was deleted": "此約會已刪除"
+    "This appointment was deleted": "此約會已刪除",
+    "Referrer": "介紹人",
+    "How to know us": "如何認識我們"
 }

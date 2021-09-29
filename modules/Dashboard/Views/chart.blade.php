@@ -40,7 +40,7 @@
                 plugins: {
                     title: {
                         display: true,
-                        text: "{{ trans('Order Earning Chart') }}"
+                        text: "{{ trans('Invoice Earning Chart') }}"
                     },
                     tooltip: {
                         callbacks: {

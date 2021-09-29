@@ -13,12 +13,12 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
-                    <li class="breadcrumb-item"><a href="#">{{ trans("Order") }}</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ trans("Invoice") }}</a></li>
                 </ol>
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Order Listing") }}</h3></div>
+            <div class="page-title"><h3>{{ trans("Invoice Listing") }}</h3></div>
             <div>
                 <a href="{{ url()->previous() }}" class="btn btn-info">{{ trans('Go Back') }}</a>
             </div>
@@ -36,14 +36,14 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="text-input">{{ trans("Order code") }}</label>
+                                <label for="text-input">{{ trans("Invoice code") }}</label>
                                 <input type="text" class="form-control" id="text-input" name="code"
                                        value="{{ $filter['code'] ?? NULL }}">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="text-input">{{ trans("Order Type") }}</label>
+                                <label for="text-input">{{ trans("Invoice Type") }}</label>
                                 {!! Form::select('order_type', ["" => trans("All")] + $order_types, $filter['order_type'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
                             </div>
                         </div>
@@ -141,7 +141,7 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                                 <td class="text-center">
                                     <a href="{{ route('get.order.order_detail',$order->id) }}"
                                        class="btn btn-outline-primary"
-                                       data-toggle="modal" data-title="{{ trans('Order Detail') }}"
+                                       data-toggle="modal" data-title="{{ trans('Invoice Detail') }}"
                                        data-target="#form-modal">
                                         <i class="fas fa-eye"></i></a>
                                 </td>

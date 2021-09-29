@@ -151,12 +151,12 @@ class OrderController extends Controller{
             $order_detail->save();
 
             DB::commit();
-            $request->session()->flash('success', trans("Service added to order successfully."));
+            $request->session()->flash('success', trans("Service added to invoice successfully."));
             return redirect()->back();
         }catch(Throwable $th){
             DB::rollBack();
 
-            $request->session()->flash('danger', trans("Service added to order failed. Please try again."));
+            $request->session()->flash('danger', trans("Service added to invoice failed. Please try again."));
             return redirect()->back();
         }
     }
@@ -223,11 +223,11 @@ class OrderController extends Controller{
             $order_detail->save();
 
             DB::commit();
-            $request->session()->flash('success', trans("Course added to order successfully."));
+            $request->session()->flash('success', trans("Course added to invoice successfully."));
             return redirect()->back();
         }catch(Throwable $th){
             DB::rollBack();
-            $request->session()->flash('danger', trans("Course added to order failed. Please try again."));
+            $request->session()->flash('danger', trans("Course added to invoice failed. Please try again."));
             return redirect()->back();
         }
 
@@ -256,12 +256,12 @@ class OrderController extends Controller{
         $order = Order::query()->find($id);
 
         if($order->status !== Order::STATUS_DRAFT){
-            $request->session()->flash('danger', trans("Can not purchase this order. Please check again"));
+            $request->session()->flash('danger', trans("Can not purchase this invoice. Please check again"));
             return redirect()->back();
         }
         $data = $request->product;
         if(empty($data)){
-            $request->session()->flash('danger', trans("This order is empty"));
+            $request->session()->flash('danger', trans("This invoice is empty"));
             return redirect()->back();
         }
 

@@ -22,18 +22,20 @@ class StoreRequest extends FormRequest{
      */
     public function rules(){
         $method = Helper::segment(2);
-        switch($method){
+        switch($method) {
             default:
                 return [
                     'name'            => 'required|validate_unique:stores',
                     'open_close_time' => 'required',
-                    'address'         => 'required'
+                    'address'         => 'required',
+                    'phone'           => 'digits:8'
                 ];
             case "update":
                 return [
                     'name'            => 'required|validate_unique:stores,' . $this->id,
                     'open_close_time' => 'required',
-                    'address'         => 'required'
+                    'address'         => 'required',
+                    'phone'           => 'digits:8'
                 ];
         }
     }
@@ -42,14 +44,16 @@ class StoreRequest extends FormRequest{
         return [
             'required'        => ':attribute' . trans(' can not be empty.'),
             'validate_unique' => ':attribute' . trans(' was exist.'),
+            'digits'          => ':attribute' . trans(' must be 8 digits.'),
         ];
     }
 
     public function attributes(){
         return [
-            'name'            => 'Store name',
-            'open_close_time' => 'Open/Close time',
-            'address'         => 'Address'
+            'name'            => trans('Name'),
+            'open_close_time' => trans('Open/Close Time'),
+            'address'         => trans('Address'),
+            'phone'           => trans('Phone')
         ];
     }
 }
