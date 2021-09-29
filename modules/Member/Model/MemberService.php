@@ -92,7 +92,7 @@ class MemberService extends BaseModel{
         $query = $query->get();
         $data  = [];
         foreach($query as $value){
-            $data[$value->service_id] = $value->service->name;
+            $data[$value->service_id] = $value->service->name ?? "N/A";
         }
 
         return $data;

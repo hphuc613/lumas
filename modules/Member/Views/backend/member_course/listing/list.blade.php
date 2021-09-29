@@ -82,14 +82,14 @@
                                     <td>
                                         <a target="_blank"
                                            href="{{ route('get.course.update', $value->course_id) }}">
-                                            {{ $value->course->name }}
+                                            {{ $value->course->name ?? "N/A" }}
                                         </a>
                                     </td>
                                     <td>
                                         @if(!empty($value->voucher))
                                             <a target="_blank"
                                                href="{{ route('get.course_voucher.update', $value->voucher_id) }}">
-                                                {{ $value->voucher->code }}
+                                                {{ $value->voucher->code ?? "N/A" }}
                                             </a>
                                         @endif
                                     </td>
@@ -173,14 +173,14 @@
                                     <td>
                                         <a target="_blank"
                                            href="{{ route('get.course.update', $value->course_id) }}">
-                                            {{ $value->course->name }}
+                                            {{ $value->course->name ?? "N/A" }}
                                         </a>
                                     </td>
                                     <td>
                                         @if(!empty($value->voucher))
                                             <a target="_blank"
                                                href="{{ route('get.course_voucher.update', $value->voucher_id) }}">
-                                                {{ $value->voucher->code }}
+                                                {{ $value->voucher->code ?? "N/A" }}
                                             </a>
                                         @endif
                                     </td>

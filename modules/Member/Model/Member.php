@@ -72,7 +72,7 @@ class Member extends BaseMember{
         $data = [];
 
         foreach($query as $item){
-            $data[$item->id] = $item->name . ' | ' . $item->phone . ' | ' . $item->email;
+            $data[$item->id] = $item->name . ' | ' . $item->phone . ' | ' . $item->username;
         }
 
         return $data;

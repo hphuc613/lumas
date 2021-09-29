@@ -110,8 +110,8 @@
                                         {{ $statuses[$appointment->status] }}
                                     </span>
                                 </td>
-                                <td>{{ $appointment->store->name }}</td>
-                                <td>{{ $appointment->user->name }}</td>
+                                <td>{{ $appointment->store->name ?? "N/A" }}</td>
+                                <td>{{ $appointment->user->name ?? "N/A" }}</td>
                                 <td>{{ ($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE) ? $appointment->getTotalIntendTimeService() . trans(' minutes') : NULL }}</td>
                                 <td class="text-center">
                                     <a href="{{ route("get.appointment.update",$appointment->id) }}"

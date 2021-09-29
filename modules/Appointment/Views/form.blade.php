@@ -131,6 +131,7 @@
                     @if(isset($appointment))
                         @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
                             @foreach($appointment->service_ids as $item)
+                                @if(!empty($item))
                                 <tr class="pl-2">
                                     <td>
                                         <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
@@ -141,9 +142,11 @@
                                                     class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                         @else
                             @foreach($appointment->course_ids as $item)
+                                @if(!empty($item))
                                 <tr class="pl-2">
                                     <td>
                                         <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
@@ -154,6 +157,7 @@
                                                     class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                         @endif
                     @endif

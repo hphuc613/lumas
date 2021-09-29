@@ -66,13 +66,13 @@
                                 <a href="{{ route("get.appointment.update",$history->appointment->id) }}"
                                    id="update-booking" data-toggle="modal"
                                    data-target="#form-modal"
-                                   data-title="{{ trans('View Appointment') }}">{{ $history->appointment->name }}</a>
+                                   data-title="{{ trans('View Appointment') }}">{{ $history->appointment->name ?? "N/A" }}</a>
                             @endif
                         </td>
-                        <td>{{ $history->memberCourse->course->name }}</td>
+                        <td>{{ $history->memberCourse->course->name ?? "N/A" }}</td>
                         <td>{{ formatDate(strtotime($history->start), 'd/m/Y H:i:s')}}</td>
                         <td>{{ formatDate(strtotime($history->end), 'd/m/Y H:i:s')}}</td>
-                        <td>{{ $history->user->name }}</td>
+                        <td>{{ $history->user->name ?? "N/A" }}</td>
                         <td>{{ formatDate(strtotime($history->created_at), 'd/m/Y H:i:s')}}</td>
                     </tr>
                 @endforeach

@@ -137,7 +137,7 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                                 </td>
                                 <td>{{ moneyFormat($order->total_price) }}</td>
                                 <td>{{ formatDate(strtotime($order->updated_at), 'd-m-Y H:i') }}</td>
-                                <td>{{ $order->creator->name }}</td>
+                                <td>{{ $order->creator->name ?? "N/A" }}</td>
                                 <td class="text-center">
                                     <a href="{{ route('get.order.order_detail',$order->id) }}"
                                        class="btn btn-outline-primary"

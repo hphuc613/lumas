@@ -188,7 +188,9 @@ class Appointment extends BaseModel{
             $this->service_ids = $this->getServiceList();
         }
         foreach($this->service_ids as $val) {
-            $total = $total + (int)$val->intend_time;
+            if (!empty($val)) {
+                $total = $total + (int)$val->intend_time;
+            }
         }
 
         return $total;

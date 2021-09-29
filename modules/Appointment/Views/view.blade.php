@@ -88,6 +88,7 @@
                 @if(isset($appointment))
                     @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
                         @foreach($appointment->service_ids as $item)
+                            @if(!empty($item))
                             <tr class="pl-2">
                                 <td>
                                     <span class="text-option">{{ $item->name }}</span>
@@ -96,9 +97,11 @@
                                     <span class="text-option">{{ $item->intend_time . trans(" minutes") }}</span>
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                     @else
                         @foreach($appointment->course_ids as $item)
+                            @if(!empty($item))
                             <tr class="pl-2">
                                 <td>
                                     <span class="text-option">{{ $item->name }}</span>
@@ -107,6 +110,7 @@
                                     <span class="text-option">{{ $item->intend_time . trans(" minutes")}}</span>
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                     @endif
                 @endif

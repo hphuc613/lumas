@@ -56,8 +56,8 @@ class AppointmentController extends Controller{
         $events = [];
         foreach($appointments as $appointment){
             $title    = (Auth::user()->isAdmin())
-                ? $appointment->member->name . ' | ' . $appointment->user->name
-                : $appointment->member->name . ' | ' . $appointment->name;
+                ? ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->user->name ?? "N/A")
+                : ($appointment->member->name ?? "N/A") . ' | ' . $appointment->name;
             $events[] = [
                 'id'    => $appointment->id,
                 'title' => $title,
