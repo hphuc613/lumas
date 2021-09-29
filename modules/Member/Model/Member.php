@@ -63,7 +63,7 @@ class Member extends BaseMember{
      * @return array
      */
     public static function getArray($status = null){
-        $query = self::select('id', 'name', 'phone', 'email');
+        $query = self::select('id', 'name', 'phone', 'email', 'username');
         if(!empty($status)){
             $query = $query->where('status', $status);
         }
