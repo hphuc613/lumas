@@ -19,7 +19,7 @@ function calendarStyleView() {
 }
 
 /** Generate Calendar Appointment */
-function generateCalendarAppointment(url_update_time, member_id) {
+function generateCalendarAppointment(url_update_time, url_product_list, member_id) {
     var initialView;
     var calendarEl = document.getElementById('fullcalendar');
     var initialLocaleCode = $('html').attr('lang');
@@ -46,6 +46,14 @@ function generateCalendarAppointment(url_update_time, member_id) {
         editable: true,
         eventDidMount: function (info) {
             $(info.el).attr("id", "event_id_" + info.event.id);
+            $(info.el).addClass("tooltip-content");
+            $(info.el).attr("title", "");
+            $.ajax({
+                url: url_product_list + "/" + info.event.id,
+                method: "get",
+            }).done(function (response) {
+                $(info.el).attr("data-tooltip", response);
+            });
         },
         eventDrop: function (info) {
             var eventObj = info.event;

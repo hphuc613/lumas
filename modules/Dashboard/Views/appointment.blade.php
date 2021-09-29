@@ -187,10 +187,10 @@
                                     @endif
                                     <td class="text-capitalize">{{ $appointment->type }}</td>
                                     <td class="text-capitalize">
-                                        <a href="{{ route('get.member.update', $appointment->member_id) }}">{{ $appointment->member->name }}</a>
+                                        <a href="{{ route('get.member.update', $appointment->member_id) }}">{{ $appointment->member->name ?? 'N/A' }}</a>
                                     </td>
                                     <td class="text-capitalize">
-                                        <a href="{{ route('get.user.update', $appointment->user_id) }}">{{ $appointment->user->name }}</a>
+                                        <a href="{{ route('get.user.update', $appointment->user_id) }}">{{ $appointment->user->name ?? 'N/A' }}</a>
                                     </td>
                                     <td>{{ formatDate(strtotime($appointment->start_time), 'H:i:s') }}</td>
                                 </tr>

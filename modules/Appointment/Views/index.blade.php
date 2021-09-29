@@ -106,6 +106,7 @@
     <script src='{{ asset('assets/fullcalendar/lib/main.js') }}'></script>
     <script src='{{ asset('assets/fullcalendar/lib/locales-all.js') }}'></script>
     <script src='{{ asset('assets/fullcalendar/custom/calendar.js') }}'></script>
+    <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#form-modal').on('hidden.bs.modal', function () {
@@ -119,7 +120,7 @@
             });
 
             /** Generate Calendar Appointment */
-            var calendar = generateCalendarAppointment("{{ route("post.appointment.update_time",'') }}", "{{ $member->id ?? NULL }}");
+            var calendar = generateCalendarAppointment("{{ route("post.appointment.update_time",'') }}", "{{ route("get.appointment.product_list",'') }}", "{{ $member->id ?? NULL }}");
 
             $(document).on('click', 'button.fc-button', function () {
                 var button = $(this).attr('aria-label');
@@ -133,7 +134,18 @@
             /** Appointment Form get product list by type*/
             getProductByType("{{ \Modules\Appointment\Model\Appointment::SERVICE_TYPE }}");
 
-
+            $(".tooltip-content").tooltip({
+                content: function () {
+                    return $(this).attr('data-tooltip');
+                },
+                position: {
+                    my: "center bottom", // the "anchor point" in the tooltip element
+                    at: "center top-10", // the position of that anchor point relative to selected element
+                },
+                open: function (event, ui) {
+                    ui.tooltip.css("max-width", "500px");
+                }
+            });
         })
     </script>
 @endpush

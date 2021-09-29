@@ -184,17 +184,21 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postUpdate(AppointmentRequest $request, $id){
-        $book = Appointment::find($id);
-        if($book->member->checkServiceInProgressing()){
-            $request->session()->flash('error', trans("There are services in progress."));
+        $book        = Appointment::find($id);
+        $appointment = $book->member->getAppointmentInProgressing();
+        if ($appointment && $appointment->id == $id) {
+            if ($book->member->checkServiceInProgressing()) {
+                $request->session()->flash('error', trans("There are services in progress."));
 
-            return redirect()->back();
-        }
-        if($book->member->checkCourseInProgressing()){
-            $request->session()->flash('error', trans("There are courses in progress."));
+                return redirect()->back();
+            }
+            if ($book->member->checkCourseInProgressing()) {
+                $request->session()->flash('error', trans("There are courses in progress."));
 
-            return redirect()->back();
+                return redirect()->back();
+            }
         }
+
         $data = $request->all();
 
         /** Get list id service/course*/
@@ -325,5 +329,11 @@ class AppointmentController extends Controller{
         $request->session()->flash('success', trans("This appointment is completed."));
 
         return redirect()->route('get.member.appointment', [$appointment->member_id, 'type' => $appointment->type]);
+    }
+
+    public function getProductList($id){
+        $appointment = Appointment::query()->find($id);
+
+        return $this->renderAjax('Appointment::product_list', compact('appointment'));
     }
 }
