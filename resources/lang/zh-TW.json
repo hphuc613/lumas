@@ -456,5 +456,15 @@
     "The Password must at least 1 number or 1 english letter": "密碼必須至少為 1 個數字或 1 個英文字母",
     "This appointment was deleted": "此約會已刪除",
     "Referrer": "介紹人",
-    "How to know us": "如何認識我們"
+    "How to know us": "如何認識我們",
+    "Room": "房間",
+    "Create Room": "創建房間",
+    "Update Room": "更新室",
+    "Delete Room": "刪除房間",
+    "Room Listing": "房間列表",
+    "Room name": "房間名稱",
+    "Room number": "房間號",
+    "Room created successfully.": "房間創建成功。",
+    "Room updated successfully.": "房間更新成功。",
+    "Room deleted successfully.": "房間刪除成功。"
 }
