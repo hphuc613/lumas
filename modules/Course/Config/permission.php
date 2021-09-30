@@ -1,4 +1,5 @@
 <?php
+return [];
 return [
     [
         'name'         => 'course-category',

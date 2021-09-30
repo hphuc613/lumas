@@ -37,7 +37,7 @@
                             {{ Form::select('member_id', [null => 'Select'] + $members, $filter['member_id'] ?? null,
                                              ['id' => 'member-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
                         </div>
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-3 form-group d-none">
                             <label for="appointment-type">{{ trans('Type') }}</label>
                             {{ Form::select('type', [null => 'Select'] + $appointment_types, $filter['type'] ?? null,
                                              ['id' => 'appointment-type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}

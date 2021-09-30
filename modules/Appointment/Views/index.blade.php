@@ -44,7 +44,7 @@
                             </h3>
                         </div>
                         <div class="group-btn">
-                            <div class="d-inline-block" style="width: 150px">
+                            <div class="{{--d-inline-block--}} d-none" style="width: 150px">
                                 {!! Form::select('type', $appointment_types, $filter['type'] ?? null,
                                 ['id' => 'appointment_type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
                             </div>
@@ -60,9 +60,9 @@
                             @if(isset($member))
                                 <a href="{{ route('get.member_service.add',$member->id) }}"
                                    class="btn btn-warning text-light"><i
-                                            class="fas fa-plus"></i> {{ trans('Add Service') }}</a>
+                                        class="fas fa-plus"></i> {{ trans('Add Service') }}</a>
                                 <a href="{{ route('get.member_course.add',$member->id) }}"
-                                   class="btn btn-info"><i class="fas fa-plus"></i> {{ trans('Add Course') }}</a>
+                                   class="btn btn-info d-none"><i class="fas fa-plus"></i> {{ trans('Add Course') }}</a>
                             @endif
                         </div>
                     </div>

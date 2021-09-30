@@ -18,7 +18,7 @@ return [
             ],
         ]
     ],
-    [
+    /*[
         'name'         => 'course-voucher',
         'display_name' => trans('Course Voucher'),
         'group'        => [
@@ -35,5 +35,5 @@ return [
                 'display_name' => trans('Delete Course Voucher'),
             ],
         ]
-    ]
+    ]*/
 ];

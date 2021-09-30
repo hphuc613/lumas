@@ -41,7 +41,7 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                                        value="{{ $filter['code'] ?? NULL }}">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 d-none">
                             <div class="form-group">
                                 <label for="text-input">{{ trans("Invoice Type") }}</label>
                                 {!! Form::select('order_type', ["" => trans("All")] + $order_types, $filter['order_type'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}

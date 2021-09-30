@@ -34,7 +34,7 @@
                 <a href="{{ route('get.member_service.add', $member->id) }}" class="btn btn-main-color">
                     <i class="fa fa-plus"></i> &nbsp; {{ trans('Add new') }}
                 </a>
-                <a href="{{ route('get.member_service.add', $member->id) }}"
+                <a href="{{ route('get.member.appointment',$member->id) }}"
                    class="btn btn-info">{{ trans('Go to Appointment Listing') }}</a>
             </div>
         </div>

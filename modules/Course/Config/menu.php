@@ -4,7 +4,7 @@ return [
     'name'       => trans('Course Management'),
     'route'      => route('get.course.list'),
     'sort'       => 4,
-    'active'     => true,
+    'active'     => false,
     'icon'       => 'fas fa-book-open',
     'middleware' => ['course'],
     'group'      => [
