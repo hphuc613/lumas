@@ -3,12 +3,12 @@
 namespace Modules\Room\Model;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Appointment\Model\Appointment;
+use Modules\Base\Model\BaseModel;
 
-class Room extends Model{
+class Room extends BaseModel{
     use SoftDeletes;
 
     protected $table = "rooms";

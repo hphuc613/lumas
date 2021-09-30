@@ -53,6 +53,14 @@
         <label for="store">{{ trans('Store') }}</label>
         <div class="w-100">{{ $stores[$appointment->store_id] }} </div>
     </div>
+    <div class="col-md-6 form-group">
+        <label for="store">{{ trans('Room') }}</label>
+        <div class="w-100">{{ $rooms[$appointment->room_id] }} </div>
+    </div>
+    <div class="col-md-6 form-group">
+        <label for="store">{{ trans('Instrument') }}</label>
+        <div class="w-100">{{ $instruments[$appointment->instrument_id] }} </div>
+    </div>
     <div class="col-md-12">
         <hr>
     </div>

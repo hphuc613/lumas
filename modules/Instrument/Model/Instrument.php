@@ -3,12 +3,12 @@
 namespace Modules\Instrument\Model;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Appointment\Model\Appointment;
+use Modules\Base\Model\BaseModel;
 
-class Instrument extends Model{
+class Instrument extends BaseModel{
     use SoftDeletes;
 
     protected $table = "instruments";

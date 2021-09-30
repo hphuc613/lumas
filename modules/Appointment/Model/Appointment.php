@@ -10,8 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Base\Model\BaseModel;
 use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
+use Modules\Instrument\Model\Instrument;
 use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberServiceHistory;
+use Modules\Room\Model\Room;
 use Modules\Service\Model\Service;
 use Modules\Store\Model\Store;
 use Modules\User\Model\User;
@@ -267,5 +269,19 @@ class Appointment extends BaseModel{
      */
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function room(){
+        return $this->belongsTo(Room::class, 'room_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function instrument(){
+        return $this->belongsTo(Instrument::class, 'instrument_id');
     }
 }

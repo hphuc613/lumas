@@ -16,7 +16,9 @@ use Modules\Appointment\Http\Requests\AppointmentRequest;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
+use Modules\Instrument\Model\Instrument;
 use Modules\Member\Model\Member;
+use Modules\Room\Model\Room;
 use Modules\Service\Model\Service;
 use Modules\Store\Model\Store;
 use Modules\User\Model\User;
@@ -44,9 +46,9 @@ class AppointmentController extends Controller{
                                         ->with('user');
 
         /** Type of appointment */
-        if(isset($filter['type'])){
+        if (isset($filter['type'])) {
             $appointments = $appointments->where('type', $filter['type']);
-        }else{
+        } else {
             $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
         }
 
@@ -54,7 +56,7 @@ class AppointmentController extends Controller{
 
         /** Get event */
         $events = [];
-        foreach($appointments as $appointment){
+        foreach($appointments as $appointment) {
             $title    = (Auth::user()->isAdmin())
                 ? ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->user->name ?? "N/A")
                 : ($appointment->member->name ?? "N/A") . ' | ' . $appointment->name;
@@ -82,7 +84,7 @@ class AppointmentController extends Controller{
         $appointments      = Appointment::filter($filter);
 
         /** Created_by */
-        if(Auth::user()->getRoleAttribute()->id == 3){
+        if (Auth::user()->getRoleAttribute()->id == 3) {
             $appointments = $appointments->where('user_id', Auth::id());
         }
 
@@ -99,6 +101,8 @@ class AppointmentController extends Controller{
         $statuses          = Appointment::getStatuses();
         $services          = Service::getArray(Status::STATUS_ACTIVE);
         $courses           = Course::getArray(Status::STATUS_ACTIVE);
+        $rooms             = Room::getArray(Status::STATUS_ACTIVE);
+        $instruments       = Instrument::getArray(Status::STATUS_ACTIVE);
         $appointment_types = Appointment::getTypeList();
         $members           = Member::getArray(Status::STATUS_ACTIVE);
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
@@ -108,10 +112,10 @@ class AppointmentController extends Controller{
                                  })
                                  ->where('status', Status::STATUS_ACTIVE)
                                  ->pluck('name', 'id');
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
-        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'users'));
+        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'users', 'rooms', 'instruments'));
     }
 
     /**
@@ -122,14 +126,14 @@ class AppointmentController extends Controller{
         $data = $request->all();
 
         /** Get list id service/course*/
-        if($data['type'] === Appointment::SERVICE_TYPE){
+        if ($data['type'] === Appointment::SERVICE_TYPE) {
             $data['service_ids'] = json_encode($data['product_ids'] ?? []);
-        }else{
+        } else {
             $data['course_ids'] = json_encode($data['product_ids'] ?? []);
         }
         unset($data['product_ids']);
 
-        if(!isset($data['user_id']) || empty($data['user_id'])){
+        if (!isset($data['user_id']) || empty($data['user_id'])) {
             $data['user_id'] = Auth::id();
         }
         $data['time'] = Carbon::parse($data['time'])
@@ -146,9 +150,11 @@ class AppointmentController extends Controller{
      * @return Application|Factory|RedirectResponse|View
      */
     public function getUpdate(Request $request, $id){
-        $statuses = Appointment::getStatuses();
-        $members  = Member::getArray(Status::STATUS_ACTIVE);
-        $stores   = Store::getArray(Status::STATUS_ACTIVE);
+        $statuses    = Appointment::getStatuses();
+        $members     = Member::getArray(Status::STATUS_ACTIVE);
+        $stores      = Store::getArray(Status::STATUS_ACTIVE);
+        $rooms       = Room::getArray(Status::STATUS_ACTIVE);
+        $instruments = Instrument::getArray(Status::STATUS_ACTIVE);
 
         $appointment_types = Appointment::getTypeList();
 
@@ -157,26 +163,26 @@ class AppointmentController extends Controller{
                                             ->with('user')
                                             ->find($id);
         $appointment->time     = formatDate(strtotime($appointment->time), 'd-m-Y H:i');
-        $appointment->end_time =
-            (!empty($appointment->end_time)) ? formatDate($appointment->end_time, 'd-m-Y H:i') : null;
+        $appointment->end_time = (!empty($appointment->end_time)) ? formatDate($appointment->end_time, 'd-m-Y H:i') :
+            null;
 
         $users                    = User::with('roles')
                                         ->whereHas('roles', function($role_query){
                                             return $role_query->where('role_id', 3);
                                         })
                                         ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
-        $services                 =
-            Service::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->service_ids, 1));
-        $courses                  =
-            Course::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->course_ids, 1));
+        $services
+                                  = Service::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->service_ids, 1));
+        $courses
+                                  = Course::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->course_ids, 1));
         $appointment->service_ids = $appointment->getServiceList();
         $appointment->course_ids  = $appointment->getCourseList();
 
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
 
-        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users'));
+        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users', 'rooms', 'instruments'));
     }
 
     /**
@@ -202,14 +208,14 @@ class AppointmentController extends Controller{
         $data = $request->all();
 
         /** Get list id service/course*/
-        if($data['type'] === Appointment::SERVICE_TYPE){
+        if ($data['type'] === Appointment::SERVICE_TYPE) {
             $data['service_ids'] = json_encode($data['product_ids'] ?? []);
-        }else{
+        } else {
             $data['course_ids'] = json_encode($data['product_ids'] ?? []);
         }
         unset($data['product_ids']);
         $data['time'] = formatDate($data['time'], 'Y-m-d H:i');
-        if(isset($data['end_time'])){
+        if (isset($data['end_time'])) {
             $data['end_time'] = formatDate($data['end_time'], 'Y-m-d H:i');
         }
         $book->update($data);
@@ -243,13 +249,13 @@ class AppointmentController extends Controller{
         $data['time'] = Carbon::parse($data['time'])
                               ->format('Y-m-d H:i');
         $appointment  = Appointment::find($id);
-        try{
+        try {
             $appointment->update($data);
             return [
                 'status'    => 200,
                 'past_time' => (strtotime($appointment->time) < time())
             ];
-        }catch(Exception $e){
+        } catch(Exception $e) {
             return [
                 'status'  => 400,
                 'message' => (string)$e->getMessage()
@@ -270,7 +276,7 @@ class AppointmentController extends Controller{
                                       ->where('member_id', $member_id)
                                       ->where('id', '<>', $id);
         $check_appointment_progressing = $check_appointment_progressing->first();
-        if(!empty($check_appointment_progressing)){
+        if (!empty($check_appointment_progressing)) {
             $request->session()->flash('error', trans("There is an appointment in progress."));
 
             return redirect()->route('get.member_service.add', $check_appointment_progressing->member_id);
@@ -283,14 +289,14 @@ class AppointmentController extends Controller{
                                ->where('user_id', $appointment->user_id)
                                ->where('id', '<>', $id);
         $check_user_progressing = $check_user_progressing->first();
-        if(!empty($check_user_progressing)){
+        if (!empty($check_user_progressing)) {
             $request->session()->flash('error', trans("Staff of this appointment is in progress."));
 
             return redirect()->route('get.member_service.add', $check_user_progressing->member_id);
         }
 
         /** Check In */
-        if($appointment->status !== Appointment::PROGRESSING_STATUS){
+        if ($appointment->status !== Appointment::PROGRESSING_STATUS) {
             $appointment->status     = Appointment::PROGRESSING_STATUS;
             $appointment->start_time = formatDate(time(), 'Y-m-d H:i:s');
             $appointment->save();
@@ -298,7 +304,7 @@ class AppointmentController extends Controller{
 
         $request->session()->flash('success', trans("This appointment in progress."));
 
-        if($appointment->type === Appointment::COURSE_TYPE){
+        if ($appointment->type === Appointment::COURSE_TYPE) {
             return redirect()->route('get.member_course.add', $appointment->member_id);
         }
         return redirect()->route('get.member_service.add', $appointment->member_id);
@@ -313,12 +319,12 @@ class AppointmentController extends Controller{
                                   ->where('status', Appointment::PROGRESSING_STATUS)
                                   ->first();
 
-        if($appointment->member->checkServiceInProgressing()){
+        if ($appointment->member->checkServiceInProgressing()) {
             $request->session()->flash('error', trans("There are services in progress."));
 
             return redirect()->back();
         }
-        if($appointment->member->checkCourseInProgressing()){
+        if ($appointment->member->checkCourseInProgressing()) {
             $request->session()->flash('error', trans("There are courses in progress."));
 
             return redirect()->back();
