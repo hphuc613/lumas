@@ -45,21 +45,21 @@
         <label for="member">{{ trans('Client') }}</label>
         <h5 class="text-success">
             <a href="{{ route('get.member.update',$appointment->member_id) }}" target="_blank">
-                {{ $members[$appointment->member_id] }}
+                {{ $members[$appointment->member_id] ?? 'N/A'}}
             </a>
         </h5>
     </div>
     <div class="col-md-6 form-group">
         <label for="store">{{ trans('Store') }}</label>
-        <div class="w-100">{{ $stores[$appointment->store_id] }} </div>
+        <div class="w-100">{{ $stores[$appointment->store_id] ?? 'N/A' }} </div>
     </div>
     <div class="col-md-6 form-group">
         <label for="store">{{ trans('Room') }}</label>
-        <div class="w-100">{{ $rooms[$appointment->room_id] }} </div>
+        <div class="w-100">{{ $rooms[$appointment->room_id] ?? 'N/A' }} </div>
     </div>
     <div class="col-md-6 form-group">
         <label for="store">{{ trans('Instrument') }}</label>
-        <div class="w-100">{{ $instruments[$appointment->instrument_id] }} </div>
+        <div class="w-100">{{ $instruments[$appointment->instrument_id] ?? 'N/A' }} </div>
     </div>
     <div class="col-md-12">
         <hr>

@@ -75,7 +75,7 @@ class AppServiceProvider extends ServiceProvider{
         Validator::extend('check_exist', function($attribute, $value, $parameters, $validator){
             $table           = reset($parameters);
             $check_attribute = array_pop($parameters);
-            $query           = DB::table($table)->where($check_attribute, $value)->where('deleted_at', null)->exists();
+            $query           = DB::table($table)->where($check_attribute, $value)->exists();
 
             if($query){
                 return true;

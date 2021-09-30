@@ -99,7 +99,7 @@
                                 <td class="text-capitalize"><h6>{{ $appointment->type }}</h6></td>
                                 <td>
                                     <a href="{{ route('get.member.update',$appointment->member_id) }}" target="_blank">
-                                        {{ $members[$appointment->member_id] }}
+                                        {{ $members[$appointment->member_id] ?? "N/A" }}
                                     </a>
                                 </td>
                                 <td>{{ formatDate($appointment->time, 'd-m-Y H:i:s') }}</td>

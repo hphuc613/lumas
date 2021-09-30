@@ -190,18 +190,21 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postUpdate(AppointmentRequest $request, $id){
-        $book        = Appointment::find($id);
-        $appointment = $book->member->getAppointmentInProgressing();
-        if ($appointment && $appointment->id == $id) {
-            if ($book->member->checkServiceInProgressing()) {
-                $request->session()->flash('error', trans("There are services in progress."));
+        $book   = Appointment::find($id);
+        $member = Member::find($book->member_id);
+        if (!empty($member)) {
+            $appointment = $book->member->getAppointmentInProgressing();
+            if ($appointment && $appointment->id == $id) {
+                if ($book->member->checkServiceInProgressing()) {
+                    $request->session()->flash('error', trans("There are services in progress."));
 
-                return redirect()->back();
-            }
-            if ($book->member->checkCourseInProgressing()) {
-                $request->session()->flash('error', trans("There are courses in progress."));
+                    return redirect()->back();
+                }
+                if ($book->member->checkCourseInProgressing()) {
+                    $request->session()->flash('error', trans("There are courses in progress."));
 
-                return redirect()->back();
+                    return redirect()->back();
+                }
             }
         }
 
@@ -270,6 +273,12 @@ class AppointmentController extends Controller{
     public function checkIn(Request $request, $id, $member_id){
         $appointment                   = Appointment::query();
         $check_appointment_progressing = clone $appointment;
+
+        $member = Member::find($member_id);
+        if (empty($member)) {
+            $request->session()->flash('danger', trans("This client has been removed from the system"));
+            return redirect()->back();
+        }
 
         /** Check appointment of member progressing */
         $check_appointment_progressing->where('status', Appointment::PROGRESSING_STATUS)
