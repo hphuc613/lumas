@@ -78,7 +78,7 @@
                                     <td>{{$key++}}</td>
                                     <td>{{ trans($room->name) }}</td>
                                     <td>{{ trans($room->number) }}</td>
-                                    <td>{{ \Modules\Base\Model\Status::getStatus($room->status) ?? null }}</td>
+                                    <td>{{ $statuses[$room->status] ?? null }}</td>
                                     <td>{{ \Carbon\Carbon::parse($room->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($room->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">

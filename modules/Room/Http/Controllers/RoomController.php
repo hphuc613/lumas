@@ -4,6 +4,7 @@ namespace Modules\Room\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Modules\Base\Model\Status;
 use Modules\Room\Http\Requests\RoomRequest;
 use Modules\Room\Model\Room;
@@ -25,10 +26,17 @@ class RoomController extends Controller{
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request){
-        $filter = $request->all();
-        $rooms  = Room::filter($filter)->paginate(15);
+        $filter   = $request->all();
+        $rooms    = Room::filter($filter)->paginate(15);
+        $statuses = Status::getStatuses();
+        if (Config::get('app.locale') == 'zh-TW') {
+            $statuses = [
+                1  => "可用",
+                -1 => "不可用"
+            ];
+        }
 
-        return view('Room::index', compact('rooms', 'filter'));
+        return view('Room::index', compact('rooms', 'filter', 'statuses'));
     }
 
 
@@ -38,6 +46,12 @@ class RoomController extends Controller{
      */
     public function getCreate(Request $request){
         $statuses = Status::getStatuses();
+        if (Config::get('app.locale') == 'zh-TW') {
+            $statuses = [
+                1  => "可用",
+                -1 => "不可用"
+            ];
+        }
 
         if (!$request->ajax()) {
             return redirect()->back();
@@ -55,7 +69,7 @@ class RoomController extends Controller{
         $room->save();
         $request->session()->flash('success', trans('Room created successfully.'));
 
-        return redirect()->route('get.room.update', $room->id);
+        return redirect()->back();
     }
 
     /**
@@ -66,6 +80,12 @@ class RoomController extends Controller{
     public function getUpdate(Request $request, $id){
         $room     = Room::find($id);
         $statuses = Status::getStatuses();
+        if (Config::get('app.locale') == 'zh-TW') {
+            $statuses = [
+                1  => "可用",
+                -1 => "不可用"
+            ];
+        }
 
         return view('Room::form', compact('room', 'statuses'));
     }

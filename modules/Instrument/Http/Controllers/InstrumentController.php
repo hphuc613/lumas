@@ -4,6 +4,7 @@ namespace Modules\Instrument\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Modules\Base\Model\Status;
 use Modules\Instrument\Http\Requests\InstrumentRequest;
 use Modules\Instrument\Model\Instrument;
@@ -27,8 +28,15 @@ class InstrumentController extends Controller{
     public function index(Request $request){
         $filter      = $request->all();
         $instruments = Instrument::filter($filter)->paginate(15);
+        $statuses    = Status::getStatuses();
+        if (Config::get('app.locale') == 'zh-TW') {
+            $statuses = [
+                1  => "可用",
+                -1 => "不可用"
+            ];
+        }
 
-        return view('Instrument::index', compact('instruments', 'filter'));
+        return view('Instrument::index', compact('instruments', 'filter', 'statuses'));
     }
 
     /**
@@ -37,6 +45,12 @@ class InstrumentController extends Controller{
      */
     public function getCreate(Request $request){
         $statuses = Status::getStatuses();
+        if (Config::get('app.locale') == 'zh-TW') {
+            $statuses = [
+                1  => "可用",
+                -1 => "不可用"
+            ];
+        }
 
         if (!$request->ajax()) {
             return redirect()->back();
@@ -65,6 +79,12 @@ class InstrumentController extends Controller{
     public function getUpdate(Request $request, $id){
         $instrument = Instrument::find($id);
         $statuses   = Status::getStatuses();
+        if (Config::get('app.locale') == 'zh-TW') {
+            $statuses = [
+                1  => "可用",
+                -1 => "不可用"
+            ];
+        }
 
         return view('Instrument::form', compact('instrument', 'statuses'));
     }

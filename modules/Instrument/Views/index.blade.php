@@ -69,7 +69,7 @@
                                 <tr>
                                     <td>{{$key++}}</td>
                                     <td>{{ trans($instrument->name) }}</td>
-                                    <td>{{ \Modules\Base\Model\Status::getStatus($instrument->status) ?? null }}</td>
+                                    <td>{{ $statuses[$instrument->status] ?? null }}</td>
                                     <td>{{ \Carbon\Carbon::parse($instrument->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($instrument->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
