@@ -28,7 +28,7 @@
                         {{ trans('To') }}
                     </div>
                     <div class="col-8">
-                        : {{ $order->member->name }}
+                        : {{ $order->member->name ?? "N/A"}}
                     </div>
                 </div>
                 <div class="row">
@@ -36,7 +36,7 @@
                         {{ trans('Email') }}
                     </div>
                     <div class="col-8">
-                        : {{ $order->member->email }}
+                        : {{ $order->member->email  ?? "N/A"}}
                     </div>
                 </div>
                 <div class="row">
@@ -44,7 +44,7 @@
                         {{ trans('Phone') }}
                     </div>
                     <div class="col-8">
-                        : {{ $order->member->phone }}
+                        : {{ $order->member->phone ?? "N/A" }}
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                         {{ trans('Creator') }}
                     </div>
                     <div class="col-8">
-                        : {{ $order->creator->name }}
+                        : {{ $order->creator->name  ?? "N/A"}}
                     </div>
                 </div>
                 <div class="row">

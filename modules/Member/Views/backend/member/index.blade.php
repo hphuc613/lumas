@@ -90,6 +90,7 @@
                             <th>{{ trans('Client Type') }}</th>
                             <th width="200px">{{ trans('Status') }}</th>
                             <th>{{ trans('Created At') }}</th>
+                            <th>{{ trans('Updated At') }}</th>
                             <th style="width: 200px;" class="text-center">{{ trans('Action') }}</th>
                         </tr>
                         </thead>
