@@ -112,7 +112,7 @@
             $('#form-modal').on('hidden.bs.modal', function () {
                 var now = new Date();
                 $('#get-date').val(formatDateTime(now));
-            })
+            });
 
             $('#appointment_type').change(function () {
                 calendarStyleView();
@@ -127,13 +127,13 @@
                 if (button === "next" || button === "prev") {
                     var cdate = calendar.getDate();
                     var date = new Date(cdate);
-                    console.log(date.getMonth() + 1);
                 }
             });
 
             /** Appointment Form get product list by type*/
             getProductByType("{{ \Modules\Appointment\Model\Appointment::SERVICE_TYPE }}");
 
+            /** Tooltip in calendar */
             $(".tooltip-content").tooltip({
                 content: function () {
                     return $(this).attr('data-tooltip');
@@ -145,6 +145,21 @@
                 open: function (event, ui) {
                     ui.tooltip.css("max-width", "500px");
                 }
+            });
+
+            $(document).click(function () {
+                $(".tooltip-content").tooltip({
+                    content: function () {
+                        return $(this).attr('data-tooltip');
+                    },
+                    position: {
+                        my: "center bottom", // the "anchor point" in the tooltip element
+                        at: "center top-10", // the position of that anchor point relative to selected element
+                    },
+                    open: function (event, ui) {
+                        ui.tooltip.css("max-width", "500px");
+                    }
+                });
             });
         })
     </script>
