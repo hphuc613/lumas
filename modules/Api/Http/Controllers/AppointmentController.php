@@ -68,19 +68,39 @@ class AppointmentController extends Controller{
      * @return JsonResponse
      */
     public function detail($id){
-        $appointment = Appointment::query()
-                                  ->with('store')
-                                  ->with('member')
-                                  ->with('user')
-                                  ->find($id);
-
-        $data['appointment']             = $appointment->toArray();
-        $data['appointment']['services'] = $appointment->getServiceList();
-        $data['appointment']['courses']  = $appointment->getCourseList();
+        $appointment                               = Appointment::query()
+                                                                ->with('store')
+                                                                ->with('member')
+                                                                ->with('user')
+                                                                ->find($id);
+        $comment                                   = json_decode($appointment->comment, 1);
+        $data['appointment']                       = $appointment->toArray();
+        $data['appointment']['comment']            = $comment['comment'];
+        $data['appointment']['comment_created_at'] = $comment['created_at'];
+        $data['appointment']['services']           = $appointment->getServiceList();
+        $data['appointment']['courses']            = $appointment->getCourseList();
 
         return response()->json([
             'status' => 200,
             'data'   => $data['appointment']
+        ]);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function comment(Request $request, $id){
+        $appointment          = Appointment::query()->find($id);
+        $appointment->comment = json_encode(["comment"    => $request->comment,
+                                             "created_at" => formatDate(time(), 'd-m-Y H:i:s')]);
+        $appointment->save();
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $appointment->toArray()
         ]);
     }
 }

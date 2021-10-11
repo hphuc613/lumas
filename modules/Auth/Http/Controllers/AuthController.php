@@ -15,14 +15,14 @@ use Modules\Base\Model\Status;
 use Modules\User\Model\User;
 
 
-class AuthController extends Controller {
+class AuthController extends Controller{
 
     /**
      * Create a new authentication controller instance.
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct(){
         # parent::__construct();
     }
 
@@ -31,8 +31,8 @@ class AuthController extends Controller {
      *
      * @return Factory|RedirectResponse|View
      */
-    public function getLogin(Request $request) {
-        if(Auth::check()) {
+    public function getLogin(Request $request){
+        if (Auth::check()) {
             return redirect()->route("dashboard");
         }
 
@@ -44,19 +44,21 @@ class AuthController extends Controller {
      *
      * @return RedirectResponse
      */
-    public function postLogin(Request $request) {
+    public function postLogin(Request $request){
 
         $login = [
-            'email'    => $request->input('email'),
-            'password' => $request->input('password'),
+            'email'      => $request->input('email'),
+            'password'   => $request->input('password'),
+            'deleted_at' => null,
         ];
         $request->session()->put('email', $request->input('email'));
-        if(Auth::guard()->attempt($login, $request->has('remember'))) {
-            if(Auth::user()->status == Status::STATUS_ACTIVE && empty(Auth::user()->deleted_at)  && (Auth::user()->getRoleAttribute()->status ?? NULL) == Status::STATUS_ACTIVE ) {
+        if (Auth::guard()->attempt($login, $request->has('remember'))) {
+            if (Auth::user()->status == Status::STATUS_ACTIVE && empty(Auth::user()->deleted_at) &&
+                (Auth::user()->getRoleAttribute()->status ?? NULL) == Status::STATUS_ACTIVE) {
                 return redirect()->route('dashboard');
             }
             $request->session()->flash('error',
-                                       trans('Your account is inactive. Please contact with admin page to get more information.'));
+                trans('Your account is inactive. Please contact with admin page to get more information.'));
             return $this->logout();
         } else {
             $request->session()->flash('error', trans('Incorrect username or password'));
@@ -69,8 +71,8 @@ class AuthController extends Controller {
      *
      * @return RedirectResponse
      */
-    public function logout() {
-        if(Auth::check()) {
+    public function logout(){
+        if (Auth::check()) {
             session('email', Auth::user()->email);
             Auth::logout();
         }
@@ -81,20 +83,21 @@ class AuthController extends Controller {
      * @param Request $request
      * @return Application|Factory|RedirectResponse|View
      */
-    public function forgotPassword(Request $request) {
-        if($request->post()) {
+    public function forgotPassword(Request $request){
+        if ($request->post()) {
             $user = User::where('email', $request->email)->first();
-            if(!empty($user)) {
+            if (!empty($user)) {
                 $password = Str::random(6);
                 $body     = '';
                 $body     .= "<div><p>" . trans("Your password: ") . $password . "</p></div>";
-                $body     .= '<div><i><p style="color: red">' . trans("You should change password after login.") . '</p></i></div>';
+                $body     .= '<div><i><p style="color: red">' . trans("You should change password after login.") .
+                             '</p></i></div>';
                 $send     = Helper::sendMail($user->email, trans('Reset password'), trans('Reset password'), $body);
-                if($send) {
+                if ($send) {
                     $user->password = $password;
                     $user->save();
                     $request->session()->flash('success', trans('Send email successfully. Please check your email'));
-                }else{
+                } else {
                     $request->session()->flash('error', trans('Can not send email. Please contact with admin.'));
                 }
             } else {
