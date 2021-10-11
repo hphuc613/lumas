@@ -111,7 +111,7 @@
                     @foreach($order_details as $key => $order_detail)
                         <tr>
                             <td>{{ $key+1 }}</td>
-                            <td>{{ $order_detail->product->name }}</td>
+                            <td>{{ $order_detail->product->name ?? NULL }}</td>
                             <td>{{ $order_detail->productVoucher->code ?? NULL }}</td>
                             <td>{{ $order_detail->quantity }}</td>
                             <td>{{ moneyFormat($order_detail->price, 0) }}</td>

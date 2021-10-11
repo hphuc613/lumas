@@ -136,7 +136,7 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                                         <a href="{{ route('get.member.update', $order->member->id) }}"
                                            target="_blank">{{ $order->member->name  }}</a>
                                     @else
-                                        "N/A"
+                                        N/A
                                     @endif
                                 </td>
                                 <td>{{ moneyFormat($order->total_price) }}</td>
