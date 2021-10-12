@@ -174,7 +174,10 @@ class Appointment extends BaseModel{
         $list = [];
         if ($data) {
             foreach($data as $id) {
-                $list[] = Service::find($id);
+                $service = Service::find($id);
+                if (!empty($service)) {
+                    $list[] = $service;
+                }
             }
         }
 
