@@ -75,10 +75,13 @@ class AppointmentController extends Controller{
                                                                 ->find($id);
         $comment                                   = json_decode($appointment->comment, 1);
         $data['appointment']                       = $appointment->toArray();
-        $data['appointment']['comment']            = $comment['comment'];
-        $data['appointment']['comment_created_at'] = $comment['created_at'];
-        $data['appointment']['services']           = $appointment->getServiceList();
-        $data['appointment']['courses']            = $appointment->getCourseList();
+        $data['appointment']['comment']            = $comment['comment'] ?? null;
+        $data['appointment']['comment_created_at'] = $comment['created_at'] ?? null;
+        $data['appointment']['room_name']          = $appointment->room->name ?? null;
+        $data['appointment']['instrument_name ']   = $appointment->instrument->name ?? null;
+        unset($data['appointment']['room_id'], $data['appointment']['instrument_id']);
+        $data['appointment']['services'] = $appointment->getServiceList();
+        $data['appointment']['courses']  = $appointment->getCourseList();
 
         return response()->json([
             'status' => 200,
