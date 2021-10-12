@@ -40,7 +40,8 @@ class MemberController extends Controller{
      */
     public function login(Request $request){
         Helper::apiResponseByLanguage($request);
-        $data = $request->only("username", "password");
+        $data               = $request->only("username", "password");
+        $data['deleted_at'] = null;
         if(empty($request->username) || empty($request->password)){
             return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
         }

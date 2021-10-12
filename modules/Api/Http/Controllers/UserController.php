@@ -42,7 +42,8 @@ class UserController extends Controller{
      */
     public function login(Request $request){
         Helper::apiResponseByLanguage($request);
-        $data = $request->only("email", "password");
+        $data               = $request->only("email", "password");
+        $data['deleted_at'] = null;
 
         if(empty($request->email) || empty($request->password)){
             return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
