@@ -280,7 +280,9 @@ class MemberController extends Controller{
 
         if ($request->hasFile('avatar')) {
             $image = $request->avatar;
-
+            if (file_exists('storage/' . $member->avatar)) {
+                unlink('storage/' . $member->avatar);
+            }
             $upload_folder = 'upload/member/' . $member->id . '-' . $member->username . '/avatar';
             $image_name    = $member->username . time() . '.png';
 
