@@ -106,4 +106,20 @@ class AppointmentController extends Controller{
             'data'   => $appointment->toArray()
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function remark(Request $request, $id){
+        $appointment              = Appointment::query()->find($id);
+        $appointment->description = $request->description;
+        $appointment->save();
+
+        return response()->json([
+            'status' => 200,
+            'data'   => $appointment->toArray()
+        ]);
+    }
 }
