@@ -16,6 +16,7 @@ use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
+use Modules\Member\Http\Requests\MemberImportRequest;
 use Modules\Member\Http\Requests\MemberRequest;
 use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberType;
@@ -131,11 +132,11 @@ class MemberController extends Controller{
     }
 
     /**
-     * @param Request $request
+     * @param MemberImportRequest $request
      * @return RedirectResponse|BinaryFileResponse
      */
-    public function postImport(Request $request){
-        if($request->has('file')){
+    public function postImport(MemberImportRequest $request){
+        if ($request->has('file')) {
             $file = $request->file;
             /** Get array data*/
             $array = Excel::toArray(new Import, $file);

@@ -1,8 +1,8 @@
-<form action="" method="post" id="role-form" enctype="multipart/form-data">
+<form action="" method="post" id="import-form" enctype="multipart/form-data">
     @csrf
-    <div class="form-group">
-        <input name="file" type="file" id="upload-file" class="upload-style w-100" accept=".xlsx, .xls, .csv, .ods">
-        <label id="upload-display" class="d-block bg-info  w-100" for="upload-file">
+    <div class="input-group">
+        <input name="file" type="file" id="file" class="upload-style w-100" accept=".xlsx, .xls, .csv, .ods">
+        <label id="upload-display" class="d-block bg-info  w-100" for="file">
             <i class="fas fa-upload"></i>
             <span>{{ trans("Choose File...") }}</span>
         </label>
@@ -13,3 +13,4 @@
                 onclick='window.location.reload(true);'>{{ trans('Cancel') }}</button>
     </div>
 </form>
+{!! JsValidator::formRequest('Modules\Member\Http\Requests\MemberImportRequest', "#import-form")->ignore('file') !!}

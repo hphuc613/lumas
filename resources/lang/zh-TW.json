@@ -223,7 +223,8 @@
     "Voucher": "服務券",
     " must be an image.": "必須是圖像。",
     " must be 8 digits.": "必須是10位數。",
-    " extention must be one of the following: jpeg, png, jpg, gif, svg.": "擴展必須是以下之一：JPEG，PNG，JPG，GIF，SVG。",
+    " extension must be one of the following: jpeg, png, jpg, gif, svg.": "擴展必須是以下之一：JPEG，PNG，JPG，GIF，SVG。",
+    " extension must be one of the following: xlsx, xls, csv, ods": "擴展必須是以下之一：xlsx, xls, csv, ods。",
     "Member Type": "會員類型",
     "Avatar": "頭像",
     "Client type name": "客戶類型名稱",
@@ -476,5 +477,7 @@
     "Instrument created successfully.": "儀器創建成功。",
     "Instrument updated successfully.": "儀器更新成功。",
     "Instrument deleted successfully.": "儀器刪除成功。",
-    "This client has been removed from the system": "該客戶已從系統中刪除"
+    "This client has been removed from the system": "該客戶已從系統中刪除",
+    "File": "文件",
+    "must be an excel file": "必須是excel文件"
 }

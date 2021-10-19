@@ -342,16 +342,17 @@ a {
     }
 }
 
+
+/** Validation **/
+.help-block {
+    &.error-help-block {
+        color: red;
+    }
+}
+
 .form-group {
     label {
         font-weight: 500;
-    }
-
-    /** Validation **/
-    .help-block {
-        &.error-help-block {
-            color: red;
-        }
     }
 
     &.has-success {
