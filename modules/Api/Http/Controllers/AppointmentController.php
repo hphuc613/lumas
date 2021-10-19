@@ -78,7 +78,7 @@ class AppointmentController extends Controller{
         $data['appointment']['comment']            = $comment['comment'] ?? null;
         $data['appointment']['comment_created_at'] = $comment['created_at'] ?? null;
         $data['appointment']['room_name']          = $appointment->room->name ?? null;
-        $data['appointment']['instrument_name ']   = $appointment->instrument->name ?? null;
+        $data['appointment']['instrument_name']    = $appointment->instrument->name ?? null;
         unset($data['appointment']['room_id'], $data['appointment']['instrument_id']);
         $data['appointment']['services'] = $appointment->getServiceList();
         $data['appointment']['courses']  = $appointment->getCourseList();
