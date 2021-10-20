@@ -88,7 +88,16 @@
                     </div>
                     <div class="col-8">
                         :
-                        <span class="font-weight-bold">{{ \Modules\Order\Model\Order::getStatus()[$order->status] }}</span>
+                        <span
+                            class="font-weight-bold">{{ \Modules\Order\Model\Order::getStatus()[$order->status] }}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        {{ trans('Payment Method') }}
+                    </div>
+                    <div class="col-8">
+                        : {{ $order->paymentMethod->name ?? NULL }}
                     </div>
                 </div>
             </div>

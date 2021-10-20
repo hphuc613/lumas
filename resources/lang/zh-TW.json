@@ -303,7 +303,7 @@
     "INVOICE": "發票",
     "To": "到",
     "Invoice code": "發票代碼",
-    "Purchase\/Abort Time": "購買\/中止時間",
+    "Purchase\/Abort At": "購買\/中止時間",
     "Creator": "建立者",
     "Product": "產品",
     "Amounts": "金額",
@@ -480,5 +480,16 @@
     "This client has been removed from the system": "該客戶已從系統中刪除",
     "File": "文件",
     "must be an excel file": "必須是excel文件",
-    "Client ID": "客戶編號"
+    "Client ID": "客戶編號",
+    "Payment Method": "付款方法",
+    "Create Payment Method": "創建付款方法",
+    "Update Payment Method": "更新付款方法",
+    "Delete Payment Method": "刪除付款方法",
+    "Payment Method Listing": "付款方法列表",
+    "Payment Method name": "付款方法名稱",
+    "Payment Method created successfully.": "付款方法創建成功。",
+    "Payment Method updated successfully.": "付款方法更新成功。",
+    "Payment Method deleted successfully.": "付款方法刪除成功。",
+    "Please select Payment method": "請選擇付款方式",
+    "Order Creator": "訂單創建者"
 }

@@ -1,10 +1,17 @@
 @php
     use Modules\Order\Model\Order;
     /** @var Order $order */
-    $order_details = $order->orderDetails ?? [];
+    $order_details = $order->orderDetails ?? []
 @endphp
 <form action="{{ $order ? route('post.order.purchase_order', $order->id) : '#'}}" method="post" id="cart-form">
     @csrf
+    <div class="row">
+        <div class="col-md-4 form-group">
+            <label for="payment-method-id">{{ trans('Payment Method') }}</label>
+            {{ Form::select('payment_method_id', [null => 'Select'] + $payment_methods, $order->payment_method_id ?? NULL,
+                             ['id' => 'payment-method-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}
+        </div>
+    </div>
     <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead>
@@ -59,7 +66,7 @@
     </div>
     <div class="p-2">
         <h4>{{ trans('Money to be paid:') }} <span
-                    class="text-danger font-size-clearfix">{{ moneyFormat($order ? $order->getTotalPrice() : 0) }}</span>
+                class="text-danger font-size-clearfix">{{ moneyFormat($order ? $order->getTotalPrice() : 0) }}</span>
         </h4>
 
     </div>
@@ -142,7 +149,7 @@
     function checkInputMinNumber(value, parent) {
         var check = true;
         if (parseInt(value) < 1) {
-            parent.addClass('has-error')
+            parent.addClass('has-error');
             parent.removeClass('has-success');
             if (parent.find('.help-block').length === 0) {
                 parent.append('<span id="quantity-error" class="help-block error-help-block">{{ trans("Quantity must be greater than 0") }}</span>')
@@ -150,7 +157,7 @@
             check = false;
         } else {
             parent.removeClass('has-error');
-            parent.addClass('has-success')
+            parent.addClass('has-success');
             parent.find('.help-block').remove();
         }
 

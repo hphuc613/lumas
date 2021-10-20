@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Member\Model\Member;
+use Modules\PaymentMethod\Model\PaymentMethod;
 use Modules\User\Model\User;
 
 /**
@@ -114,5 +115,12 @@ class Order extends Model{
      */
     public function orderDetails(){
         return $this->hasMany(OrderDetail::class, 'order_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function paymentMethod(){
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 }

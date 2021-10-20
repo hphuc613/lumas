@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
 use Modules\Member\Http\Requests\MemberCourseRequest;
 use Modules\Member\Http\Requests\MemberServiceRequest;
@@ -19,6 +20,7 @@ use Modules\Member\Model\MemberCourse;
 use Modules\Member\Model\MemberService;
 use Modules\Order\Model\Order;
 use Modules\Order\Model\OrderDetail;
+use Modules\PaymentMethod\Model\PaymentMethod;
 use Modules\Service\Model\Service;
 use Modules\User\Model\User;
 use Modules\Voucher\Model\CourseVoucher;
@@ -71,9 +73,11 @@ class OrderController extends Controller{
      * @return array|RedirectResponse|string
      */
     public function getAddToCart(Request $request, $order_type, $id){
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
+
+        $payment_methods = PaymentMethod::getArray(Status::STATUS_ACTIVE);
 
         $order = Order::with('orderDetails')
                       ->with('member')
@@ -82,10 +86,10 @@ class OrderController extends Controller{
                       ->where('order_type', $order_type)
                       ->first();
 
-        if($order_type === Order::COURSE_TYPE){
-            return $this->renderAjax('Order::cart_course', compact('order'));
+        if ($order_type === Order::COURSE_TYPE) {
+            return $this->renderAjax('Order::cart_course', compact('order', 'payment_methods'));
         }
-        return $this->renderAjax('Order::cart', compact('order'));
+        return $this->renderAjax('Order::cart', compact('order', 'payment_methods'));
     }
 
     /**
@@ -99,8 +103,8 @@ class OrderController extends Controller{
 
         DB::beginTransaction();
 
-        try{
-            if(empty($order)){
+        try {
+            if (empty($order)) {
                 $order              = new Order();
                 $order->member_id   = $data['member_id'];
                 $order->code        = $order->generateCode();
@@ -119,11 +123,11 @@ class OrderController extends Controller{
             $service       = Service::query()->find($data['service_id']);
             $data['price'] = 0;
 
-            if(!empty($data['voucher_id'])){
+            if (!empty($data['voucher_id'])) {
                 $voucher       = ServiceVoucher::query()->find($data['voucher_id']);
                 $data['price'] = $voucher->price;
 
-            }else{
+            } else {
                 $data['price'] = $service->price;
             }
 
@@ -134,7 +138,7 @@ class OrderController extends Controller{
                                        ->where('voucher_id', $data['voucher_id'])
                                        ->first();
 
-            if(empty($order_detail)){
+            if (empty($order_detail)) {
                 $order_detail                  = new OrderDetail();
                 $order_detail['order_id']      = $order->id;
                 $order_detail['product_id']    = $data['service_id'];
@@ -143,7 +147,7 @@ class OrderController extends Controller{
                 $order_detail['voucher_price'] = $voucher->price ?? 0;
                 $order_detail['price']         = $data['price'];
                 $order_detail['quantity']      = (int)$data['quantity'];
-            }else{
+            } else {
                 $order_detail['quantity'] = $order_detail->quantity + (int)$data['quantity'];
             }
 
@@ -153,7 +157,8 @@ class OrderController extends Controller{
             DB::commit();
             $request->session()->flash('success', trans("Service added to invoice successfully."));
             return redirect()->back();
-        }catch(Throwable $th){
+        } catch(Throwable $th) {
+            dd($th->getMessage());
             DB::rollBack();
 
             $request->session()->flash('danger', trans("Service added to invoice failed. Please try again."));
@@ -172,8 +177,8 @@ class OrderController extends Controller{
 
         DB::beginTransaction();
 
-        try{
-            if(empty($order)){
+        try {
+            if (empty($order)) {
                 $order              = new Order();
                 $order->member_id   = $data['member_id'];
                 $order->code        = $order->generateCode();
@@ -191,11 +196,11 @@ class OrderController extends Controller{
             $course        = Course::query()->find($data['course_id']);
             $data['price'] = 0;
 
-            if(!empty($data['voucher_id'])){
+            if (!empty($data['voucher_id'])) {
                 $voucher       = CourseVoucher::query()->find($data['voucher_id']);
                 $data['price'] = $voucher->price;
 
-            }else{
+            } else {
                 $data['price'] = $course->price;
             }
 
@@ -206,7 +211,7 @@ class OrderController extends Controller{
                                        ->where('voucher_id', $data['voucher_id'])
                                        ->first();
 
-            if(empty($order_detail)){
+            if (empty($order_detail)) {
                 $order_detail                  = new OrderDetail();
                 $order_detail['order_id']      = $order->id;
                 $order_detail['product_id']    = $data['course_id'];
@@ -215,7 +220,7 @@ class OrderController extends Controller{
                 $order_detail['voucher_price'] = $voucher->price ?? 0;
                 $order_detail['price']         = $data['price'];
                 $order_detail['quantity']      = (int)$data['quantity'];
-            }else{
+            } else {
                 $order_detail['quantity'] = $order_detail->quantity + (int)$data['quantity'];
             }
 
@@ -225,7 +230,7 @@ class OrderController extends Controller{
             DB::commit();
             $request->session()->flash('success', trans("Course added to invoice successfully."));
             return redirect()->back();
-        }catch(Throwable $th){
+        } catch(Throwable $th) {
             DB::rollBack();
             $request->session()->flash('danger', trans("Course added to invoice failed. Please try again."));
             return redirect()->back();
@@ -255,18 +260,22 @@ class OrderController extends Controller{
     public function purchase(Request $request, $id){
         $order = Order::query()->find($id);
 
-        if($order->status !== Order::STATUS_DRAFT){
+        if ($order->status !== Order::STATUS_DRAFT) {
             $request->session()->flash('danger', trans("Can not purchase this invoice. Please check again"));
             return redirect()->back();
         }
         $data = $request->product;
-        if(empty($data)){
+        if (empty($data)) {
             $request->session()->flash('danger', trans("This invoice is empty"));
             return redirect()->back();
         }
+        if (empty($request->payment_method_id)) {
+            $request->session()->flash('danger', trans("Please select Payment method"));
+            return redirect()->back();
+        }
 
-        foreach($data as $key => $value){
-            if($value['quantity'] < 1){
+        foreach($data as $key => $value) {
+            if ($value['quantity'] < 1) {
                 continue;
             }
             $order_detail           = OrderDetail::find($key);
@@ -274,15 +283,16 @@ class OrderController extends Controller{
             $order_detail->amount   = $order_detail->price * $order_detail->quantity;
             $order_detail->save();
 
-            if($order->order_type === Order::COURSE_TYPE){
+            if ($order->order_type === Order::COURSE_TYPE) {
                 MemberCourse::insertData($value);
-            }else{
+            } else {
                 MemberService::insertData($value);
             }
         }
 
-        $order->total_price = $order->orderDetails->sum('amount');
-        $order->status      = Order::STATUS_PAID;
+        $order->total_price       = $order->orderDetails->sum('amount');
+        $order->payment_method_id = $request->payment_method_id ?? null;
+        $order->status            = Order::STATUS_PAID;
         $order->save();
 
         $request->session()->flash('success', trans("Paid successfully."));

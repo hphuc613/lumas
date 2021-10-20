@@ -73,15 +73,13 @@
                                     <td>{{ \Carbon\Carbon::parse($instrument->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($instrument->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
-                                        @if(!in_array($instrument->name, ["Administrator"]))
-                                            <a href="{{ route('get.instrument.update',$instrument->id) }}"
-                                               data-toggle="modal"
-                                               data-target="#form-modal" data-title="{{ trans('Create Instrument') }}"
-                                               class="btn btn-main-color mr-2">
-                                                <i class="fas fa-pencil-alt"></i></a>
-                                            <a href="{{ route('get.instrument.delete',$instrument->id) }}"
-                                               class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
-                                        @endif
+                                        <a href="{{ route('get.instrument.update',$instrument->id) }}"
+                                           data-toggle="modal"
+                                           data-target="#form-modal" data-title="{{ trans('Create Instrument') }}"
+                                           class="btn btn-main-color mr-2">
+                                            <i class="fas fa-pencil-alt"></i></a>
+                                        <a href="{{ route('get.instrument.delete',$instrument->id) }}"
+                                           class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                             @endforeach

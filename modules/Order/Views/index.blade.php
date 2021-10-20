@@ -107,7 +107,8 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                             <th>{{ trans("Status") }}</th>
                             <th>{{ trans("Client Name") }}</th>
                             <th>{{ trans("Total Price") }}</th>
-                            <th>{{ trans("Purchase/Abort Time") }}</th>
+                            <th>{{ trans("Purchase/Abort At") }}</th>
+                            <th>{{ trans("Payment Method") }}</th>
                             <th>{{ trans("Order Creator") }}</th>
                             <th class="action text-center">{{ trans("Action") }}</th>
                         </tr>
@@ -140,6 +141,7 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                                 </td>
                                 <td>{{ moneyFormat($order->total_price) }}</td>
                                 <td>{{ formatDate(strtotime($order->updated_at), 'd-m-Y H:i') }}</td>
+                                <td>{{ $order->paymentMethod->name ?? NULL }}</td>
                                 <td>{{ $order->creator->name ?? "N/A" }}</td>
                                 <td class="text-center">
                                     <a href="{{ route('get.order.order_detail',$order->id) }}"
