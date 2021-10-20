@@ -14,19 +14,19 @@ use Modules\User\Model\User;
  * @package Modules\Order\Model
  */
 class Order extends Model{
-    protected $table = "orders";
+    protected $table      = "orders";
     protected $primaryKey = "id";
-    protected $guarded = [];
+    protected $guarded    = [];
 
     public $timestamps = TRUE;
 
     const STATUS_DRAFT = 0;
-    const STATUS_PAID = 1;
+    const STATUS_PAID  = 1;
     const STATUS_ABORT = -1;
 
 
     const SERVICE_TYPE = 'service';
-    const COURSE_TYPE = 'course';
+    const COURSE_TYPE  = 'course';
 
     /**
      * @param $filter
@@ -34,22 +34,22 @@ class Order extends Model{
      */
     public static function filter($filter){
         $query = self::query()->with('member')->with('creator');
-        if(isset($filter['status'])){
+        if (isset($filter['status'])) {
             $query->where('status', $filter['status']);
         }
-        if(isset($filter['code'])){
+        if (isset($filter['code'])) {
             $query->where('code', 'LIKE', '%' . $filter['code'] . '%');
         }
-        if(isset($filter['month'])){
+        if (isset($filter['month'])) {
             $query->whereMonth('updated_at', $filter['month']);
         }
-        if(isset($filter['member_id'])){
+        if (isset($filter['member_id'])) {
             $query->where('member_id', $filter['member_id']);
         }
-        if(isset($filter['order_type'])){
+        if (isset($filter['order_type'])) {
             $query->where('order_type', $filter['order_type']);
         }
-        if(isset($filter['creator'])){
+        if (isset($filter['creator'])) {
             $query->where('created_by', $filter['creator']);
         }
 
@@ -71,7 +71,13 @@ class Order extends Model{
      * @return string
      */
     public function generateCode(){
-        return 'LM-ORDER' . $this->member->id . 'T' . formatDate(time(), 'dmYHis');
+        $order_latest = self::query()->orderBy('id', 'DESC')->first();
+        $code         = "05000";
+        if (is_numeric($order_latest->code)) {
+            $code = (int)$order_latest->code + 1;
+            $code = ($code > 9999) ? $code : "0" . (string)$code;
+        }
+        return $code;
     }
 
     /**

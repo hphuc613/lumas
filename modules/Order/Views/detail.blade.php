@@ -7,7 +7,7 @@
     <div id="company-info">
         <h3>LUMAS</h3>
         <p class="mb-1">
-            {{ trans('Address') }}: 123 Sample Str., Sample Dist, Sample City, Sample Country
+            {{ trans('Address') }}: Causeway Bay
         </p>
         <p class="mb-1">
             {{ trans('Tel') }}: 123456789
@@ -49,18 +49,18 @@
                 </div>
             </div>
             <div class="col-6">
-
                 <div class="row">
                     <div class="col-4">
                         {{ trans('Invoice code') }}
                     </div>
                     <div class="col-8">
-                        : <span class="font-weight-bold">{{ $order->code }}</span>
+                        : <span
+                            class="font-weight-bold">{{ (is_numeric($order->code)) ? 'CWB'.$order->code : $order->code }}</span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4">
-                        {{ trans('Purchase/Abort Time') }}
+                        {{ trans('Purchase/Abort At') }}
                     </div>
                     <div class="col-8">
                         : {{ formatDate(strtotime($order->updated_at), 'd-m-Y H:i') }}

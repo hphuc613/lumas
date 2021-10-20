@@ -116,7 +116,7 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                         @foreach($orders as $order)
                             <tr>
                                 <td>{{ $key++ }}</td>
-                                <td><h5>{{ $order->code }}</h5></td>
+                                <td><h5>{{ (is_numeric($order->code)) ? 'CWB'.$order->code : $order->code }}</h5></td>
                                 <td>{{ $order_types[$order->order_type] }}</td>
                                 @php
                                     $bg_status = "bg-danger";
@@ -127,7 +127,6 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                                 @endphp
                                 <td>
                                     <span class="status-box {{ $bg_status }}">
-
                                         {{ $statuses[$order->status] }}
                                     </span>
                                 </td>
