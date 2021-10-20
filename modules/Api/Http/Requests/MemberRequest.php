@@ -27,7 +27,7 @@ class MemberRequest extends ApiRequest{
                     'validate_unique:members, ' . $auth_id
                 ],
                 'phone'             => 'required|size:8|validate_unique:members, ' . $auth_id,
-                'email'             => 'required|email|validate_unique:members, ' . $auth_id,
+                'email'             => 'nullable|email|validate_unique:members, ' . $auth_id,
                 'password'          => 'min:6|required|regex:/^.*(?=.{2,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/',
                 'password_re_enter' => 're_enter_password|required_with:password'
             ];
@@ -40,7 +40,7 @@ class MemberRequest extends ApiRequest{
                 'validate_unique:members'
             ],
             'phone'             => 'required|size:8|validate_unique:members',
-            'email'             => 'required|email|validate_unique:members',
+            'email'             => 'nullable|email|validate_unique:members',
             'password'          => 'min:6|required|regex:/^.*(?=.{2,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/',
             'password_re_enter' => 're_enter_password|required_with:password'
         ];

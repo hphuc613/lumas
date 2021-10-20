@@ -35,6 +35,16 @@
                 <form action="" method="get">
                     <div class="row">
                         <div class="col-md-3 form-group">
+                            <label for="id_number">{{ trans("Client ID") }}</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="btn btn-light border" style="cursor: inherit">CWB</div>
+                                </div>
+                                <input type="number" class="form-control" id="id_number" name="id_number"
+                                       value="{{ $filter['id_number'] ?? null }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3 form-group">
                             <label for="name">{{ trans("Client name") }}</label>
                             <input type="text" class="form-control" id="name" name="name"
                                    value="{{ $filter['name'] ?? null }}">
@@ -83,8 +93,8 @@
                         <thead>
                         <tr>
                             <th width="50px">#</th>
+                            <th>{{ trans('Client ID') }}</th>
                             <th>{{ trans('Name') }}</th>
-                            <th>{{ trans('Username') }}</th>
                             <th>{{ trans('Email') }}</th>
                             <th>{{ trans('Phone Number') }}</th>
                             <th>{{ trans('Client Type') }}</th>
@@ -99,8 +109,8 @@
                         @foreach($members as $member)
                             <tr>
                                 <td>{{ $key++ }}</td>
+                                <td>{{ empty($member->id_number) ? null : "CWB".$member->id_number }}</td>
                                 <td>{{ $member->name }}</td>
-                                <td>{{ $member->username }}</td>
                                 <td>{{ $member->email }}</td>
                                 <td>{{ $member->phone }}</td>
                                 <td>{{ $member->type->name }}</td>

@@ -24,6 +24,10 @@
 <script src="{{ asset('assets/backend/jquery/main.js') }}"></script>
 <script src="{{ asset('assets/backend/jquery/custom.js') }}"></script>
 <script src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
-@stack('js')
+<script>
+    /** Change Language */
+    changeLanguage();
+</script>
 
+@stack('js')
 </html>

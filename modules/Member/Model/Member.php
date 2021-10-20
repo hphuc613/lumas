@@ -19,6 +19,31 @@ class Member extends BaseMember{
 
     public $timestamps = true;
 
+
+    /**
+     * @param array $options
+     * @return bool|void
+     */
+    public function save(array $options = []){
+        $this->beforeSave($this->attributes);
+        parent::save($options);
+    }
+
+    /**
+     * @param $attributes
+     */
+    public function beforeSave(){
+        if (empty($this->id)) {
+            $member_latest = self::query()->orderBy('id_number', 'DESC')->first();
+            $id_number     = '02000';
+            if (!empty($member_latest) && !empty($member_latest->id_number)) {
+                $id_number_new = (int)$member_latest->id_number + 1;
+                $id_number     = ($id_number_new > 9999) ? $id_number_new : '0' . (string)($id_number_new);
+            }
+            $this->id_number = $id_number;
+        }
+    }
+
     /**
      * @param $filter
      * @return Builder
@@ -28,16 +53,19 @@ class Member extends BaseMember{
         $query = $query->whereHas('type', function($query){
             return $query->where('status', Status::STATUS_ACTIVE);
         });
-        if(isset($filter['name'])){
+        if (isset($filter['id_number'])) {
+            $query->where('id_number', 'LIKE', '%' . $filter['id_number'] . '%');
+        }
+        if (isset($filter['name'])) {
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
-        if(isset($filter['phone'])){
+        if (isset($filter['phone'])) {
             $query->where('phone', 'LIKE', '%' . $filter['phone'] . '%');
         }
-        if(isset($filter['email'])){
+        if (isset($filter['email'])) {
             $query->where('email', 'LIKE', '%' . $filter['email'] . '%');
         }
-        if(isset($filter['status'])){
+        if (isset($filter['status'])) {
             $query->where('status', $filter['status']);
         }
         if(isset($filter['type_id'])){

@@ -53,7 +53,7 @@ $(document).ready(function () {
     $(document).on('click', 'button.clear', function (event) {
         event.preventDefault();
         var form = $(this).parents('form');
-        form.find('input[type="text"], input[type="checkbox"]').attr('disabled', 'disabled');
+        form.find('input[type="number"], input[type="text"], input[type="checkbox"]').attr('disabled', 'disabled');
         form.find('select').attr('disabled', 'disabled');
         form.trigger('submit');
     });

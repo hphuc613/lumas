@@ -32,25 +32,26 @@
                             </option>
                         </select>
                     </div>
-                    <form action="" method="post">
-                        @csrf
-                        <div class="form-group">
-                            <label for="email">{{ trans('Username') }}</label>
-                            <input type="text" id="username" name="username" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">{{ trans('Email') }}</label>
-                            <input type="email" id="email" name="email" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">{{ trans('Password') }}</label>
-                            <input type="password" id="password" name="password" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="re-enter-password">{{ trans('Re-enter Password') }}</label>
-                            <input type="password" id="re-enter-password" name="password_re_enter" class="form-control">
-                        </div>
-                        <div class="btn-group d-flex justify-content-center">
+                        <form action="" method="post">
+                            @csrf
+                            <div class="form-group">
+                                <label for="email">{{ trans('Username') }}</label>
+                                <input type="text" id="username" name="username" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">{{ trans('Phone') }}</label>
+                                <input type="text" id="phone" name="phone" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">{{ trans('Password') }}</label>
+                                <input type="password" id="password" name="password" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="re-enter-password">{{ trans('Re-enter Password') }}</label>
+                                <input type="password" id="re-enter-password" name="password_re_enter"
+                                       class="form-control">
+                            </div>
+                            <div class="btn-group d-flex justify-content-center">
                             <button type="submit" class="btn btn-main-color w-100">{{ trans('Sign Up') }}</button>
                         </div>
                     </form>

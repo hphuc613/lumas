@@ -280,7 +280,6 @@ a:hover, .menu-sidebar li a.active {
     border-color: #cbcbcb;
     box-shadow: 0 0 0 0.2rem #9a9a9a33;
 }
-
 .select2-container .select2-results .select2-results__options .select2-results__option {
     border-bottom: 1px solid #C9C9C956;
 }
@@ -293,11 +292,9 @@ a:hover, .menu-sidebar li a.active {
 .form-group label {
     font-weight: 500;
 }
-
 .form-group.has-success label {
     color: #2ebb00;
 }
-
 .form-group.has-success .form-control {
     border: 1px solid #2ebb00 !important;
 }

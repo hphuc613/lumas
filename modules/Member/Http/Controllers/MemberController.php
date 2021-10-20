@@ -42,7 +42,7 @@ class MemberController extends Controller{
         $filter       = $request->all();
         $statuses     = Status::getStatuses();
         $member_types = MemberType::getArray();
-        $members      = Member::filter($filter)->orderBy('name')->paginate(15);
+        $members      = Member::filter($filter)->orderBy('id_number')->paginate(15);
         return view("Member::backend.member.index", compact('members', 'filter', 'member_types', 'statuses'));
     }
 
@@ -66,7 +66,7 @@ class MemberController extends Controller{
         $data['birthday'] = Carbon::parse($data['birthday'])->format('Y-m-d');
         $member           = new Member($data);
         $member->save();
-        $request->session()->flash('success', trans('Client updated successfully.'));
+        $request->session()->flash('success', trans('Client created successfully.'));
 
         return redirect()->route('get.member.list');
     }

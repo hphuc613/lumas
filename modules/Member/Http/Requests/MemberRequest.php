@@ -38,7 +38,7 @@ class MemberRequest extends FormRequest{
                     'regex:/(^([a-zA-Z0-9!_.]+)(\d+)?$)/u',
                     'validate_unique:members,' . Auth::guard('member')->id()
                 ],
-                'email'             => 'required|email|validate_unique:members,' . Auth::guard('member')->id(),
+                'email'             => 'nullable|email|validate_unique:members,' . Auth::guard('member')->id(),
                 'phone'             => 'required|digits:8|validate_unique:members,' . Auth::guard('member')->id(),
                 'password'          => 'min:6|nullable',
                 'password_re_enter' => 're_enter_password|required_with:password',
@@ -54,9 +54,9 @@ class MemberRequest extends FormRequest{
                         'regex:/(^([a-zA-Z0-9_.]+)(\d+)?$)/u',
                         'validate_unique:members'
                     ],
-                    'email'    => 'required|email|validate_unique:members',
+                    'email'    => 'nullable|email|validate_unique:members',
                     'password' => 'required|min:6',
-                    'phone'    => 'digits:8|nullable|validate_unique:members',
+                    'phone'    => 'digits:8|required|validate_unique:members',
                 ];
             case 'create':
                 return [
@@ -67,10 +67,10 @@ class MemberRequest extends FormRequest{
                         'validate_unique:members'
                     ],
                     'type_id'           => 'required|check_exist:member_types,id',
-                    'email'             => 'required|email|validate_unique:members',
+                    'email'             => 'nullable|email|validate_unique:members',
                     'password'          => 'required|min:6',
                     'avatar'            => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
-                    'phone'             => 'digits:8|nullable|validate_unique:members',
+                    'phone'             => 'digits:8|required|validate_unique:members',
                     'password_re_enter' => 're_enter_password|required_with:password',
                 ];
             case 'update':
@@ -82,9 +82,9 @@ class MemberRequest extends FormRequest{
                         'validate_unique:members,' . $this->id,
                     ],
                     'type_id'           => 'required|check_exist:member_types,id',
-                    'email'             => 'required|email|validate_unique:members,' . $this->id,
+                    'email'             => 'nullable|email|validate_unique:members,' . $this->id,
                     'avatar'            => 'image|mimes:jpeg,png,jpg,gif,svg|max:4096',
-                    'phone'             => 'digits:8|nullable|validate_unique:members,' . $this->id,
+                    'phone'             => 'digits:8|required|validate_unique:members,' . $this->id,
                     'password'          => 'min:6|nullable',
                     'password_re_enter' => 're_enter_password|required_with:password',
                 ];

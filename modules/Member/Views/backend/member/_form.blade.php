@@ -2,11 +2,18 @@
     <form action="" method="post">
         @csrf
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div class="card-header">
                     <h4>{{ trans("Client information") }}</h4>
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label for="name">{{ trans('Client ID') }}</label>
+                            <input type="text" class="form-control" readonly
+                                   value="{{ empty($member->id_number) ? null : "CWB".$member->id_number }}">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4 form-group">
                             <label for="name">{{ trans('Name') }}</label>

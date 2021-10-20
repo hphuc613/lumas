@@ -28,7 +28,8 @@ class Member extends Authenticatable implements JWTSubject{
         'avatar',
         'type_id',
         'referrer',
-        'how_to_know'
+        'how_to_know',
+        'id_number'
     ];
 
     /**
