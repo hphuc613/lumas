@@ -52,7 +52,7 @@
                             <input type="text" name="month" class="form-control month"
                                    value="{{ $filter['month'] ?? null }}">
                         </div>
-                        <div class="col-md-3 form-group">
+                        <div class="col-md-3 form-group d-none">
                             <label for="store-id">{{ trans('Store') }}</label>
                             {{ Form::select('store_id', [null => 'Select'] + $stores, $filter['store_id'] ?? null,
                                              ['id' => 'store-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}

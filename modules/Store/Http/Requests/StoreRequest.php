@@ -28,14 +28,14 @@ class StoreRequest extends FormRequest{
                     'name'            => 'required|validate_unique:stores',
                     'open_close_time' => 'required',
                     'address'         => 'required',
-                    'phone'           => 'digits:8'
+                    'phone'           => 'nullable|digits:8'
                 ];
             case "update":
                 return [
                     'name'            => 'required|validate_unique:stores,' . $this->id,
                     'open_close_time' => 'required',
                     'address'         => 'required',
-                    'phone'           => 'digits:8'
+                    'phone'           => 'nullable|digits:8'
                 ];
         }
     }

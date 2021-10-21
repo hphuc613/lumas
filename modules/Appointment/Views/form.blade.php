@@ -76,9 +76,10 @@
         </div>
         <div class="col-md-6 form-group">
             <label for="store">{{ trans('Store') }}</label>
-            {!! Form::select('store_id', $prompt + $stores, $appointment->store_id ?? null, [
+            {!! Form::select('store_id', $stores, $appointment->store_id ?? null, [
                 'id' => 'store',
                 'class' => 'select2 form-control',
+                'disabled' => 'disabled',
                 'style' => 'width: 100%']) !!}
         </div>
         <div class="col-md-6 form-group">
@@ -146,31 +147,31 @@
                         @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
                             @foreach($appointment->service_ids as $item)
                                 @if(!empty($item))
-                                <tr class="pl-2">
-                                    <td>
-                                        <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
-                                        <span class="text-option">{{ $item->name }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-danger delete-product"><i
+                                    <tr class="pl-2">
+                                        <td>
+                                            <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
+                                            <span class="text-option">{{ $item->name }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-danger delete-product"><i
                                                     class="fas fa-trash"></i></button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 @endif
                             @endforeach
                         @else
                             @foreach($appointment->course_ids as $item)
                                 @if(!empty($item))
-                                <tr class="pl-2">
-                                    <td>
-                                        <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
-                                        <span class="text-option">{{ $item->name }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-danger delete-product"><i
+                                    <tr class="pl-2">
+                                        <td>
+                                            <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
+                                            <span class="text-option">{{ $item->name }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-danger delete-product"><i
                                                     class="fas fa-trash"></i></button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 @endif
                             @endforeach
                         @endif
