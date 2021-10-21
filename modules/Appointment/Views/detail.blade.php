@@ -26,6 +26,7 @@ $segment                 = Helper::segment(2);
 <script>
     $(document).ready(function () {
         $('#appointment-form #type').prop('disabled', true);
+        $('#appointment-form #store').prop('disabled', true);
         /** Show View/Edit form appointment */
         @if(isset($appointment))
         $('#appointment-form #member').prop('disabled', true);

@@ -79,8 +79,8 @@
             {!! Form::select('store_id', $stores, $appointment->store_id ?? null, [
                 'id' => 'store',
                 'class' => 'select2 form-control',
-                'disabled' => 'disabled',
                 'style' => 'width: 100%']) !!}
+            <input type="hidden" name="store_id" value="{{ array_key_first($stores) }}">
         </div>
         <div class="col-md-6 form-group">
             <label for="room">{{ trans('Room') }}</label>

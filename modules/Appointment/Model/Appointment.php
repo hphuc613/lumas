@@ -61,8 +61,8 @@ class Appointment extends BaseModel{
         }
         if (isset($filter['month'])) {
             $time = explode('-', $filter['month']);
-            $query->whereMonth('created_at', $time[0])
-                  ->whereYear('created_at', $time[1]);
+            $query->whereMonth('time', $time[0])
+                  ->whereYear('time', $time[1]);
         }
         if (isset($filter['type'])) {
             $query->where('type', $filter['type']);

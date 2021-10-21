@@ -91,7 +91,7 @@ class Member extends BaseMember{
      * @return array
      */
     public static function getArray($status = null){
-        $query = self::select('id', 'name', 'phone', 'email', 'username');
+        $query = self::select('id', 'name', 'phone', 'email', 'id_number');
         if(!empty($status)){
             $query = $query->where('status', $status);
         }
@@ -100,7 +100,7 @@ class Member extends BaseMember{
         $data = [];
 
         foreach($query as $item){
-            $data[$item->id] = $item->name . ' | ' . $item->phone . ' | ' . $item->username;
+            $data[$item->id] = $item->name . ' | ' . $item->phone . ' | CWB' . $item->id_number;
         }
 
         return $data;

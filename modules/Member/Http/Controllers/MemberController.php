@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
+use Modules\Appointment\Http\Controllers\AppointmentController;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 use Modules\Member\Http\Requests\MemberImportRequest;
@@ -224,22 +225,13 @@ class MemberController extends Controller{
             $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
         }
 
-        $appointments = $appointments->get();
+        $now          = Carbon::now();
+        $appointments = $appointments->whereMonth('time', $now->month)
+                                     ->whereYear('time', $now->year)
+                                     ->get();
 
-        /** Get event */
-        $events = [];
-        foreach($appointments as $appointment){
-            $title    = (Auth::user()->isAdmin())
-                ? $appointment->member->name . ' | ' . $appointment->user->name
-                : $appointment->member->name . ' | ' . $appointment->name;
-            $events[] = [
-                'id'    => $appointment->id,
-                'title' => $title,
-                'start' => Carbon::parse($appointment->time)->format('Y-m-d H:i'),
-                'color' => $appointment->getColorStatus()
-            ];
-        }
-        $events = json_encode($events);
+        $appointment_controller = new AppointmentController();
+        $events = json_encode($appointment_controller->getEvents($appointments));
         return view("Appointment::index", compact('events', 'appointment_types', 'filter', 'member'));
     }
 }

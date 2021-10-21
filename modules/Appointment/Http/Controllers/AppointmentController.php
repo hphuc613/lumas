@@ -8,11 +8,13 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Modules\Appointment\Http\Requests\AppointmentRequest;
+use Modules\Appointment\Http\Requests\BulkAppointmentRequest;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
@@ -52,8 +54,61 @@ class AppointmentController extends Controller{
             $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
         }
 
+        $now          = Carbon::now();
+        $appointments = $appointments->whereMonth('time', $now->month)
+                                     ->whereYear('time', $now->year)
+                                     ->get();
+
+        $events = json_encode($this->getEvents($appointments));
+        return view("Appointment::index", compact('events', 'appointment_types', 'filter'));
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getEventList(Request $request){
+        $filter       = $request->all();
+        $appointments = Appointment::with('member')
+                                   ->with('store')
+                                   ->with('user');
+
+        if (isset($request->member_id)){
+            $appointments      = $appointments->where('member_id', $request->member_id);
+        }
+
+        if (isset($request->user_id)){
+            $appointments      = $appointments->where('user_id', $request->user_id);
+        }
+
+        /** Type of appointment */
+        if (isset($filter['type'])) {
+            $appointments = $appointments->where('type', $filter['type']);
+        } else {
+            $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
+        }
+        if (isset($request->month)) {
+            $start = Carbon::createFromFormat('m-Y', ($request->month - 1) . '-' . $request->year)->startOfMonth();
+            $end   = Carbon::createFromFormat('m-Y', ($request->month + 1) . '-' . $request->year)->endOfMonth();
+            if ($request->month == 12) {
+                $end = Carbon::createFromFormat('m-Y', 1 . '-' . ($request->year + 1))->endOfMonth();
+            }
+
+            $appointments = $appointments->whereBetween('time', [$start, $end]);
+        }
         $appointments = $appointments->get();
 
+        /** Get event */
+        $events = $this->getEvents($appointments);
+
+        return response()->json(json_encode($events));
+    }
+
+    /**
+     * @param $appointments
+     * @return array
+     */
+    public function getEvents($appointments){
         /** Get event */
         $events = [];
         foreach($appointments as $appointment) {
@@ -64,11 +119,11 @@ class AppointmentController extends Controller{
                 'id'    => $appointment->id,
                 'title' => $title,
                 'start' => formatDate($appointment->time, 'Y-m-d H:i'),
-                'color' => $appointment->getColorStatus()
+                'color' => $appointment->getColorStatus(),
+                'product_list' => $this->getProductList($appointment)
             ];
         }
-        $events = json_encode($events);
-        return view("Appointment::index", compact('events', 'appointment_types', 'filter'));
+        return $events;
     }
 
     /**
@@ -119,12 +174,72 @@ class AppointmentController extends Controller{
     }
 
     /**
-     * @param Request $request
+     * @param AppointmentRequest $request
      * @return RedirectResponse
      */
     public function postCreate(AppointmentRequest $request){
         $data = $request->all();
+        $this->createAppointment($data);
+        $request->session()->flash('success', trans('Appointment booked successfully.'));
 
+        return redirect()->back();
+    }
+
+    /**
+     * @param Request $request
+     * @return Application|Factory|RedirectResponse|View
+     */
+    public function getBulkCreate(Request $request){
+        $statuses          = Appointment::getStatuses();
+        $services          = Service::getArray(Status::STATUS_ACTIVE);
+        $courses           = Course::getArray(Status::STATUS_ACTIVE);
+        $rooms             = Room::getArray(Status::STATUS_ACTIVE);
+        $instruments       = Instrument::getArray(Status::STATUS_ACTIVE);
+        $appointment_types = Appointment::getTypeList();
+        $members           = Member::getArray(Status::STATUS_ACTIVE);
+        $stores            = Store::getArray(Status::STATUS_ACTIVE);
+        $users             = User::with('roles')
+                                 ->whereHas('roles', function($role_query){
+                                     return $role_query->where('role_id', 3);
+                                 })
+                                 ->where('status', Status::STATUS_ACTIVE)
+                                 ->pluck('name', 'id')->toArray();
+        if (!$request->ajax()) {
+            return redirect()->back();
+        }
+        return view("Appointment::bulk_form", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'users', 'rooms', 'instruments'));
+    }
+
+    /**
+     * @param BulkAppointmentRequest $request
+     * @return RedirectResponse
+     */
+    public function postBulkCreate(BulkAppointmentRequest $request){
+        $data = $request->all();
+        unset($data['day_of_week'], $data['time'], $data['from'], $data['to']);
+        $date_start = Carbon::parse($request->from)->timestamp;
+        $date_end   = Carbon::parse($request->to)->timestamp + 86400;
+        $time       = $request->time;
+        $days       = $request->day_of_week;
+        $a_week     = 86400 * 7;
+        foreach($days as $day) {
+            $day_next_week = Carbon::parse($date_start)->next($day)->timestamp;
+            while($date_start <= $day_next_week && $day_next_week < $date_end) {
+                $data['time'] = formatDate($day_next_week, 'Y-m-d') . ' ' . $time;
+                $this->createAppointment($data);
+
+                $day_next_week += $a_week;
+            }
+        }
+        $request->session()->flash('success', trans('Appointment booked successfully.'));
+
+        return redirect()->back();
+    }
+
+    /**
+     * @param $data
+     */
+    public function createAppointment($data){
         /** Get list id service/course*/
         if ($data['type'] === Appointment::SERVICE_TYPE) {
             $data['service_ids'] = json_encode($data['product_ids'] ?? []);
@@ -140,9 +255,6 @@ class AppointmentController extends Controller{
                               ->format('Y-m-d H:i');
         $book         = new Appointment($data);
         $book->save();
-        $request->session()->flash('success', trans('Appointment booked successfully.'));
-
-        return redirect()->back();
     }
 
     /**
@@ -346,9 +458,45 @@ class AppointmentController extends Controller{
         return redirect()->route('get.member.appointment', [$appointment->member_id, 'type' => $appointment->type]);
     }
 
-    public function getProductList($id){
-        $appointment = Appointment::query()->find($id);
+    /**
+     * @param $id
+     * @return array|string
+     */
+    public function getProductList($appointment){
+        $title       = (Auth::user()->isAdmin())
+            ? ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->user->name ?? "N/A")
+            : ($appointment->member->name ?? "N/A") . ' | ' . $appointment->name;
+        $html        = '';
+        $html        .= '<div class="table-responsive"><div>';
+        $html        .= '<h5>' . $title . '</h5>';
+        $html        .= '<div class="form-group">';
+        $html        .= '<label>' . trans('Total Intend Time: ') . '</label>';
+        $html        .= '<span class="text-danger">' . ($appointment->getTotalIntendTimeService() ?? 0) . '</span> ' .
+                        trans(' minutes');
+        $html        .= '</div></div>';
+        $html        .= '<table class="table table-striped" id="product-list"><thead>
+                                    <tr>
+                                        <th>' . trans('Service') . '</th>
+                                        <th>' . trans('Intend Time') . '</th>
+                                    </tr>
+                                </thead>';
+        $html        .= '<tbody>';
+        $products    = ($appointment->type === Appointment::SERVICE_TYPE) ? $appointment->service_ids : $appointment->course_ids;
+        foreach($products as $item) {
+            if (!empty($item)) {
+                $html .= '<tr class="pl-2">
+                            <td>
+                                <span class="text-option">' . $item->name . '</span>
+                            </td>
+                            <td>
+                                <span class="text-option">' . $item->intend_time . trans(" minutes") . '</span>
+                            </td>
+                        </tr>';
+            }
+        }
+        $html .= '</tbody></table></div>';
 
-        return $this->renderAjax('Appointment::product_list', compact('appointment'));
+        return $html;
     }
+
 }

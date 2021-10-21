@@ -48,6 +48,12 @@
                                 {!! Form::select('type', $appointment_types, $filter['type'] ?? null,
                                 ['id' => 'appointment_type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
                             </div>
+                            <a href="{{ route('get.appointment.bulk_create',['member_id' => $member->id ?? NULL, 'type' => $filter['type'] ?? 'service']) }}"
+                               id="create-booking" class="btn btn-primary"
+                               data-toggle="modal"
+                               data-target="#form-modal" data-title="{{ trans('Bulk Create Appointment') }}">
+                                <i class="fa fa-plus"></i> &nbsp; {{ trans('Bulk Add New') }}
+                            </a>
                             <a href="{{ route('get.appointment.create',['member_id' => $member->id ?? NULL, 'type' => $filter['type'] ?? 'service']) }}"
                                id="create-booking" class="btn btn-main-color"
                                data-toggle="modal"
@@ -115,14 +121,39 @@
             });
 
             /** Generate Calendar Appointment */
-            var calendar = generateCalendarAppointment("{{ route("post.appointment.update_time",'') }}", "{{ route("get.appointment.product_list",'') }}", "{{ $member->id ?? NULL }}");
-
+            var calendar = generateCalendarAppointment(
+                "{{ route("post.appointment.update_time",'') }}",
+                "{{ route("get.appointment.product_list",'') }}",
+                "{{ $member->id ?? NULL }}"
+            );
+            /** Upddate Event By Month **/
             $(document).on('click', 'button.fc-button', function () {
-                var button = $(this).attr('aria-label');
-                if (button === "next" || button === "prev") {
-                    var cdate = calendar.getDate();
-                    var date = new Date(cdate);
-                }
+                const cdate = calendar.getDate();
+                const date = new Date(cdate);
+                const month = date.getMonth() + 1;
+                const year = date.getFullYear();
+                const member_id = "{{ $member->id ?? null }}";
+                const user_id = "{{ $user->id ?? null }}";
+                const param = "?month=" + month + "&year=" + year +  "&member_id=" + member_id +  "&user_id=" + user_id;
+                $.ajax({
+                    url: '{{ route("get.appointment.event_list") }}' + param,
+                    method: "get",
+                }).done(function (response) {
+                    calendar.getEventSources()[0].remove();
+                    calendar.addEventSource(JSON.parse(response));/** Tooltip in calendar */
+                    $(".tooltip-content").tooltip({
+                        content: function () {
+                            return $(this).attr('data-tooltip');
+                        },
+                        position: {
+                            my: "center bottom", // the "anchor point" in the tooltip element
+                            at: "center top-10", // the position of that anchor point relative to selected element
+                        },
+                        open: function (event, ui) {
+                            ui.tooltip.css("max-width", "500px");
+                        }
+                    });
+                });
             });
 
             /** Appointment Form get product list by type*/
@@ -142,14 +173,18 @@
                 }
             });
 
+            $(document).on('mouseover', ".ui-tooltip", function () {
+                $(this).remove();
+            });
+
             $(document).click(function () {
                 $(".tooltip-content").tooltip({
                     content: function () {
                         return $(this).attr('data-tooltip');
                     },
                     position: {
-                        my: "center bottom", // the "anchor point" in the tooltip element
-                        at: "center top-10", // the position of that anchor point relative to selected element
+                        my: "center bottom",
+                        at: "center top-10",
                     },
                     open: function (event, ui) {
                         ui.tooltip.css("max-width", "500px");

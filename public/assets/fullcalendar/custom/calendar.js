@@ -44,16 +44,18 @@ function generateCalendarAppointment(url_update_time, url_product_list, member_i
         weekNumbers: true,
         navLinks: true, // can click day/week names to navigate views
         editable: true,
+        views: {
+            week:   {
+                dayHeaderContent: (args) => {
+                    return moment(args.date).format('ddd D/M')
+                },
+            }
+        },
         eventDidMount: function (info) {
             $(info.el).attr("id", "event_id_" + info.event.id);
             $(info.el).addClass("tooltip-content");
             $(info.el).attr("title", "");
-            $.ajax({
-                url: url_product_list + "/" + info.event.id,
-                method: "get",
-            }).done(function (response) {
-                $(info.el).attr("data-tooltip", response);
-            });
+            $(info.el).attr("data-tooltip", info.event.extendedProps.product_list);
         },
         eventDrop: function (info) {
             var eventObj = info.event;
