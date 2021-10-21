@@ -40,13 +40,13 @@ class MemberController extends Controller{
      */
     public function login(Request $request){
         Helper::apiResponseByLanguage($request);
-        $data               = $request->only("username", "password");
+        $data               = $request->only("phone", "password");
         $data['deleted_at'] = null;
-        if(empty($request->username) || empty($request->password)){
-            return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
+        if(empty($request->phone) || empty($request->password)){
+            return response()->json(['status' => 400, 'error' => trans('Incorrect phone or password')]);
         }
         if(!$token = $this->auth->setTTL(60 * 7 * 24)->attempt($data)){
-            return response()->json(['status' => 400, 'error' => trans('Incorrect username or password')]);
+            return response()->json(['status' => 400, 'error' => trans('Incorrect phone or password')]);
         }
         $member = $this->auth->user();
         if (!empty($member->deleted_at) || $member->status !== Status::STATUS_ACTIVE) {
