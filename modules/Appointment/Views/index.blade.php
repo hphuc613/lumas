@@ -49,7 +49,7 @@
                                 ['id' => 'appointment_type', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
                             </div>
                             <a href="{{ route('get.appointment.bulk_create',['member_id' => $member->id ?? NULL, 'type' => $filter['type'] ?? 'service']) }}"
-                               id="create-booking" class="btn btn-primary"
+                               id="create-bulk-booking" class="btn btn-primary"
                                data-toggle="modal"
                                data-target="#form-modal" data-title="{{ trans('Bulk Create Appointment') }}">
                                 <i class="fa fa-plus"></i> &nbsp; {{ trans('Bulk Add New') }}

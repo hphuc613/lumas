@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Modules\Appointment\Http\Requests\AppointmentRequest;
 use Modules\Appointment\Http\Requests\BulkAppointmentRequest;
@@ -20,6 +21,7 @@ use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
 use Modules\Instrument\Model\Instrument;
 use Modules\Member\Model\Member;
+use Modules\Notification\Model\NotificationModel;
 use Modules\Room\Model\Room;
 use Modules\Service\Model\Service;
 use Modules\Store\Model\Store;
@@ -73,12 +75,12 @@ class AppointmentController extends Controller{
                                    ->with('store')
                                    ->with('user');
 
-        if (isset($request->member_id)){
-            $appointments      = $appointments->where('member_id', $request->member_id);
+        if (isset($request->member_id)) {
+            $appointments = $appointments->where('member_id', $request->member_id);
         }
 
-        if (isset($request->user_id)){
-            $appointments      = $appointments->where('user_id', $request->user_id);
+        if (isset($request->user_id)) {
+            $appointments = $appointments->where('user_id', $request->user_id);
         }
 
         /** Type of appointment */
@@ -116,10 +118,10 @@ class AppointmentController extends Controller{
                 ? ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->user->name ?? "N/A")
                 : ($appointment->member->name ?? "N/A") . ' | ' . $appointment->name;
             $events[] = [
-                'id'    => $appointment->id,
-                'title' => $title,
-                'start' => formatDate($appointment->time, 'Y-m-d H:i'),
-                'color' => $appointment->getColorStatus(),
+                'id'           => $appointment->id,
+                'title'        => $title,
+                'start'        => formatDate($appointment->time, 'Y-m-d H:i'),
+                'color'        => $appointment->getColorStatus(),
                 'product_list' => $this->getProductList($appointment)
             ];
         }
@@ -179,7 +181,9 @@ class AppointmentController extends Controller{
      */
     public function postCreate(AppointmentRequest $request){
         $data = $request->all();
-        $this->createAppointment($data);
+        $data = $this->createAppointment($data);
+        $book = new Appointment($data);
+        $book->save();
         $request->session()->flash('success', trans('Appointment booked successfully.'));
 
         return redirect()->back();
@@ -215,22 +219,68 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postBulkCreate(BulkAppointmentRequest $request){
-        $data = $request->all();
+        $data = request()->except(['_token']);
         unset($data['day_of_week'], $data['time'], $data['from'], $data['to']);
-        $date_start = Carbon::parse($request->from)->timestamp;
-        $date_end   = Carbon::parse($request->to)->timestamp + 86400;
-        $time       = $request->time;
-        $days       = $request->day_of_week;
-        $a_week     = 86400 * 7;
+        $date_start  = Carbon::parse($request->from)->timestamp;
+        $date_end    = Carbon::parse($request->to)->timestamp + 86400;
+        $time        = $request->time;
+        $days        = $request->day_of_week;
+        $a_week      = 86400 * 7;
+        $data_insert = collect();
         foreach($days as $day) {
             $day_next_week = Carbon::parse($date_start)->next($day)->timestamp;
             while($date_start <= $day_next_week && $day_next_week < $date_end) {
-                $data['time'] = formatDate($day_next_week, 'Y-m-d') . ' ' . $time;
-                $this->createAppointment($data);
+                $data['notify_created'] = 0;
+                $data['time']           = formatDate($day_next_week, 'Y-m-d') . ' ' . $time;
+                $data                   = $this->createAppointment($data);
+                $data_insert->push($data);
 
                 $day_next_week += $a_week;
             }
         }
+        foreach($data_insert->chunk(200) as $chunk) {
+            Appointment::query()->insert($chunk->toArray());
+        }
+
+        /** Add Notification */
+        $appointments = Appointment::query();
+        $clone_appointments = clone $appointments;
+        $clone_appointments = $clone_appointments->with('member')
+                                   ->where('member_id', $data['member_id'])
+                                   ->where('user_id', $data['user_id'])
+                                   ->where('notify_created', 0)
+                                   ->get();
+
+        $notifications = collect();
+        foreach($clone_appointments as $appointment) {
+            $data_notify['id']              = Str::orderedUuid();
+            $data_notify['type']            = 'App\Notifications\Notification';
+            $data_notify['notifiable_type'] = 'Modules\User\Model\User';
+            $data_notify['notifiable_id']   = $appointment->user_id;
+            $data_notify['data']            = json_encode([
+                'appointment_id'   => (int)$appointment->id,
+                'title'            => $appointment->name,
+                'member'           => $appointment->member->name,
+                'member_id'        => (int)$appointment->member_id,
+                'user_id'          => (int)$appointment->user_id,
+                'time'             => $appointment->time,
+                'type'             => $appointment->type,
+                'status'           => Status::STATUS_PENDING,
+                'time_show'        => NULL,
+                'user_time_show'   => NULL,
+                'user_read_at'     => NULL,
+                'client_read_at'   => NULL,
+                'client_time_show' => NULL,
+            ]);
+
+            $notifications->push($data_notify);
+        }
+
+        foreach($notifications->chunk(200) as $chunk) {
+            NotificationModel::query()->insert($chunk->toArray());
+        }
+
+        $appointments->update(['notify_created' => 1]);
         $request->session()->flash('success', trans('Appointment booked successfully.'));
 
         return redirect()->back();
@@ -238,6 +288,7 @@ class AppointmentController extends Controller{
 
     /**
      * @param $data
+     * @return mixed
      */
     public function createAppointment($data){
         /** Get list id service/course*/
@@ -253,8 +304,8 @@ class AppointmentController extends Controller{
         }
         $data['time'] = Carbon::parse($data['time'])
                               ->format('Y-m-d H:i');
-        $book         = new Appointment($data);
-        $book->save();
+
+        return $data;
     }
 
     /**
@@ -463,25 +514,26 @@ class AppointmentController extends Controller{
      * @return array|string
      */
     public function getProductList($appointment){
-        $title       = (Auth::user()->isAdmin())
+        $title    = (Auth::user()->isAdmin())
             ? ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->user->name ?? "N/A")
             : ($appointment->member->name ?? "N/A") . ' | ' . $appointment->name;
-        $html        = '';
-        $html        .= '<div class="table-responsive"><div>';
-        $html        .= '<h5>' . $title . '</h5>';
-        $html        .= '<div class="form-group">';
-        $html        .= '<label>' . trans('Total Intend Time: ') . '</label>';
-        $html        .= '<span class="text-danger">' . ($appointment->getTotalIntendTimeService() ?? 0) . '</span> ' .
-                        trans(' minutes');
-        $html        .= '</div></div>';
-        $html        .= '<table class="table table-striped" id="product-list"><thead>
+        $html     = '';
+        $html     .= '<div class="table-responsive"><div>';
+        $html     .= '<h5>' . $title . '</h5>';
+        $html     .= '<div class="form-group">';
+        $html     .= '<label>' . trans('Total Intend Time: ') . '</label>';
+        $html     .= '<span class="text-danger">' . ($appointment->getTotalIntendTimeService() ?? 0) . '</span> ' .
+                     trans(' minutes');
+        $html     .= '</div></div>';
+        $html     .= '<table class="table table-striped" id="product-list"><thead>
                                     <tr>
                                         <th>' . trans('Service') . '</th>
                                         <th>' . trans('Intend Time') . '</th>
                                     </tr>
                                 </thead>';
-        $html        .= '<tbody>';
-        $products    = ($appointment->type === Appointment::SERVICE_TYPE) ? $appointment->service_ids : $appointment->course_ids;
+        $html     .= '<tbody>';
+        $products = ($appointment->type === Appointment::SERVICE_TYPE) ? $appointment->service_ids :
+            $appointment->course_ids;
         foreach($products as $item) {
             if (!empty($item)) {
                 $html .= '<tr class="pl-2">

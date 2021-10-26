@@ -72,14 +72,14 @@ class Appointment extends BaseModel{
     }
 
 
-    /**
-     * @param array $options
-     * @return bool|void
-     */
-    public function save(array $options = []){
-        parent::save($options);
-        $this->afterSave();
+    public static function boot(){
+        parent::boot();
+
+        static::saved(function($model){
+            $model->afterSave();
+        });
     }
+
 
     /**
      * After Save Model

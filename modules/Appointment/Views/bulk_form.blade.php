@@ -29,7 +29,7 @@ $type                    = request()->get('type');
             </div>
             <div class="col-md-6 form-group">
                 <label for="day_of_week">{{ trans('Day of Week') }}</label>
-                <select name="day_of_week[]" class="select2 form-control" multiple id="day-of-week">
+                <select name="day_of_week[]" class="select2 form-control w-100" multiple id="day-of-week">
                     <option value="Monday">{{ trans("Monday") }}</option>
                     <option value="Tuesday">{{ trans("Tuesday") }}</option>
                     <option value="Wednesday">{{ trans("Wednesday") }}</option>
