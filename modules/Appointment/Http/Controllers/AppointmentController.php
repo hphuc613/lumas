@@ -182,6 +182,8 @@ class AppointmentController extends Controller{
     public function postCreate(AppointmentRequest $request){
         $data = $request->all();
         $data = $this->createAppointment($data);
+        $data['time'] = Carbon::parse($data['time'])
+                              ->format('Y-m-d H:i');
         $book = new Appointment($data);
         $book->save();
         $request->session()->flash('success', trans('Appointment booked successfully.'));
@@ -227,12 +229,12 @@ class AppointmentController extends Controller{
         $days        = $request->day_of_week;
         $a_week      = 86400 * 7;
         $data_insert = collect();
+        $data        = $this->createAppointment($data);
         foreach($days as $day) {
             $day_next_week = Carbon::parse($date_start)->next($day)->timestamp;
             while($date_start <= $day_next_week && $day_next_week < $date_end) {
                 $data['notify_created'] = 0;
                 $data['time']           = formatDate($day_next_week, 'Y-m-d') . ' ' . $time;
-                $data                   = $this->createAppointment($data);
                 $data_insert->push($data);
 
                 $day_next_week += $a_week;
@@ -243,13 +245,13 @@ class AppointmentController extends Controller{
         }
 
         /** Add Notification */
-        $appointments = Appointment::query();
+        $appointments       = Appointment::query();
         $clone_appointments = clone $appointments;
         $clone_appointments = $clone_appointments->with('member')
-                                   ->where('member_id', $data['member_id'])
-                                   ->where('user_id', $data['user_id'])
-                                   ->where('notify_created', 0)
-                                   ->get();
+                                                 ->where('member_id', $data['member_id'])
+                                                 ->where('user_id', $data['user_id'])
+                                                 ->where('notify_created', 0)
+                                                 ->get();
 
         $notifications = collect();
         foreach($clone_appointments as $appointment) {
@@ -302,8 +304,6 @@ class AppointmentController extends Controller{
         if (!isset($data['user_id']) || empty($data['user_id'])) {
             $data['user_id'] = Auth::id();
         }
-        $data['time'] = Carbon::parse($data['time'])
-                              ->format('Y-m-d H:i');
 
         return $data;
     }
