@@ -21,6 +21,9 @@ Route::prefix('api')->group(function(){
     /** Notification API */
     include 'notification.php';
 
-    /** Notification API */
+    /** Store API */
     include 'store.php';
+
+    /** Order API */
+    include 'order.php';
 });
