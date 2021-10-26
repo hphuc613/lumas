@@ -3,4 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('order', 'OrderController@getList');
+Route::prefix('order')->group(function(){
+    Route::get('/', 'OrderController@list');
+    Route::get('detail/{id}', 'OrderController@detail');
+});

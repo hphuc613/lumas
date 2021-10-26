@@ -34,7 +34,7 @@ class Order extends Model{
      * @return Builder
      */
     public static function filter($filter){
-        $query = self::query()->with('member')->with('creator');
+        $query = self::query()->with('orderDetails')->with('member')->with('creator');
         if (isset($filter['status'])) {
             $query->where('status', $filter['status']);
         }

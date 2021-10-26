@@ -14,7 +14,7 @@
             <label for="status">{{ trans('Status') }}</label>
         </div>
         <div class="col-md-8">
-            <select name="status" id="status" class="select2 form-control">
+            <select name="status" id="status" class="select2 form-control w-100">
                 <option value="">{{ trans('Select') }}</option>
                 @foreach($statuses as $key => $status)
                     <option value="{{ $key }}"
