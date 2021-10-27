@@ -26,7 +26,7 @@ class OrderController extends Controller{
     public function list(Request $request){
         $query    = Order::query()->with('creator', 'paymentMethod');
         $item_qty = 10;
-        if (isset($filter['member_id'])) {
+        if (isset($request->member_id)) {
             $query = $query->where('member_id', $request->member_id);
         }
         if (isset($request->item_qty)) {
