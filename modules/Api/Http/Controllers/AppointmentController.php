@@ -118,7 +118,15 @@ class AppointmentController extends Controller{
      */
     public function remark(Request $request, $id){
         $appointment = Appointment::query()->find($id);
+
         if (!empty($appointment)) {
+            if (utf8_word_count($request->remarks) > 30) {
+                return response()->json([
+                    'status'  => 400,
+                    'message' => trans("Remarks can only be up to 30 words")
+                ]);
+            }
+
             $comment                       = json_decode($appointment->comment, 1);
             $comment['remarks']            = $request->remarks;
             $comment['remarks_created_at'] = formatDate(time(), 'd-m-Y H:i:s');
@@ -132,7 +140,7 @@ class AppointmentController extends Controller{
         }
 
         return response()->json([
-            'status'  => 404,
+            'status' => 404,
         ]);
     }
 }

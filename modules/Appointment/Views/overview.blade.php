@@ -127,7 +127,7 @@
                                             <input type="text" class="form-control" readonly
                                                    value="{{ $comment['comment'] ?? NULL }}">
                                         </div>
-                                        @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
+                                        @if(empty($comment['remarks'] ?? NULL) || Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
                                             <form action="{{ route('api.post.appointment.remarks', $appointment->id) }}"
                                                   class="form-remarks" method="post" data-id="{{$appointment->id}}">
                                                 <div class="form-group">
@@ -136,6 +136,7 @@
                                                            value="{{ $comment['remarks'] ?? NULL }}">
                                                 </div>
                                                 <button class="btn btn-main-color">{{ trans('Update') }}</button>
+                                                <button class="btn btn-default" data-dismiss="modal">{{ trans('Update') }}</button>
                                             </form>
                                         @else
                                             <div class="form-group">
@@ -179,7 +180,7 @@
             $('#comment-modal').find('.modal-body').html(content);
         });
 
-        @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
+        @if(empty($comment['remarks'] ?? NULL) || Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
         $(document).on('submit', '.form-remarks', function (e) {
             e.preventDefault();
             const url = $(this).attr('action');
@@ -196,11 +197,16 @@
                     msg_danger.html('');
                     msg_success.html('<div class="p-2">{{ trans('Updated Successfully') }}</div>');
                     $(document).find('td#td-comment-'+data_id).find('.remarks-'+data_id).remove();
-                    $(document).find('td#td-comment-'+data_id).find('form .form-group').append('<input type="text" class="form-control remarks"'+data_id+' name="remarks" value="'+response.data.remarks+'">');
+                    $(document).find('td#td-comment-'+data_id).find('form .form-group').append('<input type="text" class="form-control remarks-'+data_id+'" name="remarks" value="'+response.data.remarks+'">');
                 }
                 else{
-                    msg_success.html('');
-                    msg_danger.html('<div class="p-2">{{ trans('Update Failed') }}</div>');
+                    if(response.status === 400){
+                        msg_success.html('');
+                        msg_danger.html('<div class="p-2">'+response.message+'</div>');
+                    }else{
+                        msg_success.html('');
+                        msg_danger.html('<div class="p-2">{{ trans('Update Failed') }}</div>');
+                    }
                 }
             });
         });

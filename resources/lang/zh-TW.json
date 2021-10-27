@@ -496,5 +496,6 @@
     "Start Date": "開始日期",
     "End Date": "結束日期",
     " must be a date after Start Date." : " 必須是開始日期之後的日期。",
-    "Comment/Remark": "評論/備註"
+    "Comment/Remark": "員工留言/評價",
+    "Remarks can only be up to 30 words": "備註最多30個字"
 }

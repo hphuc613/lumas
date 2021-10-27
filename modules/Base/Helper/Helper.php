@@ -6,19 +6,19 @@ use Modules\Base\Model\Status;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
-if(!function_exists('gg_trans')){
+if (!function_exists('gg_trans')) {
     /**
      * @param $string
      * @return string|null
      * @throws ErrorException
      */
     function gg_trans($string, $locale = null): ?string{
-        if(!empty($locale)){
+        if (!empty($locale)) {
             $tr = new GoogleTranslate($locale);
             return $tr->translate($string);
         }
         $target = (App::getLocale() === 'cn') ? 'zh-TW' : App::getLocale();
-        if(!empty($target) && $target !== 'en'){
+        if (!empty($target) && $target !== 'en') {
             $tr = new GoogleTranslate($target);
             return $tr->translate($string);
         }
@@ -26,24 +26,24 @@ if(!function_exists('gg_trans')){
         return $string;
     }
 }
-if(!function_exists('formatDate')){
+if (!function_exists('formatDate')) {
     /**
      * @param $timestamp
      * @param null $format
      * @return string|null
      */
     function formatDate($timestamp, $format = null): ?string{
-        if(!isTimestamp($timestamp)){
+        if (!isTimestamp($timestamp)) {
             $timestamp = strtotime($timestamp);
         }
-        if(!empty($format)){
+        if (!empty($format)) {
             return Carbon::createFromTimestamp($timestamp)->format($format);
         }
         return Carbon::createFromTimestamp($timestamp)->format("d-m-Y");
     }
 }
 
-if(!function_exists('generateQRCode')){
+if (!function_exists('generateQRCode')) {
     /**
      * @param $data
      * @param null $format
@@ -54,7 +54,7 @@ if(!function_exists('generateQRCode')){
     }
 }
 
-if(!function_exists('calculateTimeNotification')){
+if (!function_exists('calculateTimeNotification')) {
     /**
      * @param $data
      * @param null $format
@@ -68,8 +68,8 @@ if(!function_exists('calculateTimeNotification')){
             3600     => 'hour', 60 => 'minute', 1 => 'second'
         );
         $number_of_units = "";
-        foreach($tokens as $unit => $text){
-            if($time < $unit){
+        foreach($tokens as $unit => $text) {
+            if ($time < $unit) {
                 continue;
             }
             $number_of_units = floor($time / $unit);
@@ -79,7 +79,7 @@ if(!function_exists('calculateTimeNotification')){
     }
 }
 
-if(!function_exists('summaryListing')){
+if (!function_exists('summaryListing')) {
     /**
      * @param $data
      * @return string|null
@@ -102,7 +102,7 @@ if(!function_exists('summaryListing')){
     }
 }
 
-if(!function_exists('notificationList')){
+if (!function_exists('notificationList')) {
     /**
      * @param $url
      * @param $notifications
@@ -110,15 +110,15 @@ if(!function_exists('notificationList')){
      * @return string
      */
     function notificationList($notifications, $is_new = FALSE): string{
-        if($is_new){
+        if ($is_new) {
             $notifications = array_slice($notifications, 0, 3);
-        }else{
+        } else {
             $notifications = array_slice($notifications, 3);
         }
         $html = '';
-        foreach($notifications as $notification){
+        foreach($notifications as $notification) {
             $data = $notification['data'];
-            if($data['status'] == Status::STATUS_ACTIVE){
+            if ($data['status'] == Status::STATUS_ACTIVE) {
                 $url = route("read_notification", $notification['id']);
                 /** Notify content */
                 $new = empty($notification['read_at']) ? 'new' : '';
@@ -132,9 +132,11 @@ if(!function_exists('notificationList')){
                                 </div>
                                 <div class="media-body">
                                     <div class="notification-info">
-                                        <b class="text-dark">' . $data["member"] . '</b><span>' . trans(" will be at the store in a few minutes.") . '</span>
+                                        <b class="text-dark">' . $data["member"] . '</b><span>' .
+                         trans(" will be at the store in a few minutes.") . '</span>
                                     </div>
-                                    <small class="timestamp">' . trans("About ") . calculateTimeNotification($data['time_show']) . trans(" ago.") . '</small>
+                                    <small class="timestamp">' . trans("About ") .
+                         calculateTimeNotification($data['time_show']) . trans(" ago.") . '</small>
                                 </div>
                             </a>
                         </li>';
@@ -146,24 +148,24 @@ if(!function_exists('notificationList')){
     }
 }
 
-if(!function_exists('isTimestamp')){
+if (!function_exists('isTimestamp')) {
     /**
      * @param $date
      * @return bool
      */
     function isTimestamp($date){
-        try{
+        try {
             return ((int)$date === $date)
-                && ($date <= PHP_INT_MAX)
-                && ($date >= ~PHP_INT_MAX);
-        }catch(Exception $e){
+                   && ($date <= PHP_INT_MAX)
+                   && ($date >= ~PHP_INT_MAX);
+        } catch(Exception $e) {
             return $date;
         }
     }
 }
 
 
-if(!function_exists('moneyFormat')){
+if (!function_exists('moneyFormat')) {
     /**
      * @param $number
      * @param bool $has_unit
@@ -171,10 +173,34 @@ if(!function_exists('moneyFormat')){
      */
     function moneyFormat($number, $has_unit = true){
         $unit = "HK$";
-        if(is_numeric($number)){
+        if (is_numeric($number)) {
             return ($has_unit) ? $unit . number_format($number) : number_format($number);
         }
 
         return "N/A";
+    }
+}
+
+if (!function_exists('utf8_word_count')) {
+    function utf8_word_count($string, $mode = 0){
+        static $it = NULL;
+
+        if (is_null($it)) {
+            $it = IntlBreakIterator::createWordInstance(ini_get('intl.default_locale'));
+        }
+
+        $l = 0;
+        $it->setText($string);
+        $ret = $mode == 0 ? 0 : array();
+        if (IntlBreakIterator::DONE != ($u = $it->first())) {
+            do {
+                if (IntlBreakIterator::WORD_NONE != $it->getRuleStatus()) {
+                    $mode == 0 ? ++$ret : $ret[] = substr($string, $l, $u - $l);
+                }
+                $l = $u;
+            } while(IntlBreakIterator::DONE != ($u = $it->next()));
+        }
+
+        return $ret;
     }
 }
