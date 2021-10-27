@@ -78,15 +78,15 @@
                         <tr>
                             <th width="50px">#</th>
                             <th>{{ trans('Subject') }}</th>
-                            <th>{{ trans('Type') }}</th>
-                            <th style="width: 10%">{{ trans('Client') }}</th>
-                            <th style="width: 10%">{{ trans('Appointment Time') }}</th>
+                            {{--                            <th>{{ trans('Type') }}</th>--}}
+                            <th>{{ trans('Client') }}</th>
+                            <th>{{ trans('Appointment Time') }}</th>
                             <th>{{ trans('Check In') }}</th>
                             <th>{{ trans('Check Out') }}</th>
                             <th>{{ trans('Status') }}</th>
-                            <th>{{ trans('Store') }}</th>
                             <th>{{ trans('Staff') }}</th>
-                            <th style="width: 7%">{{ trans('Intend Time') }}</th>
+                            <th>{{ trans('Intend Time') }}</th>
+                            <th>{{ trans('Comment') }}</th>
                             <th class="text-center">{{ trans('Action') }}</th>
                         </tr>
                         </thead>
@@ -96,7 +96,7 @@
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $appointment->name }}</td>
-                                <td class="text-capitalize"><h6>{{ $appointment->type }}</h6></td>
+                                {{--                                <td class="text-capitalize"><h6>{{ $appointment->type }}</h6></td>--}}
                                 <td>
                                     <a href="{{ route('get.member.update',$appointment->member_id) }}" target="_blank">
                                         {{ $members[$appointment->member_id] ?? "N/A" }}
@@ -110,9 +110,42 @@
                                         {{ $statuses[$appointment->status] }}
                                     </span>
                                 </td>
-                                <td>{{ $appointment->store->name ?? "N/A" }}</td>
                                 <td>{{ $appointment->user->name ?? "N/A" }}</td>
                                 <td>{{ ($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE) ? $appointment->getTotalIntendTimeService() . trans(' minutes') : NULL }}</td>
+                                @php($comment = collect(json_decode($appointment->comment, 1)))
+                                <td id="td-comment-{{ $appointment->id }}">
+                                    <a href="javascript:" class="comment-modal-open" data-toggle="modal"
+                                       data-target="#comment-modal">
+                                        {{ trans("Comment/Remark") }}
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <div class="comment-content d-none">
+                                        <div class="alert-danger rounded"></div>
+                                        <div class="alert-success rounded"></div>
+                                        <div class="form-group">
+                                            <label for="">Client Comment</label>
+                                            <input type="text" class="form-control" readonly
+                                                   value="{{ $comment['comment'] ?? NULL }}">
+                                        </div>
+                                        @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
+                                            <form action="{{ route('api.post.appointment.remarks', $appointment->id) }}"
+                                                  class="form-remarks" method="post" data-id="{{$appointment->id}}">
+                                                <div class="form-group">
+                                                    <label for="">Staff Remarks</label>
+                                                    <input type="text" class="form-control remarks-{{$appointment->id}}" name="remarks"
+                                                           value="{{ $comment['remarks'] ?? NULL }}">
+                                                </div>
+                                                <button class="btn btn-main-color">{{ trans('Update') }}</button>
+                                            </form>
+                                        @else
+                                            <div class="form-group">
+                                                <label for="">Staff Remarks</label>
+                                                <input type="text" class="form-control" readonly
+                                                       value="{{ $comment['remarks'] ?? NULL }}">
+                                            </div>
+                                        @endif
+                                    </div>
+                                </td>
                                 <td class="text-center">
                                     <a href="{{ route("get.appointment.update",$appointment->id) }}"
                                        class="btn btn-main-color"
@@ -133,4 +166,44 @@
         </div>
     </div>
     {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'size' => 'modal-lg']) !!}
+    {!! \App\AppHelpers\Helper::getModal([
+            'id' => 'comment-modal',
+            'class' => 'comment-modal',
+            'title' => trans("Comment/Remark"),
+        ]) !!}
 @endsection
+@push('js')
+    <script>
+        $('.comment-modal-open').click(function () {
+            const content = $(this).parents('td').find('.comment-content').html();
+            $('#comment-modal').find('.modal-body').html(content);
+        });
+
+        @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
+        $(document).on('submit', '.form-remarks', function (e) {
+            e.preventDefault();
+            const url = $(this).attr('action');
+            const remarks = $(this).find('input[name="remarks"]').val();
+            const msg_danger = $(this).parents('.modal-body').find('.alert-danger');
+            const msg_success = $(this).parents('.modal-body').find('.alert-success');
+            const data_id = $(this).attr('data-id');
+            $.ajax({
+                url: url,
+                type: "post",
+                data: {'remarks': remarks}
+            }).done(function (response) {
+                if (response.status === 200) {
+                    msg_danger.html('');
+                    msg_success.html('<div class="p-2">{{ trans('Updated Successfully') }}</div>');
+                    $(document).find('td#td-comment-'+data_id).find('.remarks-'+data_id).remove();
+                    $(document).find('td#td-comment-'+data_id).find('form .form-group').append('<input type="text" class="form-control remarks"'+data_id+' name="remarks" value="'+response.data.remarks+'">');
+                }
+                else{
+                    msg_success.html('');
+                    msg_danger.html('<div class="p-2">{{ trans('Update Failed') }}</div>');
+                }
+            });
+        });
+        @endif
+    </script>
+@endpush

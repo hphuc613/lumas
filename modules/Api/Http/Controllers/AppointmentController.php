@@ -68,24 +68,26 @@ class AppointmentController extends Controller{
      * @return JsonResponse
      */
     public function detail($id){
-        $appointment                               = Appointment::query()
-                                                                ->with('store')
-                                                                ->with('member')
-                                                                ->with('user')
-                                                                ->find($id);
-        $comment                                   = json_decode($appointment->comment, 1);
-        $data['appointment']                       = $appointment->toArray();
-        $data['appointment']['comment']            = $comment['comment'] ?? null;
-        $data['appointment']['comment_created_at'] = $comment['created_at'] ?? null;
-        $data['appointment']['room_name']          = $appointment->room->name ?? null;
-        $data['appointment']['instrument_name']    = $appointment->instrument->name ?? null;
-        unset($data['appointment']['room_id'], $data['appointment']['instrument_id']);
-        $data['appointment']['services'] = $appointment->getServiceList();
-        $data['appointment']['courses']  = $appointment->getCourseList();
+        $appointment                = Appointment::query()
+                                                 ->with('store')
+                                                 ->with('member')
+                                                 ->with('user')
+                                                 ->find($id);
+        $comment                    = json_decode($appointment->comment, 1);
+        $data                       = $appointment->toArray();
+        $data['comment']            = $comment['comment'] ?? null;
+        $data['comment_created_at'] = $comment['created_at'] ?? null;
+        $data['remarks']            = $comment['remarks'] ?? null;
+        $data['remarks_created_at'] = $comment['remarks_created_at'] ?? null;
+        $data['room_name']          = $appointment->room->name ?? null;
+        $data['instrument_name']    = $appointment->instrument->name ?? null;
+        unset($data['room_id'], $data['instrument_id'], $data['notify_created']);
+        $data['services'] = $appointment->getServiceList();
+        $data['courses']  = $appointment->getCourseList();
 
         return response()->json([
             'status' => 200,
-            'data'   => $data['appointment']
+            'data'   => $data
         ]);
     }
 
@@ -96,14 +98,16 @@ class AppointmentController extends Controller{
      * @return JsonResponse
      */
     public function comment(Request $request, $id){
-        $appointment          = Appointment::query()->find($id);
-        $appointment->comment = json_encode(["comment"    => $request->comment,
-                                             "created_at" => formatDate(time(), 'd-m-Y H:i:s')]);
+        $appointment           = Appointment::query()->find($id);
+        $comment               = json_decode($appointment->comment, 1);
+        $comment['comment']    = $request->comment;
+        $comment['created_at'] = formatDate(time(), 'd-m-Y H:i:s');
+        $appointment->comment  = json_encode($comment);
         $appointment->save();
 
         return response()->json([
             'status' => 200,
-            'data'   => $appointment->toArray()
+            'data'   => json_decode($appointment->comment, 1)
         ]);
     }
 
@@ -113,13 +117,22 @@ class AppointmentController extends Controller{
      * @return JsonResponse
      */
     public function remark(Request $request, $id){
-        $appointment              = Appointment::query()->find($id);
-        $appointment->description = $request->description;
-        $appointment->save();
+        $appointment = Appointment::query()->find($id);
+        if (!empty($appointment)) {
+            $comment                       = json_decode($appointment->comment, 1);
+            $comment['remarks']            = $request->remarks;
+            $comment['remarks_created_at'] = formatDate(time(), 'd-m-Y H:i:s');
+            $appointment->comment          = json_encode($comment);
+            $appointment->save();
+
+            return response()->json([
+                'status' => 200,
+                'data'   => json_decode($appointment->comment, 1)
+            ]);
+        }
 
         return response()->json([
-            'status' => 200,
-            'data'   => $appointment->toArray()
+            'status'  => 404,
         ]);
     }
 }
