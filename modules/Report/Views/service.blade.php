@@ -13,6 +13,9 @@
         </div>
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Service Information") }}</h3></div>
+            <div class="group-btn">
+                <a href="{{ route('get.report.service', array_merge(request()->query(), ['export' => true])) }}" class="btn btn-info">{{ trans('Export') }}</a>
+            </div>
         </div>
     </div>
     <!--Search box-->

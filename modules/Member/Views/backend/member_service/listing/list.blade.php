@@ -1,6 +1,11 @@
 <div class="card">
     <div class="card-header">
-        <h5>{{ trans('Service Listing') }}</h5>
+        <div class="d-flex justify-content-between">
+            <h5>{{ trans('Treatment Information') }}</h5>
+            <div class="group-btn">
+                <a href="{{ route("get.export.treatment_client",$member->id) }}" class="btn btn-info">{{ trans('Export') }}</a>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -8,7 +13,7 @@
                 <li class="nav-item">
                     <a class="nav-link active" id="service-doing-tab" data-toggle="pill"
                        href="#service-doing-section"
-                       aria-selected="true">{{ trans("Services") }}</a>
+                       aria-selected="true">{{ trans("Available") }}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="service-completed-tab" data-toggle="pill"
@@ -18,7 +23,7 @@
             @else
                 <li class="nav-item">
                     <a class="nav-link" id="service-doing-tab" data-toggle="pill" href="#service-doing-section"
-                       aria-selected="true">{{ trans("Services") }}</a>
+                       aria-selected="true">{{ trans("Available") }}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" id="service-completed-tab" data-toggle="pill"
