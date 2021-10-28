@@ -497,5 +497,10 @@
     "End Date": "結束日期",
     " must be a date after Start Date." : " 必須是開始日期之後的日期。",
     "Comment/Remark": "員工留言/評價",
-    "Remarks can only be up to 30 words": "備註最多30個字"
+    "Remarks can only be up to 30 words": "備註最多30個字",
+    "Report": "報告",
+    "Treatment Information": "治療信息",
+    "Date": "日",
+    "Times": "次",
+    "Amount": "數量",
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\Role\Model;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Base\Model\BaseModel;
@@ -22,16 +23,25 @@ class Role extends BaseModel{
     public $timestamps = TRUE;
 
     const ADMINISTRATOR = 'Administrator';
+    const THERAPIST     = 'Therapist';
 
+    /**
+     * @param $filter
+     * @return Builder
+     */
     public static function filter($filter){
         $query = self::query();
-        if(isset($filter['name'])){
+        if (isset($filter['name'])) {
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
 
         return $query;
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public static function getName($id){
         $data = self::find($id);
 
@@ -49,7 +59,7 @@ class Role extends BaseModel{
      * @return bool
      */
     public function checkUserHasRole(){
-        if($this->users->isEmpty()){
+        if ($this->users->isEmpty()) {
             return FALSE;
         }
         return TRUE;
