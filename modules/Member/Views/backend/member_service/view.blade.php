@@ -1,11 +1,13 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between">
         <h5>{{ trans("Service Information") }}</h5>
-        <a href="{{ route('get.member_service.e_sign',$member_service->id) }}"
-           class="btn btn-info" data-toggle="modal" data-target="#form-modal"
-           data-title="{{ trans('E-sign') }}">
-            <i class="fas fa-file-signature"></i>
-        </a>
+        @if($member_service->status == \Modules\Member\Model\MemberService::PROGRESSING_STATUS)
+            <a href="{{ route('get.member_service.e_sign',$member_service->id) }}"
+               class="btn btn-info" data-toggle="modal" data-target="#form-modal"
+               data-title="{{ trans('E-sign') }}">
+                <i class="fas fa-file-signature"></i>
+            </a>
+        @endif
     </div>
     <div class="card-body">
         <div id="view" class="row">

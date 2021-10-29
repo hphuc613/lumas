@@ -504,5 +504,8 @@
     "Times": "次",
     "Amount": "數量",
     "Available": "可用的",
-    "Export": "出口"
+    "Export": "出口",
+    "Discount": "折扣",
+    " may not be greater than 100": "不得大於 100",
+    " must be greater than or by 0": "必須大於或小於 0"
 }

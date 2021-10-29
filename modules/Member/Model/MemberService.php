@@ -34,10 +34,10 @@ class MemberService extends BaseModel{
      */
     public static function filter($filter, $member_id){
         $query = self::query();
-        if(isset($filter['code'])){
+        if (isset($filter['code'])) {
             $query->where('code', 'LIKE', '%' . $filter['code'] . '%');
         }
-        if(isset($filter['service_search'])){
+        if (isset($filter['service_search'])) {
             $query->where('service_id', $filter['service_search']);
         }
         $query->where('member_id', $member_id)
@@ -54,10 +54,10 @@ class MemberService extends BaseModel{
      */
     public static function filterCompleted($filter, $member_id){
         $query = self::query();
-        if(isset($filter['code_completed'])){
+        if (isset($filter['code_completed'])) {
             $query->where('code', $filter['code_completed']);
         }
-        if(isset($filter['service_search_completed'])){
+        if (isset($filter['service_search_completed'])) {
             $query->where('service_id', $filter['service_search_completed']);
         }
         $query->where('member_id', $member_id)
@@ -84,14 +84,14 @@ class MemberService extends BaseModel{
      */
     public static function getArrayByMember($member_id, $search_history = false){
         $query = self::query()->where('member_id', $member_id);
-        if($search_history){
+        if ($search_history) {
             $query->whereRaw('deduct_quantity = quantity');
-        }else{
+        } else {
             $query->whereRaw('deduct_quantity < quantity');
         }
         $query = $query->get();
         $data  = [];
-        foreach($query as $value){
+        foreach($query as $value) {
             $data[$value->service_id] = $value->service->name ?? "N/A";
         }
 
@@ -117,7 +117,7 @@ class MemberService extends BaseModel{
      * @param $appointment
      */
     public function eSign($data, $appointment){
-        if(empty($data['signature'])){
+        if (empty($data['signature'])) {
             $data['signature'] = Auth::user()->name;
         }
 
@@ -141,33 +141,33 @@ class MemberService extends BaseModel{
                               ->where('service_id', $data['service_id'])
                               ->where('voucher_id', $data['voucher_id'])
                               ->where('price', $data['price'])
+                              ->where('discount', $data['discount'])
                               ->whereRaw('deduct_quantity < quantity')
                               ->first();
 
-        if(empty($member_service)){
-            $member_service        = new MemberService($data);
-            $member_service->code  = $member_service->generateCode();
-            $member_service->price =
-                !empty($member_service->voucher_id) ? $member_service->voucher->price : $member_service->service->price;
+        if (empty($member_service)) {
+            $member_service           = new MemberService($data);
+            $member_service->code     = $member_service->generateCode();
+            $member_service->price    = $data['price'];
+            $member_service->discount = $data['discount'];
             $member_service->save();
-        }else{
+        } else {
 
             /** Check when no Voucher */
-            if(empty($member_service->voucher_id)){
+            if (empty($member_service->voucher_id)) {
                 $check_same_price = (int)$member_service->price === (int)$member_service->service->price;
-            }else{
+            } else {
                 $voucher          = $member_service->voucher;
                 $check_same_price = (int)$voucher->price === (int)$member_service->price;
             }
 
-            if($check_same_price){
+            if ($check_same_price) {
                 $data['quantity'] = (int)$member_service->quantity + (int)$data['quantity'];
                 $member_service->update($data);
-            }else{
+            } else {
                 $member_service        = new MemberService($data);
                 $member_service->code  = $member_service->generateCode();
-                $member_service->price =
-                    !empty($member_service->voucher_id) ? $member_service->voucher->price : $member_service->service->price;
+                $member_service->price = $data['price'];
                 $member_service->save();
             }
         }

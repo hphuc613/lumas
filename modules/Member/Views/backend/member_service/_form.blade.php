@@ -6,7 +6,7 @@
      * @var MemberService $member_service
      */
     $member = $member ?? $member_service->member;
-    $order_type = Order::SERVICE_TYPE;
+    $order_type = Order::SERVICE_TYPE
 @endphp
 <div class="card">
     <div class="card-header d-flex justify-content-between">
@@ -63,6 +63,15 @@
                 <div class="form-group col-md-6">
                     <label for="quantity">{{ trans("Quantity") }} </label>
                     <input type="number" name="quantity" id="quantity" class="form-control">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="discount">{{ trans("Discount") }} </label>
+                    <div class="input-group">
+                        <input type="number" name="discount" id="discount" max="100" class="form-control" value="0">
+                        <div class="input-group-prepend">
+                            <div class="btn btn-light border" style="cursor: inherit">%</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group col-md-12">
                     <label for="remarks">{{ trans("Remarks") }} </label>

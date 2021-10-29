@@ -34,12 +34,12 @@
                                value="{{ $order_detail->order->member->id }}">
                     </td>
                     <td>
-                        {{ $order_detail->product->name }}
+                        {{ ($order_detail->product->name  ?? "N/A")." | ".moneyFormat($order_detail->product->price  ?? "N/A")}}
                         <input type="hidden" name="product[{{$order_detail->id}}][service_id]"
                                value="{{ $order_detail->product->id }}">
                     </td>
                     <td>
-                        {{ $order_detail->productVoucher->code ?? NULL }}
+                        {{ ($order_detail->productVoucher->code  ?? "N/A")." | ".moneyFormat($order_detail->productVoucher->price  ?? "N/A")}}
                         <input type="hidden" name="product[{{$order_detail->id}}][voucher_id]"
                                value="{{ $order_detail->productVoucher->id ?? NULL }}">
                     </td>
@@ -52,7 +52,7 @@
                         </div>
                     </td>
                     <td>
-                        {{ moneyFormat($order_detail->price) }}
+                        {{ moneyFormat($order_detail->price)." (-".$order_detail->discount."%)" }}
                         <input type="hidden" name="product[{{$order_detail->id}}][price]"
                                value="{{ $order_detail->price }}">
                     </td>

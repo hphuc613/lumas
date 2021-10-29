@@ -119,19 +119,16 @@ class OrderController extends Controller{
             $order->updated_by = Auth::id();
             $order->save();
 
-
             $service       = Service::query()->find($data['service_id']);
             $data['price'] = 0;
-
             if (!empty($data['voucher_id'])) {
                 $voucher       = ServiceVoucher::query()->find($data['voucher_id']);
-                $data['price'] = $voucher->price;
+                $data['price'] = (int)$voucher->price;
 
             } else {
-                $data['price'] = $service->price;
+                $data['price'] = (int)$service->price;
             }
-
-
+            $data['price'] = $data['price'] - ($data['price'] * ((int)$data['discount']/100));
             $order_detail = OrderDetail::query()
                                        ->where('order_id', $order->id)
                                        ->where('product_id', $data['service_id'])
@@ -139,19 +136,20 @@ class OrderController extends Controller{
                                        ->first();
 
             if (empty($order_detail)) {
-                $order_detail                  = new OrderDetail();
-                $order_detail['order_id']      = $order->id;
-                $order_detail['product_id']    = $data['service_id'];
-                $order_detail['product_price'] = $service->price;
-                $order_detail['voucher_id']    = $data['voucher_id'];
-                $order_detail['voucher_price'] = $voucher->price ?? 0;
-                $order_detail['price']         = $data['price'];
-                $order_detail['quantity']      = (int)$data['quantity'];
+                $order_detail                = new OrderDetail();
+                $order_detail->order_id      = $order->id;
+                $order_detail->product_id    = $data['service_id'];
+                $order_detail->product_price = $service->price;
+                $order_detail->voucher_id    = $data['voucher_id'];
+                $order_detail->voucher_price = $voucher->price ?? 0;
+                $order_detail->discount      = (int)$data['discount'];
+                $order_detail->price         = $data['price'];
+                $order_detail->quantity      = (int)$data['quantity'];
             } else {
-                $order_detail['quantity'] = $order_detail->quantity + (int)$data['quantity'];
+                $order_detail->quantity = $order_detail->quantity + (int)$data['quantity'];
             }
 
-            $order_detail['amount'] = $order_detail['price'] * $order_detail['quantity'];
+            $order_detail->amount = $order_detail->price * $order_detail->quantity;
             $order_detail->save();
 
             DB::commit();
@@ -278,10 +276,13 @@ class OrderController extends Controller{
             if ($value['quantity'] < 1) {
                 continue;
             }
+
             $order_detail           = OrderDetail::find($key);
             $order_detail->quantity = $value['quantity'];
             $order_detail->amount   = $order_detail->price * $order_detail->quantity;
             $order_detail->save();
+
+            $value['discount'] = $order_detail->discount;
 
             if ($order->order_type === Order::COURSE_TYPE) {
                 MemberCourse::insertData($value);
