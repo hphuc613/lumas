@@ -10,20 +10,29 @@ class ForgotPasswordRequest extends ApiRequest{
      */
     public function rules(){
         return [
-            'email' => 'required|email',
+            'phone'            => 'required|check_exist:members,phone',
+            'password'         => 'min:6|required|regex:/^.*(?=.{2,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/',
+            'confirm_password' => 're_enter_password|required_with:password'
         ];
     }
 
     public function messages(){
         return [
-            'email.required' => trans('The Email can not be empty.'),
-            'email.email'    => trans('The Email must be a email.')
+            'phone.required'    => trans('The Phone can not be empty.'),
+            'check_exist'       => ':attribute' . trans(' does not exist.'),
+            'password.required' => trans('The Password can not be empty.'),
+            'password.regex'    => trans('The Password must at least 1 number or 1 english letter'),
+            'min'               => trans('The Password too short.'),
+            're_enter_password' => trans('The Wrong password'),
+            'required_with'     => trans('The Confirm Password can not be empty.'),
         ];
     }
 
     public function attributes(){
         return [
-            'email' => trans('Email'),
+            'phone'            => trans('Phone'),
+            'password'         => trans('Password'),
+            'confirm_password' => trans('Confirm Password'),
         ];
     }
 }

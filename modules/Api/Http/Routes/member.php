@@ -6,6 +6,7 @@ Route::prefix('client')->group(function(){
     Route::post('login', 'MemberController@login');
     Route::post('register-validate', 'MemberController@validateRegister');
     Route::post('register', 'MemberController@register');
+    Route::post('forgot-password-validate', 'MemberController@validateForgotPassword');
     Route::post('forgot-password', 'MemberController@forgotPassword');
 
     Route::middleware(['api-member'])->group(function(){

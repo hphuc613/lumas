@@ -42,10 +42,10 @@ class MemberController extends Controller{
         Helper::apiResponseByLanguage($request);
         $data               = $request->only("phone", "password");
         $data['deleted_at'] = null;
-        if(empty($request->phone) || empty($request->password)){
+        if (empty($request->phone) || empty($request->password)) {
             return response()->json(['status' => 400, 'error' => trans('Incorrect phone or password')]);
         }
-        if(!$token = $this->auth->setTTL(60 * 7 * 24)->attempt($data)){
+        if (!$token = $this->auth->setTTL(60 * 7 * 24)->attempt($data)) {
             return response()->json(['status' => 400, 'error' => trans('Incorrect phone or password')]);
         }
         $member = $this->auth->user();
@@ -53,13 +53,6 @@ class MemberController extends Controller{
             return response()->json([
                 'status' => 400,
                 'error'  => trans('Your account is inactive. Please contact with admin page to get more information.')
-            ]);
-        }
-
-        if ($member->status == Status::STATUS_PENDING) {
-            return response()->json([
-                'status' => 402,
-                'error'  => trans('Please verify your account.')
             ]);
         }
 
@@ -75,10 +68,10 @@ class MemberController extends Controller{
      */
     protected function respondWithToken($token){
         return response()->json([
-            'status' => 200,
-            'client_info' => Member::query()->find($this->auth->id()),
-            'token_type' => 'bearer',
-            'expires_in' => $this->auth->factory()->getTTL() * 60,
+            'status'       => 200,
+            'client_info'  => Member::query()->find($this->auth->id()),
+            'token_type'   => 'bearer',
+            'expires_in'   => $this->auth->factory()->getTTL() * 60,
             'access_token' => $token
         ]);
     }
@@ -109,25 +102,9 @@ class MemberController extends Controller{
         $data = $request->all();
         unset($data['password_re_enter']);
         $member              = new Member($data);
-        $member->status      = Status::STATUS_PENDING;
+        $member->status      = Status::STATUS_ACTIVE;
         $member->verify_code = Str::random(40);
         $member->save();
-        $body = '<div><a style="background-color: #4CAF50;
-                              border: none;
-                              color: white;
-                              padding: 10px 32px;
-                              text-align: center;
-                              text-decoration: none;
-                              display: inline-block;
-                              font-size: 16px;" href="' . route('frontend.get.success_register', $member->verify_code) .
-                '">' . trans("Verify") . '</a></div>';
-        $send = Helper::sendMail($member->email, trans('LUMAS - Register Account'), 'Verify Account', $body);
-        if (!$send) {
-            return response()->json([
-                'status'  => 400,
-                'message' => trans('Can not send email. Please contact to administrator.')
-            ]);
-        }
 
         return response()->json([
             'status'      => 200,
@@ -150,15 +127,15 @@ class MemberController extends Controller{
      */
     public function updateProfile(MemberRequest $request){
         $member = Member::query()->where('id', $this->auth->id())->first();
-        $data = $request->all();
+        $data   = $request->all();
         if (empty($request->password)) {
             unset($data['password']);
         }
         $member->update($data);
 
         return response()->json([
-            'status' => 200,
-            'message' => trans('Updated Successfully'),
+            'status'      => 200,
+            'message'     => trans('Updated Successfully'),
             'client_info' => $member
         ]);
     }
@@ -167,28 +144,25 @@ class MemberController extends Controller{
      * @param ForgotPasswordRequest $request
      * @return JsonResponse
      */
-    public function forgotPassword(ForgotPasswordRequest $request){
-        $member = Member::query()->where('email', $request->email)->first();
+    public function validateForgotPassword(ForgotPasswordRequest $request){
+        return response()->json(['status' => 200, 'message' => 'Validated']);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function forgotPassword(Request $request){
+        $member = Member::query()->where('phone', $request->phone)->first();
 
         if (!empty($member)) {
-            $password = Str::random(6);
-            $body = '';
-            $body .= "<div><p>" . trans("Your password: ") . $password . "</p></div>";
-            $body .= '<div><i><p style="color: red">' . trans("You should change password after login.") .
-                     '</p></i></div>';
-            $send = Helper::sendMail($member->email, trans('Reset password'), trans('Reset password'), $body);
-            if ($send) {
-                $member->password = $password;
-                $member->save();
+            $member->password = $request->password;
+            $member->save();
 
-                return response()->json(['status' => 200, 'message' => trans('Sent mail successfully.')]);
-            }
-        } else {
-            return response()->json(['status' => 400, 'error' => trans('Email does not exist in system.')]);
+            return response()->json(['status' => 200, 'message' => 'Successfully']);
         }
 
-
-        return response()->json(['status' => 502, 'error' => trans('Cannot send mail.')]);
+        return response()->json(['status' => 400, 'error' => trans('Phone does not exist in system.')]);
     }
 
     /**
