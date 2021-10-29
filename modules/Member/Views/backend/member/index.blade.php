@@ -73,6 +73,11 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-3 form-group">
+                            <label for="referrer">{{ trans("Referrer") }}</label>
+                            <input type="text" class="form-control" id="referrer" name="referrer"
+                                   value="{{ $filter['referrer'] ?? null }}">
+                        </div>
                     </div>
                     <div class="input-group">
                         <button type="submit" class="btn btn-main-color mr-2">{{ trans("Search") }}</button>

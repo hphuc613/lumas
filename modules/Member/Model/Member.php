@@ -68,6 +68,9 @@ class Member extends BaseMember{
         if (isset($filter['status'])) {
             $query->where('status', $filter['status']);
         }
+        if (isset($filter['referrer'])) {
+            $query->where('referrer', 'LIKE', '%' . $filter['referrer'] . '%');
+        }
         if(isset($filter['type_id'])){
             $query->where('type_id', $filter['type_id']);
         }
