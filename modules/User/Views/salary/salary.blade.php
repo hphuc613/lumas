@@ -98,8 +98,7 @@
                                     <div class="col-6">
                                         <label>
                                             {{ trans('Total monthly sales') }}
-                                            ({{ ($target_person_income == $target_by) ? trans('Personal') : trans('Company') }}
-                                            )
+                                            ({{ ($target_person_income == $target_by) ? trans('Personal') : trans('Company') }})
                                         </label>
                                     </div>
                                     <div class="col-6">
@@ -132,6 +131,18 @@
                                         <span class="text-info">
                                             ({{ trans("Next target") }}: {{ $user->getNextCommissionRate() }})
                                         </span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label>{{ trans('Payment rate') }}/{{ trans('Bonus') }} {{ trans('Commission') }}:</label>
+                                    </div>
+                                    <div class="col-6">
+                                        @if($target_person_income == $target_by)
+                                            <span class="text-success">{{ moneyFormat(($salary->payment_rate ?? 0) * $orders->sum('total_price') / 100 ) }}</span>
+                                        @else
+                                            <span class="text-success">{{ moneyFormat(($salary->payment_rate ?? 0) + $orders->sum('total_price')) }}</span>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group row">

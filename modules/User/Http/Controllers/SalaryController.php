@@ -150,6 +150,7 @@ class SalaryController extends Controller{
         $users = User::query()->whereHas('roles', function($qr){
             $qr->where('role_id', '<>', Role::getAdminRole()->id);
         })->get();
+        $service_pay        = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
         DB::beginTransaction();
         try {
             foreach($users as $user) {
@@ -163,15 +164,12 @@ class SalaryController extends Controller{
                     $salary->month   = formatDate(time(), 'm/Y');
                 }
                 $salary->basic_salary       = $user->basic_salary;
-                $salary->sale_commission    = $salary->getSaleCommission();
-                $salary->service_commission = $salary->getServiceCommission();
-                $salary->company_commission = $salary->getCompanyIncomeCommission();
+                $salary->payment_rate       = $user->getCommissionRate(); //Commission By Role
+                $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0; //Extra Bonus
+                $salary->service_commission = $salary->getTotalProvideServiceCommission() * $service_pay; //Provide Services
                 $salary->total_commission   = $salary->getTotalCommission();
                 $salary->total_salary       = $salary->getTotalSalary();
-                $salary->payment_rate       = $user->getCommissionRate();
-                $salary->service_rate
-                                            = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE)
-                                              ?? 0;
+                $salary->save();
                 $salary->save();
             }
 

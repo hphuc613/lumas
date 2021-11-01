@@ -45,13 +45,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="logo">{{ trans('Extra Bonus') }}</label>
-                            <input type="number" name="{{ \Modules\Setting\Model\CommissionRateSetting::SERVICE_RATE }}"
+                            <input type="number" step="any" name="{{ \Modules\Setting\Model\CommissionRateSetting::SERVICE_RATE }}"
                                    class="form-control" value="{{ $service_rate }}">
                         </div>
 
                         <div class="form-group">
                             <label for="logo">{{ trans('Service Pay') }}</label>
-                            <input type="number" name="{{ \Modules\Setting\Model\CommissionRateSetting::SERVICE_PAY }}"
+                            <input type="number" step="any" name="{{ \Modules\Setting\Model\CommissionRateSetting::SERVICE_PAY }}"
                                    class="form-control" value="{{ $service_pay }}">
                         </div>
                     </div>

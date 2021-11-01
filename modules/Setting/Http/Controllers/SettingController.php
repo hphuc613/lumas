@@ -213,7 +213,7 @@ class SettingController extends Controller{
                 $service_pay_data->value = 0;
             }
             $service_pay_data->save();
-            $request->session()->flash('success', 'Appointment Config updated successfully.');
+            $request->session()->flash('success', 'Commission Config updated successfully.');
 
             return redirect()->back();
         }
