@@ -14,11 +14,11 @@ return [
             'route'      => route('get.report.service'),
             'middleware' => []
         ],
-       /* [
-            'id'         => 'report-treatment',
-            'name'       => trans('Treatment Information'),
-            'route'      => route('get.report.treatment'),
+        [
+            'id'         => 'report-sale',
+            'name'       => trans('Sales Report'),
+            'route'      => route('get.report.sale'),
             'middleware' => []
-        ],*/
+        ],
     ]
 ];

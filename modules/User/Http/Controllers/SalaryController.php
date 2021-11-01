@@ -34,13 +34,13 @@ class SalaryController extends Controller{
      */
     public function getSalary($id){
         $user = User::find($id);
-        if($user->isAdmin()){
+        if ($user->isAdmin()) {
             return redirect()->back();
         }
         $salary    = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
         $target_by = $user->getTargetBy();
         $orders    = Order::query();
-        if($target_by === CommissionRateSetting::PERSON_INCOME){
+        if ($target_by === CommissionRateSetting::PERSON_INCOME) {
             $orders->where('updated_by', $user->id);
         }
         $orders->whereMonth('updated_at', formatDate(time(), 'm'));
@@ -62,7 +62,7 @@ class SalaryController extends Controller{
                         ->where('month', formatDate(time(), 'm/Y'))
                         ->first();
 
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
 
@@ -82,26 +82,23 @@ class SalaryController extends Controller{
         $salary = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
 
         DB::beginTransaction();
-        try{
-            if(empty($salary)){
+        try {
+            if (empty($salary)) {
                 $salary          = new Salary();
                 $salary->user_id = $id;
                 $salary->month   = formatDate(time(), 'm/Y');
             }
             $salary->basic_salary       = $user->basic_salary;
-            $salary->sale_commission    = $salary->getSaleCommission();
-            $salary->service_commission = $salary->getServiceCommission();
-            $salary->company_commission = $salary->getCompanyIncomeCommission();
+            $salary->payment_rate       = $user->getCommissionRate(); //Commission By Role
+            $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0; //Extra Bonus
+            $salary->service_commission = $salary->getTotalProvideServiceCommission(); //Provide Services
             $salary->total_commission   = $salary->getTotalCommission();
             $salary->total_salary       = $salary->getTotalSalary();
-            $salary->payment_rate       = $user->getCommissionRate();
-            $salary->service_rate       =
-                CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0;
             $salary->save();
 
             DB::commit();
             $request->session()->flash('success', trans('Update Basic Salary successfully.'));
-        }catch(Throwable $th){
+        } catch(Throwable $th) {
             DB::rollBack();
             $request->session()->flash('danger', trans('Update Basic Salary failed.'));
         }
@@ -118,26 +115,23 @@ class SalaryController extends Controller{
         $user   = User::find($id);
         $salary = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
         DB::beginTransaction();
-        try{
-            if(empty($salary)){
+        try {
+            if (empty($salary)) {
                 $salary          = new Salary();
                 $salary->user_id = $id;
                 $salary->month   = formatDate(time(), 'm/Y');
             }
             $salary->basic_salary       = $user->basic_salary;
-            $salary->sale_commission    = $salary->getSaleCommission();
-            $salary->service_commission = $salary->getServiceCommission();
-            $salary->company_commission = $salary->getCompanyIncomeCommission();
+            $salary->payment_rate       = $user->getCommissionRate(); //Commission By Role
+            $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0; //Extra Bonus
+            $salary->service_commission = $salary->getTotalProvideServiceCommission(); //Provide Services
             $salary->total_commission   = $salary->getTotalCommission();
             $salary->total_salary       = $salary->getTotalSalary();
-            $salary->payment_rate       = $user->getCommissionRate();
-            $salary->service_rate       =
-                CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0;
             $salary->save();
 
             DB::commit();
             $request->session()->flash('success', trans('Calculate Salary successfully.'));
-        }catch(Throwable $th){
+        } catch(Throwable $th) {
             DB::rollBack();
             $request->session()->flash('danger', trans('Calculate Salary failed.'));
         }
@@ -155,13 +149,13 @@ class SalaryController extends Controller{
             $qr->where('role_id', '<>', Role::getAdminRole()->id);
         })->get();
         DB::beginTransaction();
-        try{
-            foreach($users as $user){
+        try {
+            foreach($users as $user) {
                 $salary = Salary::query()
                                 ->where('user_id', $user->id)
                                 ->where('month', formatDate(time(), 'm/Y'))
                                 ->first();
-                if(empty($salary)){
+                if (empty($salary)) {
                     $salary          = new Salary();
                     $salary->user_id = $user->id;
                     $salary->month   = formatDate(time(), 'm/Y');
@@ -173,14 +167,15 @@ class SalaryController extends Controller{
                 $salary->total_commission   = $salary->getTotalCommission();
                 $salary->total_salary       = $salary->getTotalSalary();
                 $salary->payment_rate       = $user->getCommissionRate();
-                $salary->service_rate       =
-                    CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0;
+                $salary->service_rate
+                                            = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE)
+                                              ?? 0;
                 $salary->save();
             }
 
             DB::commit();
             $request->session()->flash('success', trans('Bulk Calculate Salary successfully.'));
-        }catch(Throwable $th){
+        } catch(Throwable $th) {
             DB::rollBack();
             $request->session()->flash('danger', trans('Bulk Calculate Salary failed.'));
         }
@@ -200,7 +195,7 @@ class SalaryController extends Controller{
                                          ->where('updated_by', $user->id)
                                          ->paginate(50);
 
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
 

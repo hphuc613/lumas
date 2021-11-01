@@ -1,3 +1,9 @@
+<?php
+
+use Modules\Setting\Model\CommissionRateSetting;
+
+$target_company = json_decode(CommissionRateSetting::getValueByKey(CommissionRateSetting::COMPANY_INCOME), 1);
+?>
 <form action="" method="post" id="commission-rate-form">
     {{ csrf_field() }}
     <div class="form-group row">
@@ -18,14 +24,27 @@
                    value="{{ $rate->target ?? old('target') }}">
         </div>
     </div>
-    <div class="form-group row">
-        <div class="col-md-4">
-            <label for="rate">{{ trans('Rate(%)') }}</label>
+    @if(in_array($role->id, $target_company))
+        <div class="form-group row">
+            <div class="col-md-4">
+                <label for="bonus">{{ trans('Bonus') }}</label>
+            </div>
+            <div class="col-md-8">
+                <input type="number" class="form-control" id="bonus" name="bonus"
+                       value="{{ $rate->bonus ?? old('bonus') }}">
+            </div>
         </div>
-        <div class="col-md-8">
-            <input type="number" class="form-control" id="rate" name="rate" value="{{ $rate->rate ?? old('rate') }}">
+    @else
+        <div class="form-group row">
+            <div class="col-md-4">
+                <label for="rate">{{ trans('Rate(%)') }}</label>
+            </div>
+            <div class="col-md-8">
+                <input type="number" class="form-control" id="rate" name="rate"
+                       value="{{ $rate->rate ?? old('rate') }}">
+            </div>
         </div>
-    </div>
+    @endif
     <div class="input-group mt-5">
         <button type="submit" class="btn btn-main-color mr-2">{{ trans('Save') }}</button>
         <button type="reset" class="btn btn-default" data-dismiss="modal">{{ trans('Cancel') }}</button>

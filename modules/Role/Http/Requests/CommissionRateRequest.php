@@ -22,7 +22,8 @@ class CommissionRateRequest extends FormRequest{
     public function rules(){
         return [
             'target' => 'required|numeric|min:1',
-            'rate'   => 'required|numeric|min:1'
+            'rate'   => 'numeric|min:1',
+            'bonus'  => 'numeric|min:1'
         ];
     }
 
@@ -37,7 +38,8 @@ class CommissionRateRequest extends FormRequest{
     public function attributes(){
         return [
             'target' => trans('Target'),
-            'rate'   => trans('Rate')
+            'rate'   => trans('Rate'),
+            'bonus'   => trans('Bonus'),
         ];
     }
 }

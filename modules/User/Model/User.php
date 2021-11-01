@@ -33,15 +33,15 @@ class User extends BaseUser{
      */
     public static function filter($filter){
         $query = self::query();
-        if(isset($filter['name'])){
+        if (isset($filter['name'])) {
             $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
-        if(isset($filter['role_id'])){
+        if (isset($filter['role_id'])) {
             $query->whereHas('roles', function($qr) use ($filter){
                 $qr->where('role_id', $filter['role_id']);
             });
         }
-        if(isset($filter['status'])){
+        if (isset($filter['status'])) {
             $query->where('status', $filter['status']);
         }
 
@@ -54,16 +54,8 @@ class User extends BaseUser{
      */
     public function save(array $options = []){
         $insert = Request::all();
-        $this->beforeSave($this->attributes, $insert);
         parent::save($options);
         $this->afterSave($insert);
-    }
-
-
-    /**
-     *
-     */
-    public function beforeSave($old_attributes, $insert){
     }
 
     /**
@@ -83,15 +75,19 @@ class User extends BaseUser{
 
         $target_by = $this->getTargetBy();
 
-        if($target_by === CommissionRateSetting::PERSON_INCOME){
+        if ($target_by === CommissionRateSetting::PERSON_INCOME) {
             $income = $this->orders()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
-        }else{
+            foreach($rates as $rate) {
+                if ((int)$income >= (int)$rate->target) {
+                    $data = (int)$rate->rate;
+                }
+            }
+        } else {
             $income = Order::query()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
-        }
-
-        foreach($rates as $rate){
-            if((int)$income >= (int)$rate->target){
-                $data = (int)$rate->rate;
+            foreach($rates as $rate) {
+                if ((int)$income >= (int)$rate->target) {
+                    $data = $rate->bonus;
+                }
             }
         }
 
@@ -107,22 +103,26 @@ class User extends BaseUser{
 
         $target_by = $this->getTargetBy();
 
-        if($target_by === CommissionRateSetting::PERSON_INCOME){
+        if ($target_by === CommissionRateSetting::PERSON_INCOME) {
             $income = $this->orders()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
-        }else{
+        } else {
             $income = Order::query()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
         }
 
         $count = count($rates);
 
-        foreach($rates as $key => $rate){
-            if((int)$income < (int)$rates[0]->target){
-                return moneyFormat((int)$rates[0]->target) . ' - ' . (int)$rates[0]->rate . '%';
+        foreach($rates as $key => $rate) {
+            if ((int)$income < (int)$rates[0]->target) {
+                if ($target_by === CommissionRateSetting::PERSON_INCOME) {
+                    return moneyFormat((int)$rates[0]->target) . ' - ' . (int)$rates[0]->rate . '%';
+                } else {
+                    return moneyFormat((int)$rates[0]->target) . ' - ' . moneyFormat($rates[0]->bonus);
+                }
             }
-            if((int)$income >= (int)$rate->target){
-                if($key + 1 < $count){
+            if ((int)$income >= (int)$rate->target) {
+                if ($key + 1 < $count) {
                     $data = moneyFormat((int)$rates[$key + 1]->target) . ' - ' . (int)$rates[$key + 1]->rate . '%';
-                }else{
+                } else {
                     $data = 0;
                 }
             }
@@ -198,7 +198,7 @@ class User extends BaseUser{
      * @return bool
      */
     public function isAdmin(){
-        if($this->getRoleAttribute()->id == Role::getAdminRole()->id){
+        if ($this->getRoleAttribute()->id == Role::getAdminRole()->id) {
             return true;
         }
         return false;

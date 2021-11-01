@@ -13,6 +13,7 @@ use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Base\Model\Status;
 use Modules\Member\Model\MemberService;
+use Modules\Order\Model\OrderDetail;
 use Modules\Role\Model\Role;
 use Modules\Service\Model\Service;
 use Modules\User\Model\User;
@@ -38,8 +39,8 @@ class ReportController extends Controller{
         $filter = $request->all();
         $users  = User::with('roles')
                       ->whereHas('roles', function($role_query){
-                          $therapist = Role::query()->where('name', Role::THERAPIST)->first();
-                          return $role_query->where('role_id', $therapist->id);
+                          $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                          return $role_query->whereNotIn('role_id', [$admin->id]);
                       })
                       ->where('status', Status::STATUS_ACTIVE)
                       ->pluck('name', 'id')->toArray();
@@ -133,19 +134,19 @@ class ReportController extends Controller{
      * @return BinaryFileResponse
      */
     public function exportTreatmentClient($id){
-        $member_services    = MemberService::query()->where('member_id', $id)
-                                           ->where('status', MemberService::COMPLETED_STATUS)
-                                           ->get();
-        $data_export = [];
-        foreach($member_services as $key => $value){
-            $data_export[$key]['code'] = $value->code;
-            $data_export[$key]['service'] = $value->service->name ?? "N/A";
-            $data_export[$key]['voucher'] = $value->voucher->code  ?? "N/A";
-            $data_export[$key]['remaining'] = $value->getRemaining();
-            $data_export[$key]['quantity'] = $value->quantity;
-            $data_export[$key]['price'] = moneyFormat($value->price, 0);
+        $member_services = MemberService::query()->where('member_id', $id)
+                                        ->where('status', MemberService::COMPLETED_STATUS)
+                                        ->get();
+        $data_export     = [];
+        foreach($member_services as $key => $value) {
+            $data_export[$key]['code']        = $value->code;
+            $data_export[$key]['service']     = $value->service->name ?? "N/A";
+            $data_export[$key]['voucher']     = $value->voucher->code ?? "N/A";
+            $data_export[$key]['remaining']   = $value->getRemaining();
+            $data_export[$key]['quantity']    = $value->quantity;
+            $data_export[$key]['price']       = moneyFormat($value->price, 0);
             $data_export[$key]['total_price'] = moneyFormat($value->price * $value->quantity, 0);
-            $data_export[$key]['created_at'] = formatDate(strtotime($value->created_at), 'd-m-Y H:i');
+            $data_export[$key]['created_at']  = formatDate(strtotime($value->created_at), 'd-m-Y H:i');
         }
 
         $export             = new Export;
@@ -170,5 +171,37 @@ class ReportController extends Controller{
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
             'path' => Paginator::resolveCurrentPath()
         ]);
+    }
+
+    public function sale(Request $request){
+        $filter = $request->all();
+        $users  = User::with('roles')
+                      ->whereHas('roles', function($role_query){
+                          $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                          return $role_query->whereNotIn('role_id', [$admin->id]);
+                      })
+                      ->where('status', Status::STATUS_ACTIVE)
+                      ->pluck('name', 'id')->toArray();
+
+        $services = Service::getArray(Status::STATUS_ACTIVE);
+
+        $data = OrderDetail::query()
+                           ->with(['orders' => function($oq) use ($request){
+                               if (isset($request->user_id)) {
+                                   $oq->where('updated_by', $request->user_id);
+                               }
+                               if (isset($request->from)) {
+                                   $oq->where('end', '>=', formatDate(strtotime($request->from), 'Y-m-d'));
+                               }
+                               if (isset($request->to)) {
+                                   $oq->where('end', '<=', formatDate(strtotime($request->to) +
+                                                                      86400, 'Y-m-d'));
+                               }
+
+                               $oq->orderBy('updated_at', 'DESC');
+                           }])->paginate(50);
+
+
+        return view("Report::sale", compact('data', 'users', 'filter'));
     }
 }

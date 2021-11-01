@@ -42,9 +42,9 @@ class Salary extends BaseModel{
     /**
      * @return float|int
      */
-    public function getSaleCommission(){
-        if($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME){
-            $rate       = $this->user->getCommissionRate();
+    public function getPaymentRateOrBonusCommission(){
+        $rate = $this->payment_rate;
+        if ($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME) {
             $commission = $this->user->orders()
                                      ->whereMonth('updated_at', formatDate(time(), 'm'))
                                      ->sum('total_price');
@@ -52,57 +52,48 @@ class Salary extends BaseModel{
             return $commission * $rate / 100;
         }
 
-        return 0;
+        return $rate;
     }
 
     /**
      * @return float|int
      */
-    public function getServiceCommission(){
-        if($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME){
-            $service_rate             =
-                (int)CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0;
-            $member_service_histories = MemberServiceHistory::query()
-                                                            ->whereMonth('updated_at', formatDate(time(), 'm'))
-                                                            ->where('updated_by', $this->user->id)
-                                                            ->get();
-            $data                     = 0;
-            foreach($member_service_histories as $history){
-                $data += $history->memberService->price;
-            }
+    public function getExtraBonusCommission(){
+        $extra_bonus = $this->service_rate ?? 0;
+        if ($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME) {
+            $commission = $this->user->orders()
+                                     ->whereMonth('updated_at', formatDate(time(), 'm'))
+                                     ->sum('total_price');
 
-            return $data * $service_rate / 100;
+            return $commission * $extra_bonus / 100;
         }
+        $commission = Order::query()
+                           ->whereMonth('updated_at', formatDate(time(), 'm'))
+                           ->sum('total_price');
 
-        return 0;
-    }
-
-
-    /**
-     * @return float|int
-     */
-    public
-    function getCompanyIncomeCommission(){
-        if($this->user->getTargetBy() === CommissionRateSetting::COMPANY_INCOME){
-            $rate       = $this->user->getCommissionRate();
-            $commission = Order::query()
-                               ->whereMonth('updated_at', formatDate(time(), 'm'))
-                               ->sum('total_price');
-
-            return $commission * $rate / 100;
-        }
-
-        return 0;
+        return $commission * $extra_bonus / 100;
     }
 
     /**
      * @return float|int
      */
-    public
-    function getTotalCommission(){
-        $sale_commission    = $this->getSaleCommission();
-        $service_commission = $this->getServiceCommission();
-        $company_commission = $this->getCompanyIncomeCommission();
-        return $sale_commission + $service_commission + $company_commission;
+    public function getTotalProvideServiceCommission(){
+        $data = MemberServiceHistory::query()
+                                   ->whereMonth('updated_at', formatDate(time(), 'm'))
+                                   ->where('updated_by', $this->user->id)
+                                   ->count();
+
+        $service_pay  = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
+        return $data * $service_pay;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getTotalCommission(){
+        $sale_commission = $this->getPaymentRateOrBonusCommission();
+        $extra_bonus     = $this->getExtraBonusCommission();
+        $service_commission = $this->getTotalProvideServiceCommission();
+        return $sale_commission + $extra_bonus + $service_commission;
     }
 }

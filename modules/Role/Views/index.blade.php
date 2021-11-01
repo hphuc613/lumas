@@ -73,7 +73,7 @@
                                     <td>{{ \Carbon\Carbon::parse($role->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td>{{ \Carbon\Carbon::parse($role->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
-                                        @if(!in_array($role->name, \Modules\Role\Model\Role::getDefaultRoles()))
+                                        @if(!in_array($role->name, ["Administrator"]))
                                             <a href="{{ route('get.role.update',$role->id) }}"
                                                class="btn btn-main-color mr-2">
                                                 <i class="fas fa-pencil-alt"></i></a>

@@ -1,3 +1,9 @@
+<?php
+
+use Modules\Setting\Model\CommissionRateSetting;
+
+$target_company = json_decode(CommissionRateSetting::getValueByKey(CommissionRateSetting::COMPANY_INCOME), 1);
+?>
 <div class="listing">
     <div class="sumary">
         {!! summaryListing($rates) !!}
@@ -8,7 +14,7 @@
             <tr>
                 <th width="50px">#</th>
                 <th>{{ trans('Target') }}</th>
-                <th>{{ trans('Rate') }}</th>
+                <th>{{ in_array($role->id, $target_company) ? trans('Bonus') : trans('Rate') }}</th>
                 <th width="200px" class="action">{{ trans('Action') }}</th>
             </tr>
             </thead>
@@ -18,7 +24,7 @@
                 <tr>
                     <td>{{$key++}}</td>
                     <td>{{ moneyFormat($rate->target) }}</td>
-                    <td>{{ $rate->rate }}%</td>
+                    <td>{{ in_array($role->id, $target_company) ? moneyFormat($rate->bonus) :  $rate->rate.'%' }}</td>
                     <td class="link-action">
                         <a href="{{ route('get.commission_rate.update', $rate->id) }}"
                            class="btn btn-main-color" data-toggle="modal"

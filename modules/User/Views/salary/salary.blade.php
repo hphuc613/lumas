@@ -1,6 +1,8 @@
 @extends('Base::layouts.master')
 @php
-    $previous_page = request()->previous_page
+    use Modules\Setting\Model\CommissionRateSetting;$previous_page = request()->previous_page;
+    $target_person_income = CommissionRateSetting::PERSON_INCOME;
+    $extra_bonus = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE)
 @endphp
 @section('content')
     <div id="salary-section">
@@ -92,75 +94,55 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                @if($target_by === \Modules\Setting\Model\CommissionRateSetting::PERSON_INCOME)
-                                    <div class="form-group row">
-                                        <div class="col-6">
-                                            <label for="">{{ trans('Personal Total Sales Income') }}:</label>
-                                        </div>
-                                        <div class="col-6">
-                                            <h6>{{ moneyFormat($orders->sum('total_price')) }}</h6>
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="form-group row">
-                                        <div class="col-6">
-                                            <label for="">{{ trans('Total Company income') }}:</label>
-                                        </div>
-                                        <div class="col-6">
-                                            <h6>{{ moneyFormat($orders->sum('total_price')) }}</h6>
-                                        </div>
-                                    </div>
-                                @endif
                                 <div class="form-group row">
                                     <div class="col-6">
-                                        <label for="">{{ trans('Payment rate') }}:</label>
+                                        <label>
+                                            {{ trans('Total monthly sales') }}
+                                            ({{ ($target_person_income == $target_by) ? trans('Person') : trans('Company') }}
+                                            )
+                                        </label>
                                     </div>
                                     <div class="col-6">
-                                        <span class="text-success">{{ $salary->payment_rate ?? 0 }}%</span>
-                                        <span
-                                            class="text-info">(Next target: {{ $user->getNextCommissionRate() }})</span>
+                                        <h6>{{ moneyFormat($orders->sum('total_price')) }}</h6>
                                     </div>
                                 </div>
-                                @if($target_by === \Modules\Setting\Model\CommissionRateSetting::PERSON_INCOME)
-                                    <div class="form-group row">
-                                        <div class="col-6">
-                                            <label for="">{{ trans('Sale Commission') }}:</label>
-                                        </div>
-                                        <div class="col-6">
-                                            {{ moneyFormat($salary->sale_commission ?? 0) }}
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-6">
-                                            <label for="">{{ trans('Service rate') }}:</label>
-                                        </div>
-                                        <div class="col-6">
-                                            <span class="text-success">{{ $salary->service_rate ?? 0 }}%</span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-6">
-                                            <label for="">{{ trans('Service Commission') }}:</label>
-                                        </div>
-                                        <div class="col-6">
-                                            {{ moneyFormat($salary->service_commission ?? 0) }}
-                                        </div>
-                                    </div>
-                                @endif
-
-                                @if($target_by === \Modules\Setting\Model\CommissionRateSetting::COMPANY_INCOME)
-                                    <div class="form-group row">
-                                        <div class="col-6">
-                                            <label for="">{{ trans('Company Income Commission') }}:</label>
-                                        </div>
-                                        <div class="col-6">
-                                            {{ moneyFormat($salary->company_commission ?? 0) }}
-                                        </div>
-                                    </div>
-                                @endif
                                 <div class="form-group row">
                                     <div class="col-6">
-                                        <label for="">{{ trans('Total Commission') }}:</label>
+                                        <label>{{ trans('Extra Bonus') }}:</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="text-success">
+                                            {{ $salary->service_rate ?? $extra_bonus ?? 0 }}%
+                                            (+{{ moneyFormat($salary->getExtraBonusCommission()) }})
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label>{{ trans('Payment rate') }}/{{ trans('Bonus') }}:</label>
+                                    </div>
+                                    <div class="col-6">
+                                        @if($target_person_income == $target_by)
+                                            <span class="text-success">{{ $salary->payment_rate ?? 0 }}%</span>
+                                        @else
+                                            <span class="text-success">{{ moneyFormat($salary->payment_rate ?? 0) }}</span>
+                                        @endif
+                                        <span class="text-info">
+                                            (Next target: {{ $user->getNextCommissionRate() }})
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label>{{ trans('Provide Services Commission') }}:</label>
+                                    </div>
+                                    <div class="col-6">
+                                        {{ moneyFormat($salary->service_commission ?? 0) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label>{{ trans('Total Commission') }}:</label>
                                     </div>
                                     <div class="col-6">
                                         <h6>{{ moneyFormat($salary->total_commission ?? 0) }}</h6>

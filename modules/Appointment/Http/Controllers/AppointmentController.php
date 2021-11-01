@@ -166,8 +166,8 @@ class AppointmentController extends Controller{
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
         $users             = User::with('roles')
                                  ->whereHas('roles', function($role_query){
-                                     $therapist = Role::query()->where('name', Role::THERAPIST)->first();
-                                     return $role_query->where('role_id', $therapist->id);
+                                     $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                                     return $role_query->whereNotIn('role_id', [$admin->id]);
                                  })
                                  ->where('status', Status::STATUS_ACTIVE)
                                  ->pluck('name', 'id');
@@ -208,8 +208,8 @@ class AppointmentController extends Controller{
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
         $users             = User::with('roles')
                                  ->whereHas('roles', function($role_query){
-                                     $therapist = Role::query()->where('name', Role::THERAPIST)->first();
-                                     return $role_query->where('role_id', $therapist->id);
+                                     $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                                     return $role_query->whereNotIn('role_id', [$admin->id]);
                                  })
                                  ->where('status', Status::STATUS_ACTIVE)
                                  ->pluck('name', 'id')->toArray();
@@ -334,8 +334,8 @@ class AppointmentController extends Controller{
 
         $users                    = User::with('roles')
                                         ->whereHas('roles', function($role_query){
-                                            $therapist = Role::query()->where('name', Role::THERAPIST)->first();
-                                            return $role_query->where('role_id', $therapist->id);
+                                            $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                                            return $role_query->whereNotIn('role_id', [$admin->id]);
                                         })
                                         ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
         $services
