@@ -80,6 +80,7 @@ class SalaryController extends Controller{
         $user->save();
 
         $salary = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
+        $service_pay        = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
 
         DB::beginTransaction();
         try {
@@ -91,7 +92,7 @@ class SalaryController extends Controller{
             $salary->basic_salary       = $user->basic_salary;
             $salary->payment_rate       = $user->getCommissionRate(); //Commission By Role
             $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0; //Extra Bonus
-            $salary->service_commission = $salary->getTotalProvideServiceCommission(); //Provide Services
+            $salary->service_commission = $salary->getTotalProvideServiceCommission() * $service_pay; //Provide Services
             $salary->total_commission   = $salary->getTotalCommission();
             $salary->total_salary       = $salary->getTotalSalary();
             $salary->save();
@@ -114,6 +115,7 @@ class SalaryController extends Controller{
     public function singleReloadSalary(Request $request, $id){
         $user   = User::find($id);
         $salary = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
+        $service_pay        = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
         DB::beginTransaction();
         try {
             if (empty($salary)) {
@@ -124,7 +126,7 @@ class SalaryController extends Controller{
             $salary->basic_salary       = $user->basic_salary;
             $salary->payment_rate       = $user->getCommissionRate(); //Commission By Role
             $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0; //Extra Bonus
-            $salary->service_commission = $salary->getTotalProvideServiceCommission(); //Provide Services
+            $salary->service_commission = $salary->getTotalProvideServiceCommission() * $service_pay; //Provide Services
             $salary->total_commission   = $salary->getTotalCommission();
             $salary->total_salary       = $salary->getTotalSalary();
             $salary->save();

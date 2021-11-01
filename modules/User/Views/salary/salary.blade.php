@@ -98,7 +98,7 @@
                                     <div class="col-6">
                                         <label>
                                             {{ trans('Total monthly sales') }}
-                                            ({{ ($target_person_income == $target_by) ? trans('Person') : trans('Company') }}
+                                            ({{ ($target_person_income == $target_by) ? trans('Personal') : trans('Company') }}
                                             )
                                         </label>
                                     </div>
@@ -113,6 +113,8 @@
                                     <div class="col-6">
                                         <span class="text-success">
                                             {{ $salary->service_rate ?? $extra_bonus ?? 0 }}%
+                                        </span>
+                                        <span class="text-info">
                                             (+{{ moneyFormat($salary->getExtraBonusCommission()) }})
                                         </span>
                                     </div>
@@ -128,7 +130,7 @@
                                             <span class="text-success">{{ moneyFormat($salary->payment_rate ?? 0) }}</span>
                                         @endif
                                         <span class="text-info">
-                                            (Next target: {{ $user->getNextCommissionRate() }})
+                                            ({{ trans("Next target") }}: {{ $user->getNextCommissionRate() }})
                                         </span>
                                     </div>
                                 </div>
@@ -137,7 +139,10 @@
                                         <label>{{ trans('Provide Services Commission') }}:</label>
                                     </div>
                                     <div class="col-6">
-                                        {{ moneyFormat($salary->service_commission ?? 0) }}
+                                        <span class="text-success">{{ moneyFormat($salary->service_commission ?? 0) }}</span>
+                                        <span class="text-info">
+                                            ({{ trans('Total') }}: <span class="font-weight-bold">{{ $salary->getTotalProvideServiceCommission() }}</span> {{trans('Times')}})
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="form-group row">

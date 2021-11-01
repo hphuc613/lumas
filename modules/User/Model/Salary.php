@@ -78,22 +78,21 @@ class Salary extends BaseModel{
      * @return float|int
      */
     public function getTotalProvideServiceCommission(){
-        $data = MemberServiceHistory::query()
+        return MemberServiceHistory::query()
                                    ->whereMonth('updated_at', formatDate(time(), 'm'))
                                    ->where('updated_by', $this->user->id)
                                    ->count();
-
-        $service_pay  = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
-        return $data * $service_pay;
     }
 
     /**
      * @return float|int
      */
     public function getTotalCommission(){
-        $sale_commission = $this->getPaymentRateOrBonusCommission();
-        $extra_bonus     = $this->getExtraBonusCommission();
+        $service_pay        = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
+        $sale_commission    = $this->getPaymentRateOrBonusCommission();
+        $extra_bonus        = $this->getExtraBonusCommission();
         $service_commission = $this->getTotalProvideServiceCommission();
-        return $sale_commission + $extra_bonus + $service_commission;
+
+        return $sale_commission + $extra_bonus + ($service_commission * $service_pay);
     }
 }
