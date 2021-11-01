@@ -23,7 +23,7 @@ class PaymentMethodController extends Controller{
 
     public function index(Request $request){
         $statuses        = Status::getStatuses();
-        $payment_methods = PaymentMethod::query()->paginate(20);
+        $payment_methods = PaymentMethod::query()->paginate(50);
         return view("PaymentMethod::index", compact('payment_methods', 'statuses'));
     }
 

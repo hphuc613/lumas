@@ -44,7 +44,7 @@ class SalaryController extends Controller{
             $orders->where('updated_by', $user->id);
         }
         $orders->whereMonth('updated_at', formatDate(time(), 'm'));
-        $orders         = $orders->paginate(15);
+        $orders         = $orders->paginate(50);
         $order_statuses = Order::getStatus();
 
         return view('User::salary.salary', compact('user', 'orders', 'order_statuses', 'salary', 'target_by'));
@@ -198,7 +198,7 @@ class SalaryController extends Controller{
         $histories = MemberServiceHistory::query()
                                          ->whereMonth('updated_at', formatDate(time(), 'm'))
                                          ->where('updated_by', $user->id)
-                                         ->paginate(15);
+                                         ->paginate(50);
 
         if(!$request->ajax()){
             return redirect()->back();

@@ -22,6 +22,7 @@ use Modules\Course\Model\Course;
 use Modules\Instrument\Model\Instrument;
 use Modules\Member\Model\Member;
 use Modules\Notification\Model\NotificationModel;
+use Modules\Role\Model\Role;
 use Modules\Room\Model\Room;
 use Modules\Service\Model\Service;
 use Modules\Store\Model\Store;
@@ -145,7 +146,7 @@ class AppointmentController extends Controller{
             $appointments = $appointments->where('user_id', Auth::id());
         }
 
-        $appointments = $appointments->orderBy('time', 'DESC')->paginate(6);
+        $appointments = $appointments->orderBy('time', 'DESC')->paginate(50);
 
         return view("Appointment::overview", compact('appointments', 'appointment_types', 'filter', 'members', 'statuses', 'stores'));
     }
@@ -165,7 +166,8 @@ class AppointmentController extends Controller{
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
         $users             = User::with('roles')
                                  ->whereHas('roles', function($role_query){
-                                     return $role_query->where('role_id', 3);
+                                     $therapist = Role::query()->where('name', Role::THERAPIST)->first();
+                                     return $role_query->where('role_id', $therapist->id);
                                  })
                                  ->where('status', Status::STATUS_ACTIVE)
                                  ->pluck('name', 'id');
@@ -206,7 +208,8 @@ class AppointmentController extends Controller{
         $stores            = Store::getArray(Status::STATUS_ACTIVE);
         $users             = User::with('roles')
                                  ->whereHas('roles', function($role_query){
-                                     return $role_query->where('role_id', 3);
+                                     $therapist = Role::query()->where('name', Role::THERAPIST)->first();
+                                     return $role_query->where('role_id', $therapist->id);
                                  })
                                  ->where('status', Status::STATUS_ACTIVE)
                                  ->pluck('name', 'id')->toArray();
@@ -331,7 +334,8 @@ class AppointmentController extends Controller{
 
         $users                    = User::with('roles')
                                         ->whereHas('roles', function($role_query){
-                                            return $role_query->where('role_id', 3);
+                                            $therapist = Role::query()->where('name', Role::THERAPIST)->first();
+                                            return $role_query->where('role_id', $therapist->id);
                                         })
                                         ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
         $services

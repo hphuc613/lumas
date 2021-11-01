@@ -33,7 +33,7 @@ class UserController extends Controller{
      */
     public function index(Request $request){
         $filter   = $request->all();
-        $users    = User::filter($filter)->paginate(15);
+        $users    = User::filter($filter)->paginate(50);
         $statuses = Status::getStatuses();
         $roles    = Role::getArray(Status::STATUS_ACTIVE);
 

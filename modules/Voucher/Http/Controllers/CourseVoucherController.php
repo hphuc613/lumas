@@ -33,7 +33,7 @@ class CourseVoucherController extends Controller{
                                      $qc->where('status', Status::STATUS_ACTIVE);
                                  })
                                  ->orderBy('start_at', 'DESC')
-                                 ->paginate(15);
+                                 ->paginate(50);
 
         return view("Voucher::course_voucher.index", compact('vouchers', 'courses', 'filter'));
     }

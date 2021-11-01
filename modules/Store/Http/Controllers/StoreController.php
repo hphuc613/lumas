@@ -30,7 +30,7 @@ class StoreController extends Controller{
      */
     public function index(Request $request){
         $filter = $request->all();
-        $stores = Store::filter($filter)->paginate(15);
+        $stores = Store::filter($filter)->paginate(50);
 
         return view("Store::index", compact('stores', 'filter'));
     }

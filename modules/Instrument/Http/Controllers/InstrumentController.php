@@ -27,7 +27,7 @@ class InstrumentController extends Controller{
      */
     public function index(Request $request){
         $filter      = $request->all();
-        $instruments = Instrument::filter($filter)->paginate(15);
+        $instruments = Instrument::filter($filter)->paginate(50);
         $statuses    = Status::getStatuses();
         if (Config::get('app.locale') == 'zh-TW') {
             $statuses = [

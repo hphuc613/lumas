@@ -24,6 +24,8 @@ class Role extends BaseModel{
 
     const ADMINISTRATOR = 'Administrator';
     const THERAPIST     = 'Therapist';
+    const MANAGER       = 'Manager';
+    const FRONT_DESK    = 'Front Desk';
 
     /**
      * @param $filter
@@ -77,5 +79,12 @@ class Role extends BaseModel{
      */
     public function commissionRates(){
         return $this->hasMany(CommissionRate::class, 'role_id');
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDefaultRoles(){
+        return [self::ADMINISTRATOR, self::THERAPIST, self::MANAGER, self::FRONT_DESK];
     }
 }

@@ -35,7 +35,7 @@ class ServiceVoucherController extends Controller{
                                       $qs->where('status', Status::STATUS_ACTIVE);
                                   })
                                   ->orderBy('start_at', 'DESC')
-                                  ->paginate(15);
+                                  ->paginate(50);
 
         return view("Voucher::service_voucher.index", compact('vouchers', 'services', 'filter'));
     }

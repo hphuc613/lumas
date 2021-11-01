@@ -14,7 +14,8 @@
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans("Service Information") }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.report.service', array_merge(request()->query(), ['export' => true])) }}" class="btn btn-info">{{ trans('Export') }}</a>
+                <a href="{{ route('get.report.service', array_merge(request()->query(), ['export' => true])) }}"
+                   class="btn btn-info">{{ trans('Export') }}</a>
             </div>
         </div>
     </div>
@@ -149,3 +150,17 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
+    <script>
+        $(".tooltip-content").tooltip({
+            content: function () {
+                return $(this).attr('data-tooltip');
+            },
+            position: {
+                my: "center bottom",
+                at: "center top-10",
+            },
+        });
+    </script>
+@endpush

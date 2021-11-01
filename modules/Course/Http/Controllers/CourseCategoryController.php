@@ -23,7 +23,7 @@ class CourseCategoryController extends Controller{
 
     public function index(Request $request){
         $filter            = $request->all();
-        $course_categories = CourseCategory::filter($filter)->orderBy('name')->paginate(15);
+        $course_categories = CourseCategory::filter($filter)->orderBy('name')->paginate(50);
         return view("Course::course_category.index", compact('filter', 'course_categories'));
     }
 

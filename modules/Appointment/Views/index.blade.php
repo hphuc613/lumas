@@ -126,35 +126,6 @@
                 "{{ route("get.appointment.product_list",'') }}",
                 "{{ $member->id ?? NULL }}"
             );
-            /** Upddate Event By Month **/
-            $(document).on('click', 'button.fc-button', function () {
-                const cdate = calendar.getDate();
-                const date = new Date(cdate);
-                const month = date.getMonth() + 1;
-                const year = date.getFullYear();
-                const member_id = "{{ $member->id ?? null }}";
-                const user_id = "{{ $user->id ?? null }}";
-                const param = "?month=" + month + "&year=" + year +  "&member_id=" + member_id +  "&user_id=" + user_id;
-                $.ajax({
-                    url: '{{ route("get.appointment.event_list") }}' + param,
-                    method: "get",
-                }).done(function (response) {
-                    calendar.getEventSources()[0].remove();
-                    calendar.addEventSource(JSON.parse(response));/** Tooltip in calendar */
-                    $(".tooltip-content").tooltip({
-                        content: function () {
-                            return $(this).attr('data-tooltip');
-                        },
-                        position: {
-                            my: "center bottom", // the "anchor point" in the tooltip element
-                            at: "center top-10", // the position of that anchor point relative to selected element
-                        },
-                        open: function (event, ui) {
-                            ui.tooltip.css("max-width", "500px");
-                        }
-                    });
-                });
-            });
 
             /** Appointment Form get product list by type*/
             getProductByType("{{ \Modules\Appointment\Model\Appointment::SERVICE_TYPE }}");
@@ -177,7 +148,9 @@
                 $(this).remove();
             });
 
+            let month_current = 0;
             $(document).click(function () {
+                /** Tooltip in calendar */
                 $(".tooltip-content").tooltip({
                     content: function () {
                         return $(this).attr('data-tooltip');
@@ -190,6 +163,42 @@
                         ui.tooltip.css("max-width", "500px");
                     }
                 });
+
+
+                /** Upddate Event By Month **/
+                const cdate = calendar.getDate();
+                const date = new Date(cdate);
+                const month = date.getMonth() + 1;
+                const year = date.getFullYear();
+                const member_id = "{{ $member->id ?? null }}";
+                const user_id = "{{ $user->id ?? null }}";
+                const param = "?month=" + month + "&year=" + year + "&member_id=" + member_id + "&user_id=" + user_id;
+                $.ajax({
+                    url: '{{ route("get.appointment.event_list") }}' + param,
+                    method: "get",
+                }).done(function (response) {
+                    if (month_current !== month) {
+                        month_current = month;
+                        console.log(month_current);
+                        console.log(month === month_current);
+                    }
+                    calendar.getEventSources()[0].remove();
+                    calendar.addEventSource(JSON.parse(response));
+                    /** Tooltip in calendar */
+                    $(".tooltip-content").tooltip({
+                        content: function () {
+                            return $(this).attr('data-tooltip');
+                        },
+                        position: {
+                            my: "center bottom", // the "anchor point" in the tooltip element
+                            at: "center top-10", // the position of that anchor point relative to selected element
+                        },
+                        open: function (event, ui) {
+                            ui.tooltip.css("max-width", "500px");
+                        }
+                    });
+                });
+                /************************************/
             });
         })
     </script>

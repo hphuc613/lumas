@@ -152,6 +152,7 @@ class ReportController extends Controller{
         $export->collection = collect($data_export);
         $export->headings   = [trans('Code'), trans('Service'), trans('Voucher'), trans('Remaining'),
                                trans('Quantity'), trans('Price'), trans('Total Price'), trans('Created At')];
+
         return Excel::download($export, 'treatment_information.xlsx');
     }
 

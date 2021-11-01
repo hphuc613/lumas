@@ -31,7 +31,7 @@ class ServiceController extends Controller{
      */
     public function index(Request $request){
         $filter        = $request->all();
-        $services      = Service::filter($filter)->paginate(15);
+        $services      = Service::filter($filter)->paginate(50);
         $service_types = ServiceType::where('status', Status::STATUS_ACTIVE)->pluck('name', 'id')->toArray();
         return view("Service::service.index", compact('services', 'service_types', 'filter'));
     }

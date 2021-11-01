@@ -27,7 +27,7 @@ class RoleController extends Controller{
 
     public function index(Request $request){
         $filter = $request->all();
-        $roles  = Role::filter($filter)->paginate(15);
+        $roles  = Role::filter($filter)->paginate(50);
 
         return view('Role::index', compact('roles', 'filter'));
     }

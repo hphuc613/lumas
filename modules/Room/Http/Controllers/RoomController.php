@@ -27,7 +27,7 @@ class RoomController extends Controller{
      */
     public function index(Request $request){
         $filter   = $request->all();
-        $rooms    = Room::filter($filter)->paginate(15);
+        $rooms    = Room::filter($filter)->paginate(50);
         $statuses = Status::getStatuses();
         if (Config::get('app.locale') == 'zh-TW') {
             $statuses = [

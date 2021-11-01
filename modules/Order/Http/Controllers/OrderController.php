@@ -45,7 +45,7 @@ class OrderController extends Controller{
      */
     public function index(Request $request){
         $filter      = $request->all();
-        $orders      = Order::filter($filter)->orderBy('updated_at', 'desc')->paginate(15);
+        $orders      = Order::filter($filter)->orderBy('updated_at', 'desc')->paginate(50);
         $statuses    = Order::getStatus();
         $members     = Member::getArray();
         $creators    = User::query()->pluck('name', 'id')->toArray();
