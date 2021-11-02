@@ -250,7 +250,7 @@
                                         <a href="{{ route('get.order.order_detail',$order->id) }}"
                                            data-toggle="modal" data-title="{{ trans('Invoice Detail') }}"
                                            data-target="#form-modal">
-                                            {{ $order->code }}
+                                           {{ (is_numeric($order->code)) ? 'CWB'.$order->code : $order->code }}
                                         </a>
                                     </h5>
                                 </td>
