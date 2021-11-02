@@ -20,11 +20,11 @@
                 <h3>{{ trans('Salary') }}</h3>
             </div>
             <div>
+                <a href="{{ route('get.salary.single_reload', [$user->id, 'month' => request()->month ?? NULL]) }}"
+                   class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i>
+                </a>
                 @if(!isset($filter['month']) || $filter['month'] == $month_current)
-                    <a href="{{ route('get.salary.single_reload', $user->id) }}"
-                       class="btn btn-primary">
-                        <i class="fas fa-sync-alt"></i>
-                    </a>
                     <a href="{{ route('get.salary.update', $user->id) }}"
                        class="btn btn-main-color"
                        data-toggle="modal" data-title="{{ trans('Update Basic Salary') }}"
@@ -147,7 +147,7 @@
                                                 class="text-success">{{ moneyFormat($salary->payment_rate ?? 0) }}</span>
                                         @endif
                                         <span class="text-info">
-                                            ({{ trans("Next target") }}: {{ $user->getNextCommissionRate() }})
+                                            ({{ trans("Next target") }}: {{ $user->getNextCommissionRate($filter['month'] ?? NULL) }})
                                         </span>
                                     </div>
                                 </div>

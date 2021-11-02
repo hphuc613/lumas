@@ -24,6 +24,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
     Route::post('/profile', 'UserController@postProfile')->name('post.profile.update');
 
     /** Salary Manage */
+    Route::get('/salary-list', 'SalaryController@index')->name('get.user.salary_list');
     Route::get('/salary/{id}', 'SalaryController@getSalary')->name('get.user.salary');
     Route::get('/update-salary/{id}', 'SalaryController@getUpdateSalary')->name('get.salary.update');
     Route::post('/update-salary/{id}', 'SalaryController@postUpdateSalary')->name('post.salary.update');

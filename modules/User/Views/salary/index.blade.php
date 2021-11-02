@@ -1,7 +1,7 @@
 @extends('Base::layouts.master')
-@php
-    $prompt = ['' => 'All']
-@endphp
+<?php
+$prompt = ['' => 'All'];
+?>
 @section('content')
     <div id="user-module">
         <div class="breadcrumb-line">
@@ -13,10 +13,12 @@
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans('User Listing') }}</h3></div>
+            <div class="page-title"><h3>{{ trans('Salary Listing') }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.user.create') }}" class="btn btn-main-color"><i class="fa fa-plus"></i>
-                    &nbsp; {{ trans('Add New') }}</a>
+                <a href="{{ route('get.salary.bulk_reload') }}" class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i>
+                    {{ trans('Bulk Calculate Salary') }}
+                </a>
             </div>
         </div>
         <!--Search box-->
@@ -44,8 +46,9 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="text-input">{{ trans('Status') }}</label>
-                                    {!! Form::select('status', $prompt + $statuses, $filter['status'] ?? NULL, ['class' => 'select2 form-control w-100']) !!}
+                                    <label for="month">{{ trans('Month') }}</label>
+                                    <input type="text" class="form-control month" id="month" name="month"
+                                           value="{{$filter['month'] ?? null}}">
                                 </div>
                             </div>
                         </div>
@@ -61,69 +64,50 @@
             <div class="card">
                 <div class="card-body">
                     <div class="sumary">
-                        {!! summaryListing($users) !!}
+                        {!! summaryListing($salaries) !!}
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th width="50px">#</th>
+                                <th>{{ trans('Month') }}</th>
                                 <th>{{ trans('Name') }}</th>
                                 <th>{{ trans('Email') }}</th>
                                 <th>{{ trans('Role') }}</th>
+                                <th>{{ trans('Basic Salary') }}</th>
+                                <th>{{ trans('Total Commission') }}</th>
                                 <th>{{ trans('Total Salary') }}</th>
-                                @can('update-user-role')
-                                    <th width="200px">{{ trans('Status') }}</th>
-                                @endcan
-                                <th width="200px">{{ trans('Created At') }}</th>
-                                <th width="200px">{{ trans('Updated At') }}</th>
-                                <th width="200px" class="action text-center">{{ trans('Action') }}</th>
+                                <th class="action text-center">{{ trans('Action') }}</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @php($key = ($users->currentpage()-1)*$users->perpage()+1)
-                            @foreach($users as $user)
+                            @php($key = ($salaries->currentpage()-1)*$salaries->perpage()+1)
+                            @foreach($salaries as $salary)
                                 <tr>
                                     <td>{{ $key++ }}</td>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->getRoleAttribute()->name ?? 'N/A' }}</td>
+                                    <td>{{ $salary->month }}</td>
+                                    <td>{{ $salary->user->name }}</td>
+                                    <td>{{ $salary->user->email }}</td>
+                                    <td>{{ $salary->user->getRoleAttribute()->name ?? 'N/A' }}</td>
+                                    <td>{{ moneyFormat($salary->basic_salary) }}</td>
+                                    <td>{{ moneyFormat($salary->total_commission) }}</td>
                                     <td>
-                                        <a class="nav-link" id="salary-tab"
-                                           href="{{ route('get.user.salary', $user->id) }}">
-                                            <h6>{{ moneyFormat(optional($user->getSalaryCurrentMonth())->total_salary ?? $user->basic_salary) }}</h6>
-                                        </a>
+                                        <h6>{{ moneyFormat($salary->total_salary) }}</h6>
                                     </td>
-                                    @can('update-user-role')
-                                        <td>
-                                            <input type="checkbox" class="checkbox-style checkbox-item user-status"
-                                                   data-id="{{ $user->id }}"
-                                                   id="user-{{ $user->id }}"
-                                                   @if($user->status == \Modules\Base\Model\Status::STATUS_ACTIVE) checked
-                                                   @endif value="1">
-                                        </td>
-                                    @endcan
-                                    <td>{{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y H:i:s')}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($user->updated_at)->format('d/m/Y H:i:s')}}</td>
-                                    <td class="link-action">
-                                        @if(!$user->isAdmin())
-                                        <a href="{{ route('get.user.appointment',$user->id) }}"
-                                           class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
-                                        @endif
-                                        <a href="{{ route('get.user.update',$user->id) }}"
-                                           class="btn btn-main-color mr-2">
-                                            <i class="fas fa-pencil-alt"></i></a>
-                                        @if(Auth::user()->id !== $user->id && ($user->getRoleAttribute()->id ?? null)!== \Modules\Role\Model\Role::getAdminRole()->id)
-                                            <a href="{{ route('get.user.delete',$user->id) }}"
-                                               class="btn btn-danger btn-delete"><i class="fas fa-trash-alt"></i></a>
-                                        @endif
+                                    @php($month = formatDate(strtotime(Carbon\Carbon::createFromFormat('m/Y', $salary->month)), 'm-Y'))
+                                    <td class="link-action text-center">
+                                        <a href="{{ route('get.user.salary', [$salary->user->id, 'month' => $month]) }}"
+                                           class="btn btn-info">
+                                            <i class="fas fa-file-alt"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
                         <div class="mt-5 pagination-style">
-                            {{ $users->withQueryString()->render('vendor.pagination.default') }}
+                            {{ $salaries->withQueryString()->render('vendor.pagination.default') }}
                         </div>
                     </div>
                 </div>

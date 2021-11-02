@@ -3,6 +3,7 @@
 namespace Modules\User\Model;
 
 use App\User as BaseUser;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
 use Illuminate\Database\Eloquent\Model;
@@ -67,23 +68,24 @@ class User extends BaseUser{
     }
 
     /**
+     * @param $time
      * @return int
      */
-    public function getCommissionRate(){
+    public function getCommissionRate($time = null){
         $rates = $this->getRoleAttribute()->commissionRates;
         $data  = 0;
 
         $target_by = $this->getTargetBy();
 
         if ($target_by === CommissionRateSetting::PERSON_INCOME) {
-            $income = $this->orders()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
+            $income = $this->orders()->whereMonth('updated_at', formatDate($time, 'm'))->sum('total_price');
             foreach($rates as $rate) {
                 if ((int)$income >= (int)$rate->target) {
                     $data = (int)$rate->rate;
                 }
             }
         } else {
-            $income = Order::query()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
+            $income = Order::query()->whereMonth('updated_at', formatDate($time, 'm'))->sum('total_price');
             foreach($rates as $rate) {
                 if ((int)$income >= (int)$rate->target) {
                     $data = $rate->bonus;
@@ -95,37 +97,36 @@ class User extends BaseUser{
     }
 
     /**
-     * @return int
+     * @param null $time
+     * @return int|string
      */
-    public function getNextCommissionRate(){
+    public function getNextCommissionRate($time = null){
+        $time  = empty($time) ? time() : strtotime(Carbon::createFromFormat('m-Y', $time));
         $rates = $this->getRoleAttribute()->commissionRates;
         $data  = 0;
 
         $target_by = $this->getTargetBy();
 
         if ($target_by === CommissionRateSetting::PERSON_INCOME) {
-            $income = $this->orders()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
+            $income = (int)$this->orders()->whereMonth('updated_at', formatDate($time, 'm'))->sum('total_price');
         } else {
-            $income = Order::query()->whereMonth('updated_at', formatDate(time(), 'm'))->sum('total_price');
+            $income = (int)Order::query()->whereMonth('updated_at', formatDate($time, 'm'))->sum('total_price');
         }
 
         $count = count($rates);
 
         foreach($rates as $key => $rate) {
-            if ((int)$income < (int)$rates[0]->target) {
+            if ($key + 1 < $count && $income >= $rate->target) {
                 if ($target_by === CommissionRateSetting::PERSON_INCOME) {
-                    return moneyFormat((int)$rates[0]->target) . ' - ' . (int)$rates[0]->rate . '%';
-                } else {
-                    return moneyFormat((int)$rates[0]->target) . ' - ' . moneyFormat($rates[0]->bonus);
-                }
-            }
-            if ((int)$income >= (int)$rate->target) {
-                if ($key + 1 < $count) {
                     $data = moneyFormat((int)$rates[$key + 1]->target) . ' - ' . (int)$rates[$key + 1]->rate . '%';
                 } else {
-                    $data = 0;
+                    $data = moneyFormat((int)$rates[$key + 1]->target) . ' - ' . moneyFormat($rates[$key + 1]->bonus);
                 }
             }
+        }
+
+        if ($income > $rates[$count - 1]->target) {
+            $data = 0;
         }
 
         return $data;

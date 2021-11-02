@@ -3,6 +3,7 @@
 namespace Modules\User\Model;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Base\Model\BaseModel;
 use Modules\Member\Model\MemberServiceHistory;
@@ -22,6 +23,35 @@ class Salary extends BaseModel{
     protected $guarded = [];
 
     public $timestamps = false;
+
+    /**
+     * @param $filter
+     * @return Builder
+     */
+    public static function filter($filter){
+        $data = self::query()
+                    ->join('users', 'users.id', '=', 'user_id')
+                    ->select('users.name', 'salaries.*')
+                    ->with(['user' => function($uq) use ($filter){
+                        if (isset($filter['role_id'])) {
+                            $uq->with('roles');
+                            $uq->whereHas('roles', function($qr) use ($filter){
+                                $qr->where('role_id', $filter['role_id']);
+                            });
+                        }
+                    }]);
+        if (isset($filter['name'])) {
+            $data->where('name', 'LIKE', '%' . $filter['name'] . '%');
+        }
+        if (isset($filter['month'])) {
+            $month = formatDate(strtotime(Carbon::createFromFormat('m-Y', $filter['month'])), 'm/Y');
+            $data->where('month', $month);
+        }
+
+        $data = $data->orderBy('month', 'desc')
+                     ->orderBy('users.name', 'asc');
+        return $data;
+    }
 
     /**
      * @return BelongsTo
@@ -46,7 +76,7 @@ class Salary extends BaseModel{
     public function getPaymentRateOrBonusCommission(){
         $rate = $this->payment_rate;
         $time = time();
-        if (isset($this->month)){
+        if (isset($this->month)) {
             $time = strtotime(Carbon::createFromFormat('m/Y', $this->month));
         }
         if ($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME) {
@@ -65,8 +95,8 @@ class Salary extends BaseModel{
      */
     public function getExtraBonusCommission(){
         $extra_bonus = $this->service_rate ?? 0;
-        $time = time();
-        if (isset($this->month)){
+        $time        = time();
+        if (isset($this->month)) {
             $time = strtotime(Carbon::createFromFormat('m/Y', $this->month));
         }
         if ($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME) {
@@ -88,7 +118,7 @@ class Salary extends BaseModel{
      */
     public function getTotalProvideServiceCommission(){
         $time = time();
-        if (isset($this->month)){
+        if (isset($this->month)) {
             $time = strtotime(Carbon::createFromFormat('m/Y', $this->month));
         }
         return MemberServiceHistory::query()
