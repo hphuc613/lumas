@@ -24,14 +24,16 @@
                    class="btn btn-primary">
                     <i class="fas fa-sync-alt"></i>
                 </a>
-                @if(!isset($filter['month']) || $filter['month'] == $month_current)
-                    <a href="{{ route('get.salary.update', $user->id) }}"
-                       class="btn btn-main-color"
-                       data-toggle="modal" data-title="{{ trans('Update Basic Salary') }}"
-                       data-target="#form-modal">
-                        {{ trans('Update Basic Salary') }}
-                    </a>
-                @endif
+                @can('user-salary')
+                    @if(!isset($filter['month']) || $filter['month'] == $month_current)
+                        <a href="{{ route('get.salary.update', $user->id) }}"
+                           class="btn btn-main-color"
+                           data-toggle="modal" data-title="{{ trans('Update Basic Salary') }}"
+                           data-target="#form-modal">
+                            {{ trans('Update Basic Salary') }}
+                        </a>
+                    @endif
+                @endcan
                 <a href="{{ route('get.user.list') }}" class="btn btn-info">{{ trans('Go Back') }}</a>
             </div>
         </div>

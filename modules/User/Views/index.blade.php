@@ -71,7 +71,9 @@
                                 <th>{{ trans('Name') }}</th>
                                 <th>{{ trans('Email') }}</th>
                                 <th>{{ trans('Role') }}</th>
-                                <th>{{ trans('Total Salary') }}</th>
+                                @can('user-salary')
+                                    <th>{{ trans('Total Salary') }}</th>
+                                @endcan
                                 @can('update-user-role')
                                     <th width="200px">{{ trans('Status') }}</th>
                                 @endcan
@@ -88,12 +90,14 @@
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->getRoleAttribute()->name ?? 'N/A' }}</td>
-                                    <td>
-                                        <a class="nav-link" id="salary-tab"
-                                           href="{{ route('get.user.salary', $user->id) }}">
-                                            <h6>{{ moneyFormat(optional($user->getSalaryCurrentMonth())->total_salary ?? $user->basic_salary) }}</h6>
-                                        </a>
-                                    </td>
+                                    @can('user-salary')
+                                        <td>
+                                            <a class="nav-link" id="salary-tab"
+                                               href="{{ route('get.user.salary', $user->id) }}">
+                                                <h6>{{ moneyFormat(optional($user->getSalaryCurrentMonth())->total_salary ?? $user->basic_salary) }}</h6>
+                                            </a>
+                                        </td>
+                                    @endcan
                                     @can('update-user-role')
                                         <td>
                                             <input type="checkbox" class="checkbox-style checkbox-item user-status"
@@ -107,8 +111,8 @@
                                     <td>{{ \Carbon\Carbon::parse($user->updated_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="link-action">
                                         @if(!$user->isAdmin())
-                                        <a href="{{ route('get.user.appointment',$user->id) }}"
-                                           class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
+                                            <a href="{{ route('get.user.appointment',$user->id) }}"
+                                               class="btn btn-info"><i class="fas fa-calendar-check"></i></a>
                                         @endif
                                         <a href="{{ route('get.user.update',$user->id) }}"
                                            class="btn btn-main-color mr-2">

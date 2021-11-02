@@ -19,5 +19,9 @@ return [
             'name'         => 'update-user-role',
             'display_name' => trans('Update User Role'),
         ],
+        [
+            'name'         => 'user-salary',
+            'display_name' => trans('Salary'),
+        ],
     ]
 ];

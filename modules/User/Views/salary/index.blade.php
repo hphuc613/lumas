@@ -15,7 +15,9 @@ $prompt = ['' => 'All'];
         <div id="head-page" class="d-flex justify-content-between">
             <div class="page-title"><h3>{{ trans('Salary Listing') }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.salary.bulk_reload') }}" class="btn btn-primary">
+                <a href="{{ route('post.salary.bulk_reload') }}" class="btn btn-primary"
+                   data-toggle="modal" data-title="{{ trans('Bulk Calculate Salary') }}"
+                   data-target="#form-modal">
                     <i class="fas fa-sync-alt"></i>
                     {{ trans('Bulk Calculate Salary') }}
                 </a>
@@ -114,27 +116,5 @@ $prompt = ['' => 'All'];
             </div>
         </div>
     </div>
-
+    {!! \App\AppHelpers\Helper::getModal(['class' => 'modal-ajax', 'size' => 'modal-lg'])  !!}
 @endsection
-
-@push('js')
-    <script !src="">
-        $(document).on('click', '.user-status', function () {
-            var status = $(this).val();
-            if (!$(this).is(":checked")) {
-                status = -1;
-            }
-            var data_import = {
-                'id': $(this).attr('data-id'),
-                'status': status
-            };
-            $.ajax({
-                url: "{{ route('post.user.update_status') }}",
-                type: "post",
-                data: data_import
-            }).done(function (data) {
-                location.reload();
-            });
-        })
-    </script>
-@endpush

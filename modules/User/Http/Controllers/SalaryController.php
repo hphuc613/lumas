@@ -4,10 +4,10 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Modules\Base\Model\Status;
@@ -44,10 +44,14 @@ class SalaryController extends Controller{
     }
 
     /**
+     * @param Request $request
      * @param $id
-     * @return Application|Factory|RedirectResponse|View
+     * @return Factory|RedirectResponse|View
      */
     public function getSalary(Request $request, $id){
+        if (!Auth::user()->can('user-salary') && $id != Auth::id()) {
+            return redirect()->back();
+        }
         $user = User::find($id);
         if ($user->isAdmin()) {
             return redirect()->back();
@@ -68,6 +72,7 @@ class SalaryController extends Controller{
         $order_statuses = Order::getStatus();
 
         return view('User::salary.salary', compact('user', 'orders', 'order_statuses', 'salary', 'target_by', 'filter'));
+
     }
 
     /**
@@ -138,7 +143,7 @@ class SalaryController extends Controller{
     public function singleReloadSalary(Request $request, $id){
         $time          = time();
         $current_month = formatDate($time, 'm/Y');
-        if (isset($request->month)) {
+        if (!empty($request->month)) {
             $time = strtotime(Carbon::createFromFormat('m-Y', $request->month));
         }
         $user        = User::find($id);
@@ -176,47 +181,55 @@ class SalaryController extends Controller{
 
     /**
      * @param Request $request
-     * @param $id
-     * @return RedirectResponse
+     * @return Factory|RedirectResponse|View
      */
     public function bulkReloadSalary(Request $request){
-        $users       = User::query()->whereHas('roles', function($qr){
-            $qr->where('role_id', '<>', Role::getAdminRole()->id);
-        })->get();
-        $service_pay = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
-        DB::beginTransaction();
-        try {
-            foreach($users as $user) {
-                $salary = Salary::query()
-                                ->where('user_id', $user->id)
-                                ->where('month', formatDate(time(), 'm/Y'))
-                                ->first();
-                if (empty($salary)) {
-                    $salary          = new Salary();
-                    $salary->user_id = $user->id;
-                    $salary->month   = formatDate(time(), 'm/Y');
+        if ($request->post()) {
+            $time = time();
+            if (isset($request->month)) {
+                $time = strtotime(Carbon::createFromFormat('m-Y', $request->month));
+            }
+            $users       = User::query()->whereHas('roles', function($qr){
+                $qr->where('role_id', '<>', Role::getAdminRole()->id);
+            })->get();
+            $service_pay = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
+            DB::beginTransaction();
+            try {
+                foreach($users as $user) {
+                    $salary = Salary::query()
+                                    ->where('user_id', $user->id)
+                                    ->where('month', formatDate($time, 'm/Y'))
+                                    ->first();
+                    if (empty($salary)) {
+                        $salary          = new Salary();
+                        $salary->user_id = $user->id;
+                        $salary->month   = formatDate($time, 'm/Y');
+                    }
+                    $salary->basic_salary       = $user->basic_salary;
+                    $salary->payment_rate       = $user->getCommissionRate(); //Commission Rate By Role
+                    $salary->company_commission = $salary->getPaymentRateOrBonusCommission(); //Commission By Role
+                    $salary->service_rate
+                                                = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE)
+                                                  ?? 0; //Extra Bonus
+                    $salary->sale_commission    = $salary->getExtraBonusCommission();  //Extra Bonus Commission
+                    $salary->service_commission = $salary->getTotalProvideServiceCommission() *
+                                                  $service_pay; //Provide Services
+                    $salary->total_commission   = $salary->getTotalCommission();
+                    $salary->total_salary       = $salary->getTotalSalary();
+                    $salary->save();
                 }
-                $salary->basic_salary       = $user->basic_salary;
-                $salary->payment_rate       = $user->getCommissionRate(); //Commission Rate By Role
-                $salary->company_commission = $salary->getPaymentRateOrBonusCommission(); //Commission By Role
-                $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE)
-                                              ?? 0; //Extra Bonus
-                $salary->sale_commission    = $salary->getExtraBonusCommission();  //Extra Bonus Commission
-                $salary->service_commission = $salary->getTotalProvideServiceCommission() *
-                                              $service_pay; //Provide Services
-                $salary->total_commission   = $salary->getTotalCommission();
-                $salary->total_salary       = $salary->getTotalSalary();
-                $salary->save();
+
+                DB::commit();
+                $request->session()->flash('success', trans('Bulk Calculate Salary successfully.'));
+            } catch(Throwable $th) {
+                DB::rollBack();
+                $request->session()->flash('danger', trans('Bulk Calculate Salary failed.'));
             }
 
-            DB::commit();
-            $request->session()->flash('success', trans('Bulk Calculate Salary successfully.'));
-        } catch(Throwable $th) {
-            DB::rollBack();
-            $request->session()->flash('danger', trans('Bulk Calculate Salary failed.'));
+            return redirect()->back();
         }
 
-        return redirect()->back();
+        return view('User::salary.form_bulk_reload');
     }
 
     /**

@@ -24,14 +24,16 @@ Route::middleware(['admin'])->prefix('admin')->group(function(){
     Route::post('/profile', 'UserController@postProfile')->name('post.profile.update');
 
     /** Salary Manage */
-    Route::get('/salary-list', 'SalaryController@index')->name('get.user.salary_list');
+    Route::get('/salary-list', 'SalaryController@index')->name('get.user.salary_list')->middleware('can:user-salary');
     Route::get('/salary/{id}', 'SalaryController@getSalary')->name('get.user.salary');
-    Route::get('/update-salary/{id}', 'SalaryController@getUpdateSalary')->name('get.salary.update');
-    Route::post('/update-salary/{id}', 'SalaryController@postUpdateSalary')->name('post.salary.update');
+    Route::get('/update-salary/{id}', 'SalaryController@getUpdateSalary')->name('get.salary.update')->middleware('can:user-salary');
+    Route::post('/update-salary/{id}', 'SalaryController@postUpdateSalary')->name('post.salary.update')->middleware('can:user-salary');
     Route::get('/single-reload-salary/{id}', 'SalaryController@singleReloadSalary')
          ->name('get.salary.single_reload');
     Route::get('/bulk-reload-salary', 'SalaryController@bulkReloadSalary')
          ->name('get.salary.bulk_reload');
+    Route::post('/bulk-reload-salary', 'SalaryController@bulkReloadSalary')
+         ->name('post.salary.bulk_reload');
     Route::get('/supply-history-service/{id}', 'SalaryController@getSupplyHistoryService')
          ->name('get.user.supply_history');
 

@@ -28,10 +28,19 @@
                     <a class="nav-link active" id="profile-tab" href="javascript:">{{ $page }}</a>
                 </li>
                 @if(!$user->isAdmin())
-                    <li class="nav-item">
-                        <a class="nav-link" id="salary-tab"
-                           href="{{ route('get.user.salary', [$user->id, 'previous_page' => $segment]) }}">{{ trans('Salary') }}</a>
-                    </li>
+                    @if(request()->route()->getName() == 'get.profile.update')
+                        <li class="nav-item">
+                            <a class="nav-link" id="salary-tab"
+                               href="{{ route('get.user.salary', [$user->id, 'previous_page' => $segment]) }}">{{ trans('Salary') }}</a>
+                        </li>
+                    @else
+                        @can('user-salary')
+                            <li class="nav-item">
+                                <a class="nav-link" id="salary-tab"
+                                   href="{{ route('get.user.salary', [$user->id, 'previous_page' => $segment]) }}">{{ trans('Salary') }}</a>
+                            </li>
+                        @endcan
+                    @endif
                 @endif
             </ul>
             <div class="tab-content p-4">
