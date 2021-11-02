@@ -3,6 +3,7 @@
 use Modules\Setting\Model\CommissionRateSetting;
 
 $target_company = json_decode(CommissionRateSetting::getValueByKey(CommissionRateSetting::COMPANY_INCOME), 1);
+$role = $role ?? $rate->role;
 ?>
 <form action="" method="post" id="commission-rate-form">
     {{ csrf_field() }}
@@ -11,8 +12,8 @@ $target_company = json_decode(CommissionRateSetting::getValueByKey(CommissionRat
             <label>{{ trans('Role') }}</label>
         </div>
         <div class="col-md-8">
-            {{ $role->name ?? $rate->role->name }}
-            <input type="hidden" name="role_id" value="{{ $role->id ?? $rate->role->id }}">
+            {{ $role->name }}
+            <input type="hidden" name="role_id" value="{{ $role->id }}">
         </div>
     </div>
     <div class="form-group row">
