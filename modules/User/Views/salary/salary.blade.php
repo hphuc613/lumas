@@ -114,7 +114,7 @@
                                             {{ $salary->service_rate ?? $extra_bonus ?? 0 }}%
                                         </span>
                                         <span class="text-info">
-                                            (+{{ moneyFormat($salary->getExtraBonusCommission()) }})
+                                            (+{{ moneyFormat(!empty($salary) ? $salary->getExtraBonusCommission() : 0) }})
                                         </span>
                                     </div>
                                 </div>
@@ -152,7 +152,7 @@
                                     <div class="col-6">
                                         <span class="text-success">{{ moneyFormat($salary->service_commission ?? 0) }}</span>
                                         <span class="text-info">
-                                            ({{ trans('Total') }}: <span class="font-weight-bold">{{ $salary->getTotalProvideServiceCommission() }}</span> {{trans('Times')}})
+                                            ({{ trans('Total') }}: <span class="font-weight-bold">{{ !empty($salary) ? $salary->getTotalProvideServiceCommission() : 0 }}</span> {{trans('Times')}})
                                         </span>
                                     </div>
                                 </div>
