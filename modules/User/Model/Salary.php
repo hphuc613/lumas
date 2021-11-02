@@ -2,6 +2,7 @@
 
 namespace Modules\User\Model;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Base\Model\BaseModel;
 use Modules\Member\Model\MemberServiceHistory;
@@ -44,9 +45,13 @@ class Salary extends BaseModel{
      */
     public function getPaymentRateOrBonusCommission(){
         $rate = $this->payment_rate;
+        $time = time();
+        if (isset($this->month)){
+            $time = strtotime(Carbon::createFromFormat('m/Y', $this->month));
+        }
         if ($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME) {
             $commission = $this->user->orders()
-                                     ->whereMonth('updated_at', formatDate(time(), 'm'))
+                                     ->whereMonth('updated_at', formatDate($time, 'm'))
                                      ->sum('total_price');
 
             return $commission * $rate / 100;
@@ -60,15 +65,19 @@ class Salary extends BaseModel{
      */
     public function getExtraBonusCommission(){
         $extra_bonus = $this->service_rate ?? 0;
+        $time = time();
+        if (isset($this->month)){
+            $time = strtotime(Carbon::createFromFormat('m/Y', $this->month));
+        }
         if ($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME) {
             $commission = $this->user->orders()
-                                     ->whereMonth('updated_at', formatDate(time(), 'm'))
+                                     ->whereMonth('updated_at', formatDate($time, 'm'))
                                      ->sum('total_price');
 
             return $commission * $extra_bonus / 100;
         }
         $commission = Order::query()
-                           ->whereMonth('updated_at', formatDate(time(), 'm'))
+                           ->whereMonth('updated_at', formatDate($time, 'm'))
                            ->sum('total_price');
 
         return $commission * $extra_bonus / 100;
@@ -78,8 +87,12 @@ class Salary extends BaseModel{
      * @return float|int
      */
     public function getTotalProvideServiceCommission(){
+        $time = time();
+        if (isset($this->month)){
+            $time = strtotime(Carbon::createFromFormat('m/Y', $this->month));
+        }
         return MemberServiceHistory::query()
-                                   ->whereMonth('updated_at', formatDate(time(), 'm'))
+                                   ->whereMonth('updated_at', formatDate($time, 'm'))
                                    ->where('updated_by', $this->user->id)
                                    ->count();
     }

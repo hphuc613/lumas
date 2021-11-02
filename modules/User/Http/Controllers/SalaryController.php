@@ -3,6 +3,7 @@
 namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -32,22 +33,27 @@ class SalaryController extends Controller{
      * @param $id
      * @return Application|Factory|RedirectResponse|View
      */
-    public function getSalary($id){
+    public function getSalary(Request $request, $id){
         $user = User::find($id);
         if ($user->isAdmin()) {
             return redirect()->back();
         }
-        $salary    = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
+        $filter = $request->all();
+        $time   = time();
+        if (isset($filter['month'])) {
+            $time = strtotime(Carbon::createFromFormat('m-Y', $filter['month']));
+        }
+        $salary    = Salary::query()->where('user_id', $id)->where('month', formatDate($time, 'm/Y'))->first();
         $target_by = $user->getTargetBy();
         $orders    = Order::query();
         if ($target_by === CommissionRateSetting::PERSON_INCOME) {
             $orders->where('updated_by', $user->id);
         }
-        $orders->whereMonth('updated_at', formatDate(time(), 'm'));
+        $orders->whereMonth('updated_at', formatDate($time, 'm'));
         $orders         = $orders->paginate(50);
         $order_statuses = Order::getStatus();
 
-        return view('User::salary.salary', compact('user', 'orders', 'order_statuses', 'salary', 'target_by'));
+        return view('User::salary.salary', compact('user', 'orders', 'order_statuses', 'salary', 'target_by', 'filter'));
     }
 
     /**
@@ -79,8 +85,8 @@ class SalaryController extends Controller{
         $user->basic_salary = $request->basic_salary;
         $user->save();
 
-        $salary = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
-        $service_pay        = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
+        $salary      = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
+        $service_pay = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
 
         DB::beginTransaction();
         try {
@@ -90,8 +96,10 @@ class SalaryController extends Controller{
                 $salary->month   = formatDate(time(), 'm/Y');
             }
             $salary->basic_salary       = $user->basic_salary;
-            $salary->payment_rate       = $user->getCommissionRate(); //Commission By Role
+            $salary->payment_rate       = $user->getCommissionRate(); //Commission Rate By Role
+            $salary->company_commission = $salary->getPaymentRateOrBonusCommission(); //Commission By Role
             $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0; //Extra Bonus
+            $salary->sale_commission    = $salary->getExtraBonusCommission();  //Extra Bonus Commission
             $salary->service_commission = $salary->getTotalProvideServiceCommission() * $service_pay; //Provide Services
             $salary->total_commission   = $salary->getTotalCommission();
             $salary->total_salary       = $salary->getTotalSalary();
@@ -113,9 +121,9 @@ class SalaryController extends Controller{
      * @return RedirectResponse
      */
     public function singleReloadSalary(Request $request, $id){
-        $user   = User::find($id);
-        $salary = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
-        $service_pay        = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
+        $user        = User::find($id);
+        $salary      = Salary::query()->where('user_id', $id)->where('month', formatDate(time(), 'm/Y'))->first();
+        $service_pay = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
         DB::beginTransaction();
         try {
             if (empty($salary)) {
@@ -124,8 +132,10 @@ class SalaryController extends Controller{
                 $salary->month   = formatDate(time(), 'm/Y');
             }
             $salary->basic_salary       = $user->basic_salary;
-            $salary->payment_rate       = $user->getCommissionRate(); //Commission By Role
+            $salary->payment_rate       = $user->getCommissionRate(); //Commission Rate By Role
+            $salary->company_commission = $salary->getPaymentRateOrBonusCommission(); //Commission By Role
             $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0; //Extra Bonus
+            $salary->sale_commission    = $salary->getExtraBonusCommission();  //Extra Bonus Commission
             $salary->service_commission = $salary->getTotalProvideServiceCommission() * $service_pay; //Provide Services
             $salary->total_commission   = $salary->getTotalCommission();
             $salary->total_salary       = $salary->getTotalSalary();
@@ -147,10 +157,10 @@ class SalaryController extends Controller{
      * @return RedirectResponse
      */
     public function bulkReloadSalary(Request $request){
-        $users = User::query()->whereHas('roles', function($qr){
+        $users       = User::query()->whereHas('roles', function($qr){
             $qr->where('role_id', '<>', Role::getAdminRole()->id);
         })->get();
-        $service_pay        = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
+        $service_pay = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
         DB::beginTransaction();
         try {
             foreach($users as $user) {
@@ -164,12 +174,13 @@ class SalaryController extends Controller{
                     $salary->month   = formatDate(time(), 'm/Y');
                 }
                 $salary->basic_salary       = $user->basic_salary;
-                $salary->payment_rate       = $user->getCommissionRate(); //Commission By Role
+                $salary->payment_rate       = $user->getCommissionRate(); //Commission Rate By Role
+                $salary->company_commission = $salary->getPaymentRateOrBonusCommission(); //Commission By Role
                 $salary->service_rate       = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE) ?? 0; //Extra Bonus
+                $salary->sale_commission    = $salary->getExtraBonusCommission();  //Extra Bonus Commission
                 $salary->service_commission = $salary->getTotalProvideServiceCommission() * $service_pay; //Provide Services
                 $salary->total_commission   = $salary->getTotalCommission();
                 $salary->total_salary       = $salary->getTotalSalary();
-                $salary->save();
                 $salary->save();
             }
 
@@ -189,9 +200,14 @@ class SalaryController extends Controller{
      * @return array|RedirectResponse|string
      */
     public function getSupplyHistoryService(Request $request, $id){
-        $user      = User::query()->find($id);
+        $user   = User::query()->find($id);
+        $filter = $request->all();
+        $time   = time();
+        if (isset($filter['month'])) {
+            $time = strtotime(Carbon::createFromFormat('m-Y', $filter['month']));
+        }
         $histories = MemberServiceHistory::query()
-                                         ->whereMonth('updated_at', formatDate(time(), 'm'))
+                                         ->whereMonth('updated_at', formatDate($time, 'm'))
                                          ->where('updated_by', $user->id)
                                          ->paginate(50);
 

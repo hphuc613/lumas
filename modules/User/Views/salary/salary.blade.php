@@ -2,7 +2,8 @@
 @php
     use Modules\Setting\Model\CommissionRateSetting;$previous_page = request()->previous_page;
     $target_person_income = CommissionRateSetting::PERSON_INCOME;
-    $extra_bonus = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE)
+    $extra_bonus = CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_RATE);
+    $month_current = formatDate(time(), 'm-Y')
 @endphp
 @section('content')
     <div id="salary-section">
@@ -19,17 +20,33 @@
                 <h3>{{ trans('Salary') }}</h3>
             </div>
             <div>
-                <a href="{{ route('get.salary.single_reload', $user->id) }}"
-                   class="btn btn-primary">
-                    <i class="fas fa-sync-alt"></i>
-                </a>
-                <a href="{{ route('get.salary.update', $user->id) }}"
-                   class="btn btn-main-color"
-                   data-toggle="modal" data-title="{{ trans('Update Basic Salary') }}"
-                   data-target="#form-modal">
-                    {{ trans('Update Basic Salary') }}
-                </a>
+                @if(!isset($filter['month']) || $filter['month'] == $month_current)
+                    <a href="{{ route('get.salary.single_reload', $user->id) }}"
+                       class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i>
+                    </a>
+                    <a href="{{ route('get.salary.update', $user->id) }}"
+                       class="btn btn-main-color"
+                       data-toggle="modal" data-title="{{ trans('Update Basic Salary') }}"
+                       data-target="#form-modal">
+                        {{ trans('Update Basic Salary') }}
+                    </a>
+                @endif
                 <a href="{{ route('get.user.list') }}" class="btn btn-info">{{ trans('Go Back') }}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
+                <label for="month-salary">{{ trans('Month') }}</label>
+                <form action="" method="get">
+                    <div class="input-group">
+                        <input type="text" name="month" id="month-salary" class="form-control month"
+                               value="{{ $filter['month']  ?? formatDate(time(), 'm-Y') }}">
+                        <div class="input-group-prepend">
+                            <button type="submit" class="btn btn-main-color">OK</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -81,7 +98,7 @@
                                         <label for="">{{ trans('Month') }}:</label>
                                     </div>
                                     <div class="col-6">
-                                        {{ $salary->month  ?? formatDate(time(), 'm/Y')}}
+                                        {{ $salary->month  ?? $filter['month'] ?? formatDate(time(), 'm/Y')}}
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -98,7 +115,7 @@
                                     <div class="col-6">
                                         <label>
                                             {{ trans('Total monthly sales') }}
-                                            ({{ ($target_person_income == $target_by) ? trans('Personal') : trans('Company') }})
+                                            <span>({{ ($target_person_income == $target_by) ? trans('Personal') : trans('Company') }})</span>
                                         </label>
                                     </div>
                                     <div class="col-6">
@@ -114,7 +131,7 @@
                                             {{ $salary->service_rate ?? $extra_bonus ?? 0 }}%
                                         </span>
                                         <span class="text-info">
-                                            (+{{ moneyFormat(!empty($salary) ? $salary->getExtraBonusCommission() : 0) }})
+                                            (+{{ moneyFormat($salary->sale_commission ?? 0) }})
                                         </span>
                                     </div>
                                 </div>
@@ -126,7 +143,8 @@
                                         @if($target_person_income == $target_by)
                                             <span class="text-success">{{ $salary->payment_rate ?? 0 }}%</span>
                                         @else
-                                            <span class="text-success">{{ moneyFormat($salary->payment_rate ?? 0) }}</span>
+                                            <span
+                                                class="text-success">{{ moneyFormat($salary->payment_rate ?? 0) }}</span>
                                         @endif
                                         <span class="text-info">
                                             ({{ trans("Next target") }}: {{ $user->getNextCommissionRate() }})
@@ -135,14 +153,13 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-6">
-                                        <label>{{ trans('Payment rate') }}/{{ trans('Bonus') }} {{ trans('Commission') }}:</label>
+                                        <label>{{ trans('Payment rate') }}
+                                            /{{ trans('Bonus') }} {{ trans('Commission') }}:</label>
                                     </div>
                                     <div class="col-6">
-                                        @if($target_person_income == $target_by)
-                                            <span class="text-success">{{ moneyFormat(($salary->payment_rate ?? 0) * $orders->sum('total_price') / 100 ) }}</span>
-                                        @else
-                                            <span class="text-success">{{ moneyFormat(($salary->payment_rate ?? 0) + $orders->sum('total_price')) }}</span>
-                                        @endif
+                                        <span class="text-success">
+                                            +{{ moneyFormat(($salary->company_commission ?? 0) ) }}
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -150,9 +167,11 @@
                                         <label>{{ trans('Provide Services Commission') }}:</label>
                                     </div>
                                     <div class="col-6">
-                                        <span class="text-success">{{ moneyFormat($salary->service_commission ?? 0) }}</span>
+                                        <span
+                                            class="text-success">{{ moneyFormat($salary->service_commission ?? 0) }}</span>
                                         <span class="text-info">
-                                            ({{ trans('Total') }}: <span class="font-weight-bold">{{ !empty($salary) ? $salary->getTotalProvideServiceCommission() : 0 }}</span> {{trans('Times')}})
+                                            ({{ trans('Total') }}: <span
+                                                class="font-weight-bold">{{ !empty($salary) ? $salary->getTotalProvideServiceCommission() : 0 }}</span> {{trans('Times')}})
                                         </span>
                                     </div>
                                 </div>
@@ -185,7 +204,8 @@
                 <div class="d-flex justify-content-between mb-3">
                     <h4>{{ trans('Invoice of This Month') }}</h4>
                     @if($user->getTargetBy() === \Modules\Setting\Model\CommissionRateSetting::PERSON_INCOME)
-                        <a href="{{ route('get.user.supply_history', $user->id) }}" class="btn btn-info"
+                        <a href="{{ route('get.user.supply_history', [$user->id, 'month' => request()->month ?? NULL]) }}"
+                           class="btn btn-info"
                            data-toggle="modal" data-title="{{ trans('Supply History Service') }}"
                            data-target="#form-modal">
                             <i class="fas fa-clipboard-list"></i> {{ trans('Supply History Service') }}
