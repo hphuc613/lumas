@@ -89,9 +89,9 @@ $prompt = ['' => 'All'];
                                 <tr>
                                     <td>{{ $key++ }}</td>
                                     <td>{{ $salary->month }}</td>
-                                    <td>{{ $salary->user->name }}</td>
-                                    <td>{{ $salary->user->email }}</td>
-                                    <td>{{ $salary->user->getRoleAttribute()->name ?? 'N/A' }}</td>
+                                    <td>{{ $salary->name ?? 'N/A'}}</td>
+                                    <td>{{ $salary->user->email ?? 'N/A' }}</td>
+                                    <td>{{ optional($salary->user)->getRoleAttribute()->name ?? 'N/A' }}</td>
                                     <td>{{ moneyFormat($salary->basic_salary) }}</td>
                                     <td>{{ moneyFormat($salary->total_commission) }}</td>
                                     <td>
@@ -99,10 +99,12 @@ $prompt = ['' => 'All'];
                                     </td>
                                     @php($month = formatDate(strtotime(Carbon\Carbon::createFromFormat('m/Y', $salary->month)), 'm-Y'))
                                     <td class="link-action text-center">
-                                        <a href="{{ route('get.user.salary', [$salary->user->id, 'month' => $month]) }}"
-                                           class="btn btn-info">
-                                            <i class="fas fa-file-alt"></i>
-                                        </a>
+                                        @if(isset($salary->user))
+                                            <a href="{{ route('get.user.salary', [$salary->user->id, 'month' => $month]) }}"
+                                               class="btn btn-info">
+                                                <i class="fas fa-file-alt"></i>
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

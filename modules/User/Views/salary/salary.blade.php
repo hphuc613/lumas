@@ -267,12 +267,16 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('get.member.update', $order->member->id) }}"
-                                       target="_blank">{{ $order->member->name  }}</a>
+                                    @if(isset($order->member))
+                                        <a href="{{ route('get.member.update', $order->member->id) }}"
+                                           target="_blank">{{ $order->member->name  }}</a>
+                                    @else
+                                        N/A
+                                    @endif
                                 </td>
                                 <td>{{ moneyFormat($order->total_price) }}</td>
                                 <td>{{ formatDate(strtotime($order->updated_at), 'd-m-Y H:i') }}</td>
-                                <td>{{ $order->creator->name }}</td>
+                                <td>{{ $order->creator->name ?? "N/A" }}</td>
                             </tr>
                         @endforeach
                         </tbody>
