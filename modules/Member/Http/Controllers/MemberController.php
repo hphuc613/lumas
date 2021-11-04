@@ -10,7 +10,6 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -213,10 +212,6 @@ class MemberController extends Controller{
                                         ->with('user');
         $appointments      = $appointments->where('member_id', $id);
         $member            = Member::find($id);
-        /** Created_by */
-        if(!Auth::user()->isAdmin()){
-            $appointments = $appointments->where('user_id', Auth::id());
-        }
 
         /** Type of appointment */
         if(isset($filter['type'])){

@@ -20,5 +20,11 @@ return [
             'route'      => route('get.report.sale'),
             'middleware' => []
         ],
+        [
+            'id'         => 'report-service-expendable',
+            'name'       => trans('Service Expendable Report'),
+            'route'      => route('get.report.service_expendable'),
+            'middleware' => []
+        ],
     ]
 ];

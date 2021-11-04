@@ -1,6 +1,7 @@
 @extends("Base::layouts.master")
 <?php
-$month = (isset($filter['month'])) ? strtotime(\Carbon\Carbon::createFromFormat('m-Y', $filter['month'])) : time();
+use Carbon\Carbon;
+$month = (isset($filter['month'])) ? strtotime(Carbon::createFromFormat('m-Y', $filter['month'])) : time();
 ?>
 @section("content")
     <div id="service-module">
@@ -9,12 +10,12 @@ $month = (isset($filter['month'])) ? strtotime(\Carbon\Carbon::createFromFormat(
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
                     <li class="breadcrumb-item"><a href="#">{{ trans("Report") }}</a></li>
-                    <li class="breadcrumb-item"><a href="#">{{ trans("Sale Report") }}</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ trans("Service Expendable Report") }}</a></li>
                 </ol>
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Sale Report") }}</h3></div>
+            <div class="page-title"><h3>{{ trans("Service Expendable Report") }}</h3></div>
             <div class="group-btn">
                 <a href="{{ route('get.report.service', array_merge(request()->query(), ['export' => true])) }}"
                    class="btn btn-info">{{ trans('Export') }}</a>
@@ -37,22 +38,10 @@ $month = (isset($filter['month'])) ? strtotime(\Carbon\Carbon::createFromFormat(
                                        value="{{ $filter['code'] ?? NULL }}">
                             </div>
                         </div>
-                        <div class="col-md-3 d-none">
-                            <div class="form-group">
-                                <label for="text-input">{{ trans("Invoice Type") }}</label>
-                                {!! Form::select('order_type', ["" => trans("All")] + $order_types, $filter['order_type'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
-                            </div>
-                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="text-input">{{ trans("Client") }}</label>
                                 {!! Form::select('member_id', ["" => trans("All")] + $members, $filter['member_id'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="text-input">{{ trans("Status") }}</label>
-                                {!! Form::select('status', ["" => trans("All")] + $statuses, $filter['status'] ?? NULL, ['class' => 'form-control select2 w-100']) !!}
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -82,7 +71,7 @@ $month = (isset($filter['month'])) ? strtotime(\Carbon\Carbon::createFromFormat(
             <div class="card-body">
                 <div class="sumary d-flex justify-content-between">
                     <span class="listing-information">
-                        {!! summaryListing($orders) !!}
+                        {!! summaryListing($data) !!}
                     </span>
                     <span class="total-price">
                          <h4>
@@ -94,7 +83,7 @@ $month = (isset($filter['month'])) ? strtotime(\Carbon\Carbon::createFromFormat(
                          <h4>
                              {{ trans('Total:') }}
                              <span class="text-danger font-size-clearfix">
-                                 {{ moneyFormat($orders->sum('total_price')) }}
+                                 {{ moneyFormat($total_amount) }}
                              </span>
                          </h4>
                     </span>
@@ -104,63 +93,41 @@ $month = (isset($filter['month'])) ? strtotime(\Carbon\Carbon::createFromFormat(
                         <thead>
                         <tr>
                             <th width="50px">#</th>
-                            <th>{{ trans("Order Creator") }}</th>
+                            <th>{{ trans("Date") }}</th>
+                            <th>{{ trans("Staff") }}</th>
                             <th>{{ trans("Order Code") }}</th>
-                            {{--<th>{{ trans("Type") }}</th>--}}
-                            <th>{{ trans("Status") }}</th>
+                            <th>{{ trans("Location") }}</th>
                             <th>{{ trans("Client ID") }}</th>
                             <th>{{ trans("Client Name") }}</th>
-                            <th>{{ trans("Purchase/Abort At") }}</th>
-                            <th>{{ trans("Payment Method") }}</th>
-                            <th>{{ trans("Total Price") }}</th>
-                            <th class="text-center">{{ trans("Detail") }}</th>
+                            <th>{{ trans("Service Name") }}</th>
+                            <th>{{ trans("Times") }}</th>
+                            <th>{{ trans("Amount") }}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <?php $key = ($orders->currentpage()-1)*$orders->perpage()+1 ?>
-                        @foreach($orders as $order)
+                        <?php $key = ($data->currentpage() - 1) * $data->perpage() + 1 ?>
+                        @foreach($data as $val)
                             <tr>
                                 <td>{{ $key++ }}</td>
-                                <td>{!! $order->creator->name ?? $order->name." <span class='text-danger'>(".trans('This data has been deleted').")</span>" ?? "N/A" !!}</td>
-                                <td><h5>{{ (is_numeric($order->code)) ? 'CWB'.$order->code : $order->code }}</h5></td>
-                                {{--<td>{{ $order_types[$order->order_type] }}</td>--}}
-                                @php
-                                    $bg_status = "bg-danger";
-                                    if($order->status === \Modules\Order\Model\Order::STATUS_DRAFT)
-                                        $bg_status = 'bg-warning';
-                                    elseif($order->status === \Modules\Order\Model\Order::STATUS_PAID)
-                                       $bg_status = 'bg-success';
-                                @endphp
+                                <td>{{ $val->date }}</td>
+                                <td>{{ $val->created_by }}</td>
                                 <td>
-                                    <span class="status-box {{ $bg_status }}">
-                                        {{ $statuses[$order->status] }}
-                                    </span>
+                                    <h5>{{ (is_numeric($val->order_code)) ? 'CWB'.$val->order_code : $val->order_code }}</h5>
                                 </td>
-                                <td>{{ empty($order->member->id_number) ? null : "CWB".$order->member->id_number }}</td>
+                                <td>{{ $val->location }}</td>
                                 <td>
-                                    @if(isset($order->member->id))
-                                        <a href="{{ route('get.member.update', $order->member->id) }}"
-                                           target="_blank">{{ $order->member->name  }}</a>
-                                    @else
-                                        N/A
-                                    @endif
+                                    <h5>{{ (is_numeric($val->id_number)) ? 'CWB'.$val->id_number : $val->id_number }}</h5>
                                 </td>
-                                <td>{{ formatDate(strtotime($order->updated_at), 'd-m-Y H:i') }}</td>
-                                <td>{{ $order->paymentMethod->name ?? NULL }}</td>
-                                <td>{{ moneyFormat($order->total_price) }}</td>
-                                <td class="text-center">
-                                    <a href="{{ route('get.order.order_detail',$order->id) }}"
-                                       class="btn btn-outline-primary"
-                                       data-toggle="modal" data-title="{{ trans('Invoice Detail') }}"
-                                       data-target="#form-modal">
-                                        <i class="fas fa-eye"></i></a>
-                                </td>
+                                <td>{{ $val->member_name }}</td>
+                                <td>{{ $val->service_name }}</td>
+                                <td>{{ $val->times." ".trans('Times') }}</td>
+                                <td>{{ moneyFormat($val->amount) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
                     <div class="mt-5 pagination-style">
-                        {{ $orders->withQueryString()->render('vendor.pagination.default') }}
+                        {{ $data->withQueryString()->render('vendor.pagination.default') }}
                     </div>
                 </div>
             </div>

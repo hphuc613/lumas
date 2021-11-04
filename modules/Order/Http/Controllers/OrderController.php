@@ -61,7 +61,8 @@ class OrderController extends Controller{
      * @return Application|Factory|View
      */
     public function orderDetail($id){
-        $order = Order::query()->join('users', 'users.id', '=', 'created_by')->select('users.name', 'orders.*')->find($id);
+        $order = Order::query()->join('users', 'users.id', '=', 'created_by')->select('users.name', 'orders.*')
+                      ->find($id);
         return view("Order::detail", compact('order'));
     }
 
@@ -127,12 +128,12 @@ class OrderController extends Controller{
             } else {
                 $data['price'] = (int)$service->price;
             }
-            $data['price'] = $data['price'] - ($data['price'] * ((int)$data['discount']/100));
-            $order_detail = OrderDetail::query()
-                                       ->where('order_id', $order->id)
-                                       ->where('product_id', $data['service_id'])
-                                       ->where('voucher_id', $data['voucher_id'])
-                                       ->first();
+            $data['price'] = $data['price'] - ($data['price'] * ((int)$data['discount'] / 100));
+            $order_detail  = OrderDetail::query()
+                                        ->where('order_id', $order->id)
+                                        ->where('product_id', $data['service_id'])
+                                        ->where('voucher_id', $data['voucher_id'])
+                                        ->first();
 
             if (empty($order_detail)) {
                 $order_detail                = new OrderDetail();
@@ -281,8 +282,9 @@ class OrderController extends Controller{
             $order_detail->amount   = $order_detail->price * $order_detail->quantity;
             $order_detail->save();
 
-            $value['discount'] = $order_detail->discount;
-
+            $value['discount']   = $order_detail->discount;
+            $value['order_id']   = $order->id;
+            $value['created_by'] = $order->created_by;
             if ($order->order_type === Order::COURSE_TYPE) {
                 MemberCourse::insertData($value);
             } else {

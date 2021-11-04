@@ -141,11 +141,6 @@ class AppointmentController extends Controller{
         $appointment_types = Appointment::getTypeList();
         $appointments      = Appointment::filter($filter);
 
-        /** Created_by */
-        if (Auth::user()->getRoleAttribute()->id == 3) {
-            $appointments = $appointments->where('user_id', Auth::id());
-        }
-
         $appointments = $appointments->orderBy('time', 'DESC')->paginate(50);
 
         return view("Appointment::overview", compact('appointments', 'appointment_types', 'filter', 'members', 'statuses', 'stores'));

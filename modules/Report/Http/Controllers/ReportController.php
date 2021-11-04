@@ -6,18 +6,17 @@ use App\AppHelpers\Excel\Export;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Base\Model\Status;
 use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberService;
+use Modules\Member\Model\MemberServiceHistory;
 use Modules\Order\Model\Order;
 use Modules\Role\Model\Role;
 use Modules\Service\Model\Service;
+use Modules\Store\Model\Store;
 use Modules\User\Model\User;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -169,8 +168,11 @@ class ReportController extends Controller{
                        ->join('users', 'users.id', '=', 'created_by')
                        ->select('users.name', 'orders.*', DB::raw("DATE_FORMAT(orders.created_at,'%d-%m-%Y') as date"))
                        ->orderBy('date', 'desc')
-                       ->orderBy('users.name', 'asc')
-                       ->paginate(50);
+                       ->orderBy('users.name', 'asc');
+        if (!isset($filter['month'])) {
+            $orders = $orders->whereMonth('orders.updated_at', formatDate(time(), 'm'));
+        }
+        $orders = $orders->paginate(50);
 
         $statuses    = Order::getStatus();
         $members     = Member::getArray();
@@ -183,18 +185,66 @@ class ReportController extends Controller{
     }
 
 
-    /**
-     * @param $items
-     * @param int $perPage
-     * @param null $page
-     * @return LengthAwarePaginator
-     */
-    public function paginate($items, $perPage = 20, $page = null){
-        $page  = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-        $items = $items instanceof Collection ? $items : Collection::make($items);
+    public function serviceExpendable(Request $request){
+        $filter                   = $request->all();
+        $members                  = Member::getArray();
+        $member_service_histories = MemberServiceHistory::query()
+                                                        ->with('memberService')
+                                                        ->whereHas('memberService', function($ms) use ($filter){
+                                                            if (isset($filter['member_id'])) {
+                                                                $ms->where('member_id', $filter['member_id']);
+                                                            }
+                                                        })
+                                                        ->whereMonth('start', $filter['month'] ?? formatDate(time(), 'm-Y'));
+        if (isset($filter['creator'])) {
+            $member_service_histories = $member_service_histories->where('updated_by', $filter['creator']);
+        }
 
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
-            'path' => Paginator::resolveCurrentPath()
-        ]);
+        $member_service_histories = $member_service_histories->orderBy('start', 'desc')->get();
+
+
+        $location = Store::query()->where('status', Status::STATUS_ACTIVE)->first();
+        $array    = [];
+        foreach($member_service_histories as $key => $history) {
+            $key_data                                = $history->updated_by . "-" . $history->member_service_id;
+            $array[$key_data][$key]['date']          = formatDate(strtotime($history->created_at), 'd-m-Y H:i');
+            $array[$key_data][$key]['order_code']    = optional($history->memberService->order)->code;
+            $array[$key_data][$key]['location']      = $location->name;
+            $array[$key_data][$key]['id_number']     = optional($history->memberService->member)->id_number;
+            $array[$key_data][$key]['member_name']   = optional($history->memberService->member)->name;
+            $array[$key_data][$key]['service_name']  = optional($history->memberService->service)->name;
+            $array[$key_data][$key]['service_price'] = $history->memberService->price;
+            $array[$key_data][$key]['created_by']    = optional($history->user)->name;
+            $array[$key_data][$key]['order_creator'] = optional($history->memberService->creator)->name;
+            $array[$key_data][$key]['check_owner']   = false;
+            if ($history->updated_by == optional($history->memberService)->created_by) {
+                $array[$key_data][$key]['check_owner'] = true;
+            }
+        }
+
+        $data = [];
+        foreach($array as $key => $item) {
+            $data[$key]           = reset($item);
+            $data[$key]['times']  = count($item);
+            $data[$key]['amount'] = 0;
+            if ($data[$key]['check_owner']) {
+                $data[$key]['amount'] = $data[$key]['times'] * $data[$key]['service_price'];
+            }
+            unset($data[$key]['check_owner']);
+
+            $data[$key] = (object)$data[$key];
+        }
+
+        $total_amount = array_sum(array_column($data, 'amount'));
+        $data         = $this->paginate($data, 50);
+        $creators     = User::with('roles')
+                            ->whereHas('roles', function($role_query){
+                                $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                                return $role_query->whereNotIn('role_id', [$admin->id]);
+                            })
+                            ->where('status', Status::STATUS_ACTIVE)
+                            ->pluck('name', 'id')->toArray();
+
+        return view("Report::service_expendable", compact('filter', 'members', 'creators', 'data', 'total_amount'));
     }
 }

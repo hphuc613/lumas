@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Modules\Base\Model\BaseModel;
+use Modules\Order\Model\Order;
 use Modules\Service\Model\Service;
+use Modules\User\Model\User;
 use Modules\Voucher\Model\ServiceVoucher;
 
 class MemberService extends BaseModel{
@@ -142,17 +144,19 @@ class MemberService extends BaseModel{
                               ->where('voucher_id', $data['voucher_id'])
                               ->where('price', $data['price'])
                               ->where('discount', $data['discount'])
+                              ->where('created_by', $data['created_by'])
                               ->whereRaw('deduct_quantity < quantity')
                               ->first();
 
         if (empty($member_service)) {
-            $member_service           = new MemberService($data);
-            $member_service->code     = $member_service->generateCode();
-            $member_service->price    = $data['price'];
-            $member_service->discount = $data['discount'];
+            $member_service             = new MemberService($data);
+            $member_service->code       = $member_service->generateCode();
+            $member_service->price      = $data['price'];
+            $member_service->discount   = $data['discount'];
+            $member_service->order_id   = $data['order_id'];
+            $member_service->created_by = $data['created_by'];
             $member_service->save();
         } else {
-
             /** Check when no Voucher */
             if (empty($member_service->voucher_id)) {
                 $check_same_price = (int)$member_service->price === (int)$member_service->service->price;
@@ -162,12 +166,14 @@ class MemberService extends BaseModel{
             }
 
             if ($check_same_price) {
-                $data['quantity'] = (int)$member_service->quantity + (int)$data['quantity'];
+                $data['quantity']         = (int)$member_service->quantity + (int)$data['quantity'];
+                $member_service->order_id = $data['order_id'];
                 $member_service->update($data);
             } else {
-                $member_service        = new MemberService($data);
-                $member_service->code  = $member_service->generateCode();
-                $member_service->price = $data['price'];
+                $member_service           = new MemberService($data);
+                $member_service->code     = $member_service->generateCode();
+                $member_service->price    = $data['price'];
+                $member_service->order_id = $data['order_id'];
                 $member_service->save();
             }
         }
@@ -201,6 +207,20 @@ class MemberService extends BaseModel{
      */
     public function histories(){
         return $this->hasMany(MemberServiceHistory::class, "member_service_id");
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function order(){
+        return $this->belongsTo(Order::class, "order_id");
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function creator(){
+        return $this->belongsTo(User::class, "created_by");
     }
 
 }

@@ -56,7 +56,7 @@ class UserController extends Controller{
      * @return RedirectResponse
      */
     public function postCreate(UserValidation $request){
-        if(!empty($request->all()) && $request->password === $request->password_re_enter){
+        if (!empty($request->all()) && $request->password === $request->password_re_enter) {
             $data = $request->all();
             unset($data['password_re_enter']);
             unset($data['role_id']);
@@ -90,7 +90,7 @@ class UserController extends Controller{
     public function postUpdate(UserValidation $request, $id){
         $data = $request->all();
         $user = User::find($id);
-        if(empty($data['password'])){
+        if (empty($data['password'])) {
             unset($data['password']);
         }
         unset($data['password_re_enter']);
@@ -106,9 +106,9 @@ class UserController extends Controller{
      */
     public function postUpdateStatus(Request $request){
         $data = $request->all();
-        if($data != null){
+        if ($data != null) {
             $user = User::find($data['id']);
-            if($user){
+            if ($user) {
                 $user->status = $data['status'];
                 $user->save();
                 $request->session()->flash('success', trans('User updated successfully.'));
@@ -140,7 +140,7 @@ class UserController extends Controller{
     public function postProfile(UserValidation $request){
         $data = $request->all();
         $user = User::find(Auth::guard()->id());
-        if(empty($data['password'])){
+        if (empty($data['password'])) {
             unset($data['password']);
         }
         unset($data['password_re_enter']);
@@ -175,17 +175,13 @@ class UserController extends Controller{
         $appointment_types = Appointment::getTypeList();
         $appointments      = Appointment::with('member')
                                         ->with('store')
-                                        ->with('user');
-        $appointments      = $appointments->where('user_id', $id);
-        /** Created_by */
-        if(!Auth::user()->isAdmin()){
-            $appointments = $appointments->where('user_id', Auth::id());
-        }
+                                        ->with('user')
+                                        ->where('user_id', $id);
 
         /** Type of appointment */
-        if(isset($filter['type'])){
+        if (isset($filter['type'])) {
             $appointments = $appointments->where('type', $filter['type']);
-        }else{
+        } else {
             $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
         }
 
@@ -193,9 +189,9 @@ class UserController extends Controller{
 
         /** Get event */
         $events = [];
-        foreach($appointments as $appointment){
+        foreach($appointments as $appointment) {
             $title    = (Auth::user()->isAdmin())
-                ? ($appointment->member->name ?? "N/A"). ' | ' . ($appointment->user->name ?? "N/A")
+                ? ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->user->name ?? "N/A")
                 : ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->name ?? "N/A");
             $events[] = [
                 'id'    => $appointment->id,

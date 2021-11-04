@@ -71,6 +71,7 @@
                                 <th class="text-center">{{ trans('Quantity') }}</th>
                                 <th>{{ trans('Price') }}</th>
                                 <th>{{ trans('Total Price') }}</th>
+                                <th>{{ trans('Order Creator') }}</th>
                                 <th>{{ trans('Created At') }}</th>
                                 <th style="width: 14%" class="text-center">{{ trans('Action') }}</th>
                             </tr>
@@ -107,6 +108,7 @@
                                         <td>{{ $value->quantity }}</td>
                                         <td>{{ moneyFormat($value->price)." (-".$value->discount."%)" }}</td>
                                         <td>{{ moneyFormat($value->price * $value->quantity, 0) }}</td>
+                                        <td>{{ optional($value->order)->creator->name ?? NULL }}</td>
                                         <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                         <td class="text-center">
                                             <a href="{{ route('get.member_service.view',$value->id) }}"
@@ -167,6 +169,7 @@
                                 <th class="text-center">{{ trans('Quantity') }}</th>
                                 <th>{{ trans('Price') }}</th>
                                 <th>{{ trans('Total Price') }}</th>
+                                <th>{{ trans('Order Creator') }}</th>
                                 <th>{{ trans('Created At') }}</th>
                                 <th style="width: 14%" class="text-center">{{ trans('Action') }}</th>
                             </tr>
@@ -186,7 +189,7 @@
                                         <a target="_blank"
                                            href="{{ route('get.service.update', $value->service_id) }}">
                                             {{ ($value->service->name  ?? "N/A") }}
-                                            <br>  {{ ($value->service->price  ?? "N/A") }}
+                                            <br> {{ ($value->service->price  ?? "N/A") }}
                                         </a>
                                     </td>
                                     <td>
@@ -202,6 +205,7 @@
                                     <td>{{ $value->quantity }}</td>
                                     <td>{{ moneyFormat($value->price)." (-".$value->discount."%)" }}</td>
                                     <td>{{ moneyFormat($value->price * $value->quantity, 0) }}</td>
+                                    <td>{{ optional($value->order)->creator->name ?? NULL }}</td>
                                     <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="text-center">
                                         <a href="{{ route('get.member_service.view',$value->id) }}"
