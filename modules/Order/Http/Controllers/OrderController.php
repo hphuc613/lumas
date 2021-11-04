@@ -61,7 +61,7 @@ class OrderController extends Controller{
      * @return Application|Factory|View
      */
     public function orderDetail($id){
-        $order = Order::query()->find($id);
+        $order = Order::query()->join('users', 'users.id', '=', 'created_by')->select('users.name', 'orders.*')->find($id);
         return view("Order::detail", compact('order'));
     }
 
@@ -115,8 +115,7 @@ class OrderController extends Controller{
                 $order->created_by  = Auth::id();
                 $order->updated_by  = Auth::id();
             }
-
-            $order->updated_by = Auth::id();
+//            $order->updated_by = Auth::id();
             $order->save();
 
             $service       = Service::query()->find($data['service_id']);

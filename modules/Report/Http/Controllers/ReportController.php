@@ -9,11 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Base\Model\Status;
+use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberService;
-use Modules\Order\Model\OrderDetail;
+use Modules\Order\Model\Order;
 use Modules\Role\Model\Role;
 use Modules\Service\Model\Service;
 use Modules\User\Model\User;
@@ -157,6 +159,29 @@ class ReportController extends Controller{
         return Excel::download($export, 'treatment_information.xlsx');
     }
 
+    /**
+     * @param Request $request
+     * @return Factory|View
+     */
+    public function sale(Request $request){
+        $filter = $request->all();
+        $orders = Order::filter($filter)
+                       ->join('users', 'users.id', '=', 'created_by')
+                       ->select('users.name', 'orders.*', DB::raw("DATE_FORMAT(orders.created_at,'%d-%m-%Y') as date"))
+                       ->orderBy('date', 'desc')
+                       ->orderBy('users.name', 'asc')
+                       ->paginate(50);
+
+        $statuses    = Order::getStatus();
+        $members     = Member::getArray();
+        $creators    = User::query()->pluck('name', 'id')->toArray();
+        $order_types = [
+            Order::SERVICE_TYPE => trans('Service'),
+            Order::COURSE_TYPE  => trans('Course')
+        ];
+        return view("Report::sale", compact('orders', 'statuses', 'filter', 'members', 'order_types', 'creators'));
+    }
+
 
     /**
      * @param $items
@@ -171,37 +196,5 @@ class ReportController extends Controller{
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
             'path' => Paginator::resolveCurrentPath()
         ]);
-    }
-
-    public function sale(Request $request){
-        $filter = $request->all();
-        $users  = User::with('roles')
-                      ->whereHas('roles', function($role_query){
-                          $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
-                          return $role_query->whereNotIn('role_id', [$admin->id]);
-                      })
-                      ->where('status', Status::STATUS_ACTIVE)
-                      ->pluck('name', 'id')->toArray();
-
-        $services = Service::getArray(Status::STATUS_ACTIVE);
-
-        $data = OrderDetail::query()
-                           ->with(['orders' => function($oq) use ($request){
-                               if (isset($request->user_id)) {
-                                   $oq->where('updated_by', $request->user_id);
-                               }
-                               if (isset($request->from)) {
-                                   $oq->where('end', '>=', formatDate(strtotime($request->from), 'Y-m-d'));
-                               }
-                               if (isset($request->to)) {
-                                   $oq->where('end', '<=', formatDate(strtotime($request->to) +
-                                                                      86400, 'Y-m-d'));
-                               }
-
-                               $oq->orderBy('updated_at', 'DESC');
-                           }])->paginate(50);
-
-
-        return view("Report::sale", compact('data', 'users', 'filter'));
     }
 }

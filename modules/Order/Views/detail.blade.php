@@ -71,7 +71,7 @@
                         {{ trans('Creator') }}
                     </div>
                     <div class="col-8">
-                        : {{ $order->creator->name  ?? "N/A"}}
+                        : {!! $order->creator->name ?? $order->name." <span class='text-danger'>(".trans('This data has been deleted').")</span>" ?? "N/A" !!}
                     </div>
                 </div>
                 <div class="row">
@@ -121,8 +121,8 @@
                     @foreach($order_details as $key => $order_detail)
                         <tr>
                             <td>{{ $key+1 }}</td>
-                            <td>{{ $order_detail->product->name ?? NULL }} <br> {{ moneyFormat($order_detail->product->price) ?? NULL }}</td>
-                            <td>{{ $order_detail->productVoucher->code ?? NULL }} <br> {{ moneyFormat($order_detail->productVoucher->price) ?? NULL }}</td>
+                            <td>{{ $order_detail->product->name ?? NULL }} <br> {{ moneyFormat($order_detail->product->price ?? 0) }}</td>
+                            <td>{{ $order_detail->productVoucher->code ?? NULL }} <br> {{ isset($order_detail->productVoucher) ? moneyFormat($order_detail->productVoucher->price) : NULL }}</td>
                             <td>{{ $order_detail->quantity }}</td>
                             <td>{{ $order_detail->discount }}%</td>
                             <td>{{ moneyFormat($order_detail->price, 0) }}</td>

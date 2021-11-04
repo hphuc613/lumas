@@ -42,7 +42,9 @@ class Order extends Model{
             $query->where('code', 'LIKE', '%' . $filter['code'] . '%');
         }
         if (isset($filter['month'])) {
-            $query->whereMonth('updated_at', $filter['month']);
+            $query->whereMonth('orders.updated_at', $filter['month']);
+        }else{
+            $query->whereMonth('orders.updated_at', formatDate(time(), 'm-Y'));
         }
         if (isset($filter['member_id'])) {
             $query->where('member_id', $filter['member_id']);
