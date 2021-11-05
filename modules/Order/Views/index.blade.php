@@ -102,7 +102,7 @@ $key = ($orders->currentpage() - 1) * $orders->perpage() + 1;
                         <thead>
                         <tr>
                             <th width="50px">#</th>
-                            <th>{{ trans("Order Code") }}</th>
+                            <th>{{ trans("Invoice Code") }}</th>
                             <th>{{ trans("Type") }}</th>
                             <th>{{ trans("Status") }}</th>
                             <th>{{ trans("Client Name") }}</th>

@@ -111,9 +111,10 @@
                         <th>#</th>
                         <th>{{ trans('Product') }}</th>
                         <th>{{ trans('Voucher') }}</th>
-                        <th style="width: 15%">{{ trans('Quantity') }}</th>
+                        <th>{{ trans('Cost') }}</th>
                         <th>{{ trans('Discount') }}</th>
                         <th>{{ trans('Price') }}</th>
+                        <th class="text-center">{{ trans('Quantity') }}</th>
                         <th>{{ trans('Total Price') }}</th>
                     </tr>
                     </thead>
@@ -121,16 +122,22 @@
                     @foreach($order_details as $key => $order_detail)
                         <tr>
                             <td>{{ $key+1 }}</td>
-                            <td>{{ $order_detail->product->name ?? NULL }} <br> {{ moneyFormat($order_detail->product->price ?? 0) }}</td>
-                            <td>{{ $order_detail->productVoucher->code ?? NULL }} <br> {{ isset($order_detail->productVoucher) ? moneyFormat($order_detail->productVoucher->price) : NULL }}</td>
-                            <td>{{ $order_detail->quantity }}</td>
-                            <td>{{ $order_detail->discount }}%</td>
-                            <td>{{ moneyFormat($order_detail->price, 0) }}</td>
-                            <td>{{ moneyFormat($order_detail->amount, 0) }}</td>
+                            <td>
+                                {{ $order_detail->product->name ?? NULL }}
+                                <br> {{ moneyFormat($order_detail->product->price ?? 0) }}</td>
+                            <td>
+                                {{ $order_detail->productVoucher->code ?? NULL }}
+                                <br> {{ isset($order_detail->productVoucher) ? moneyFormat($order_detail->productVoucher->price) : NULL }}
+                            </td>
+                            <td>{{ moneyFormat(empty($order_detail->voucher_id) ? $order_detail->product->price : $order_detail->productVoucher->price) }}</td>
+                            <td class="text-center">{{ $order_detail->discount }}%</td>
+                            <td>{{ moneyFormat($order_detail->price) }}</td>
+                            <td class="text-center">{{ $order_detail->quantity }}</td>
+                            <td>{{ moneyFormat($order_detail->amount) }}</td>
                         </tr>
                     @endforeach
                     <tr>
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                         <td><h6>{{ trans('Amounts') }}:</h6></td>
                         <td><h6>{{ moneyFormat($order->getTotalPrice()) }}</h6></td>
                     </tr>

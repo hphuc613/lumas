@@ -95,30 +95,60 @@ $month = (isset($filter['month'])) ? strtotime(Carbon::createFromFormat('m-Y', $
                             <th width="50px">#</th>
                             <th>{{ trans("Date") }}</th>
                             <th>{{ trans("Staff") }}</th>
-                            <th>{{ trans("Order Code") }}</th>
+                            <th class="text-center">{{ trans("Invoice Code") }}</th>
                             <th>{{ trans("Location") }}</th>
                             <th>{{ trans("Client ID") }}</th>
                             <th>{{ trans("Client Name") }}</th>
-                            <th>{{ trans("Service Name") }}</th>
+                            <th>{{ trans("Service")." ".trans("Code") }}</th>
+                            <th>{{ trans("Service")." ".trans("Name") }}</th>
                             <th>{{ trans("Times") }}</th>
                             <th>{{ trans("Amount") }}</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php $key = ($data->currentpage() - 1) * $data->perpage() + 1 ?>
-                        @foreach($data as $val)
+                        @foreach($data as $key_data => $val)
+                            <?php
+                                $val = reset($val);
+                                $val['times'] = count($data[$key_data]);
+                                $val['amount'] = 0;
+                                    if ($val['check_owner']) {
+                                        $val['amount'] = $val['times'] * $val['service_price'];
+                                    }
+                                    unset($val['check_owner']);
+
+                                $val = (object)$val;
+                            ?>
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $val->date }}</td>
                                 <td>{{ $val->created_by }}</td>
-                                <td>
-                                    <h5>{{ (is_numeric($val->order_code)) ? 'CWB'.$val->order_code : $val->order_code }}</h5>
+                                <td class="text-center">
+                                    @if(empty($val->order_id))
+                                        N/A
+                                    @else
+                                        <a href="{{ route('get.order.order_detail',$val->order_id) }}"
+                                           class="btn btn-outline-primary"
+                                           data-toggle="modal" data-title="{{ trans('Invoice Detail') }}"
+                                           data-target="#form-modal">
+                                            {{ (is_numeric($val->order_code)) ? 'CWB'.$val->order_code : $val->order_code }}
+                                        </a>
+                                    @endif
                                 </td>
                                 <td>{{ $val->location }}</td>
                                 <td>
-                                    <h5>{{ (is_numeric($val->id_number)) ? 'CWB'.$val->id_number : $val->id_number }}</h5>
+                                    <h6>{{ (is_numeric($val->id_number)) ? 'CWB'.$val->id_number : $val->id_number }}</h6>
                                 </td>
-                                <td>{{ $val->member_name }}</td>
+                                <td>
+                                    @if(!empty($val->member_id))
+                                        <a href="{{ route('get.member.update',$val->member_id) }}">{{ $val->member_name }}</a>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(!empty($val->member_id))
+                                        <a href="{{ route('get.member_service.add',$val->member_id) }}">{{ $val->service_code }}</a>
+                                    @endif
+                                </td>
                                 <td>{{ $val->service_name }}</td>
                                 <td>{{ $val->times." ".trans('Times') }}</td>
                                 <td>{{ moneyFormat($val->amount) }}</td>

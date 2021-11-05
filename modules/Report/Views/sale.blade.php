@@ -9,14 +9,14 @@ $month = (isset($filter['month'])) ? strtotime(\Carbon\Carbon::createFromFormat(
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
                     <li class="breadcrumb-item"><a href="#">{{ trans("Report") }}</a></li>
-                    <li class="breadcrumb-item"><a href="#">{{ trans("Sale Report") }}</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ trans("Sales Report") }}</a></li>
                 </ol>
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Sale Report") }}</h3></div>
+            <div class="page-title"><h3>{{ trans("Sales Report") }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.report.service', array_merge(request()->query(), ['export' => true])) }}"
+                <a href="{{ route('get.report.sale', array_merge(request()->query(), ['export' => true])) }}"
                    class="btn btn-info">{{ trans('Export') }}</a>
             </div>
         </div>
@@ -105,7 +105,7 @@ $month = (isset($filter['month'])) ? strtotime(\Carbon\Carbon::createFromFormat(
                         <tr>
                             <th width="50px">#</th>
                             <th>{{ trans("Order Creator") }}</th>
-                            <th>{{ trans("Order Code") }}</th>
+                            <th>{{ trans("Invoice Code") }}</th>
                             {{--<th>{{ trans("Type") }}</th>--}}
                             <th>{{ trans("Status") }}</th>
                             <th>{{ trans("Client ID") }}</th>
