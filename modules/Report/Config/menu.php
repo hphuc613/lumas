@@ -26,5 +26,11 @@ return [
             'route'      => route('get.report.service_expendable'),
             'middleware' => []
         ],
+        [
+            'id'         => 'report-service-provide',
+            'name'       => trans('Service Provide Report'),
+            'route'      => route('get.report.service_provide'),
+            'middleware' => []
+        ],
     ]
 ];

@@ -10,14 +10,14 @@ $month = (isset($filter['month'])) ? strtotime(Carbon::createFromFormat('m-Y', $
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans("Home") }}</a></li>
                     <li class="breadcrumb-item"><a href="#">{{ trans("Report") }}</a></li>
-                    <li class="breadcrumb-item"><a href="#">{{ trans("Service Expendable Report") }}</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ trans("Service Provide Report") }}</a></li>
                 </ol>
             </nav>
         </div>
         <div id="head-page" class="d-flex justify-content-between">
-            <div class="page-title"><h3>{{ trans("Service Expendable Report") }}</h3></div>
+            <div class="page-title"><h3>{{ trans("Service Provide Report") }}</h3></div>
             <div class="group-btn">
-                <a href="{{ route('get.report.service_expendable', array_merge(request()->query(), ['export' => true])) }}"
+                <a href="{{ route('get.report.service_provide', array_merge(request()->query(), ['export' => true])) }}"
                    class="btn btn-info">{{ trans('Export') }}</a>
             </div>
         </div>
