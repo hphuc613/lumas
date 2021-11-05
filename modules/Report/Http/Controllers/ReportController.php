@@ -246,7 +246,8 @@ class ReportController extends Controller{
                                                             }
                                                             $ms->whereHas('order', function($o) use ($filter){
                                                                 if (isset($filter['code'])) {
-                                                                    $o->where('code', 'LIKE','%'.$filter['code'].'%');
+                                                                    $o->where('code', 'LIKE', '%' . $filter['code'] .
+                                                                                              '%');
                                                                 }
                                                             });
                                                         })
@@ -259,75 +260,50 @@ class ReportController extends Controller{
         $member_service_histories = $member_service_histories->orderBy('start', 'desc')->get();
 
 
-        $location = Store::query()->where('status', Status::STATUS_ACTIVE)->first();
-        $array    = [];
+        $location       = Store::query()->where('status', Status::STATUS_ACTIVE)->first();
+        $data           = [];
+        $key_data_check = [];
         foreach($member_service_histories as $key => $history) {
-            $key_data                                = formatDate(strtotime($history->created_at), 'd-m-Y') . '-' .
-                                                       $history->updated_by . "-" . $history->member_service_id;
-            $array[$key_data][$key]['date']          = formatDate(strtotime($history->created_at), 'd-m-Y H:i');
-            $array[$key_data][$key]['order_code']    = optional($history->memberService->order)->code;
-            $array[$key_data][$key]['order_id']      = optional($history->memberService->order)->id;
-            $array[$key_data][$key]['location']      = $location->name;
-            $array[$key_data][$key]['id_number']     = optional($history->memberService->member)->id_number;
-            $array[$key_data][$key]['member_id']     = optional($history->memberService->member)->id;
-            $array[$key_data][$key]['member_name']   = optional($history->memberService->member)->name;
-            $array[$key_data][$key]['service_code']  = optional($history->memberService)->code;
-            $array[$key_data][$key]['service_name']  = optional($history->memberService->service)->name;
-            $array[$key_data][$key]['service_price'] = $history->memberService->price;
-            $array[$key_data][$key]['created_by']    = optional($history->user)->name;
-            $array[$key_data][$key]['order_creator'] = optional($history->memberService->creator)->name;
-            $array[$key_data][$key]['check_owner']   = false;
+            $key_data = formatDate(strtotime($history->created_at), 'd-m-Y') . '-' .
+                        $history->updated_by . "-" . $history->member_service_id;
+
+            if (!in_array($key_data, $key_data_check)) {
+                $key_data_check[]         = $key_data;
+                $data[$key_data]['times'] = 1;
+            } else {
+                $data[$key_data]['times'] = $data[$key_data]['times'] + 1;
+            }
+            $data[$key_data]['date']          = formatDate(strtotime($history->created_at), 'd-m-Y H:i');
+            $data[$key_data]['order_code']    = optional($history->memberService->order)->code;
+            $data[$key_data]['order_id']      = optional($history->memberService->order)->id;
+            $data[$key_data]['location']      = $location->name;
+            $data[$key_data]['id_number']     = optional($history->memberService->member)->id_number;
+            $data[$key_data]['member_id']     = optional($history->memberService->member)->id;
+            $data[$key_data]['member_name']   = optional($history->memberService->member)->name;
+            $data[$key_data]['service_code']  = optional($history->memberService)->code;
+            $data[$key_data]['service_name']  = optional($history->memberService->service)->name;
+            $data[$key_data]['service_price'] = $history->memberService->price;
+            $data[$key_data]['created_by']    = optional($history->user)->name;
+            $data[$key_data]['order_creator'] = optional($history->memberService->creator)->name;
+            $data[$key_data]['amount']        = 0;
             if ($history->updated_by == optional($history->memberService)->created_by) {
-                $array[$key_data][$key]['check_owner'] = true;
+                $data[$key_data]['amount'] = $data[$key_data]['times'] * $data[$key_data]['service_price'];
             }
         }
-
-        $data = [];
-        foreach($array as $key => $item) {
-            $data[$key]           = reset($item);
-            $data[$key]['times']  = count($item);
-            $data[$key]['amount'] = 0;
-            if ($data[$key]['check_owner']) {
-                $data[$key]['amount'] = $data[$key]['times'] * $data[$key]['service_price'];
-            }
-            unset($data[$key]['check_owner']);
-
-            $data[$key] = (object)$data[$key];
-        }
-
-        $total_amount = array_sum(array_column($data, 'amount'));
 
         if (isset($request->export)) {
-            $data_export = [];
-            foreach($data as $key => $val) {
-                $data_export[$key]['date']         = $val->date;
-                $data_export[$key]['user_name']    = $val->created_by;
-                $data_export[$key]['order_code']         = $val->order_code;
-                $data_export[$key]['order_creator']         = $val->order_creator;
-                $data_export[$key]['location']         = $val->location;
-                $data_export[$key]['member_id']         = $val->member_id;
-                $data_export[$key]['member_name']         = $val->member_name;
-                $data_export[$key]['service_code'] = $val->service_code;
-                $data_export[$key]['service_name'] = $val->service_name;
-                $data_export[$key]['times']     = $val->times . ' ' . trans('Times');
-                $data_export[$key]['amount']       = moneyFormat($val->amount);
-            }
-
-            $export             = new Export;
-            $export->collection = collect($data_export);
-            $export->headings   = [trans('Date'), trans('Staff'), trans('Invoice Code'), trans('Order Creator'), trans('Location'),
-                                   trans('Client ID'), trans('Client Name'), trans('Service Code'), trans('Service Name'), trans('Times'), trans('Amount')];
+            $export = $this->export_service_report($data);
             return Excel::download($export, 'service_expendable.xlsx');
         }
-
-        $data         = $this->paginate($data, 50);
-        $creators     = User::with('roles')
-                            ->whereHas('roles', function($role_query){
-                                $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
-                                return $role_query->whereNotIn('role_id', [$admin->id]);
-                            })
-                            ->where('status', Status::STATUS_ACTIVE)
-                            ->pluck('name', 'id')->toArray();
+        $total_amount = array_sum(array_column($data, 'amount'));
+        $data     = $this->paginate($data, 50);
+        $creators = User::with('roles')
+                        ->whereHas('roles', function($role_query){
+                            $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                            return $role_query->whereNotIn('role_id', [$admin->id]);
+                        })
+                        ->where('status', Status::STATUS_ACTIVE)
+                        ->pluck('name', 'id')->toArray();
 
         return view("Report::service_expendable", compact('filter', 'members', 'creators', 'data', 'total_amount'));
     }
@@ -351,7 +327,8 @@ class ReportController extends Controller{
                                                             }
                                                             $ms->whereHas('order', function($o) use ($filter){
                                                                 if (isset($filter['code'])) {
-                                                                    $o->where('code', 'LIKE','%'.$filter['code'].'%');
+                                                                    $o->where('code', 'LIKE', '%' . $filter['code'] .
+                                                                                              '%');
                                                                 }
                                                             });
                                                         })
@@ -364,60 +341,40 @@ class ReportController extends Controller{
         $member_service_histories = $member_service_histories->orderBy('start', 'desc')->get();
 
 
-        $location = Store::query()->where('status', Status::STATUS_ACTIVE)->first();
-        $array    = [];
+        $location       = Store::query()->where('status', Status::STATUS_ACTIVE)->first();
+        $data           = [];
+        $key_data_check = [];
         foreach($member_service_histories as $key => $history) {
             $key_data = formatDate(strtotime($history->created_at), 'd-m-Y') . '-' .
                         $history->updated_by . "-" . $history->member_service_id;
+
             if ($history->updated_by !== optional($history->memberService)->created_by) {
-                $array[$key_data][$key]['date']          = formatDate(strtotime($history->created_at), 'd-m-Y H:i');
-                $array[$key_data][$key]['order_code']    = optional($history->memberService->order)->code;
-                $array[$key_data][$key]['order_id']      = optional($history->memberService->order)->id;
-                $array[$key_data][$key]['location']      = $location->name;
-                $array[$key_data][$key]['id_number']     = optional($history->memberService->member)->id_number;
-                $array[$key_data][$key]['member_id']     = optional($history->memberService->member)->id;
-                $array[$key_data][$key]['member_name']   = optional($history->memberService->member)->name;
-                $array[$key_data][$key]['service_code']  = optional($history->memberService)->code;
-                $array[$key_data][$key]['service_name']  = optional($history->memberService->service)->name;
-                $array[$key_data][$key]['service_price'] = $history->memberService->price;
-                $array[$key_data][$key]['created_by']    = optional($history->user)->name;
-                $array[$key_data][$key]['order_creator'] = optional($history->memberService->creator)->name;
+                if (!in_array($key_data, $key_data_check)) {
+                    $key_data_check[]         = $key_data;
+                    $data[$key_data]['times'] = 1;
+                } else {
+                    $data[$key_data]['times'] = $data[$key_data]['times'] + 1;
+                }
+                $data[$key_data]['date']          = formatDate(strtotime($history->created_at), 'd-m-Y H:i');
+                $data[$key_data]['order_code']    = optional($history->memberService->order)->code;
+                $data[$key_data]['order_id']      = optional($history->memberService->order)->id;
+                $data[$key_data]['location']      = $location->name;
+                $data[$key_data]['id_number']     = optional($history->memberService->member)->id_number;
+                $data[$key_data]['member_id']     = optional($history->memberService->member)->id;
+                $data[$key_data]['member_name']   = optional($history->memberService->member)->name;
+                $data[$key_data]['service_code']  = optional($history->memberService)->code;
+                $data[$key_data]['service_name']  = optional($history->memberService->service)->name;
+                $data[$key_data]['service_price'] = $history->memberService->price;
+                $data[$key_data]['created_by']    = optional($history->user)->name;
+                $data[$key_data]['order_creator'] = optional($history->memberService->creator)->name;
+                $data[$key_data]['amount']        = $data[$key_data]['times'] * $data[$key_data]['service_price'];
             }
-        }
-
-        $data = [];
-        foreach($array as $key => $item) {
-            $data[$key]           = reset($item);
-            $data[$key]['times']  = count($item);
-            $data[$key]['amount'] = 0;
-            $data[$key]['amount'] = $data[$key]['times'] * $data[$key]['service_price'];
-
-            $data[$key] = (object)$data[$key];
         }
 
         if (isset($request->export)) {
-            $data_export = [];
-            foreach($data as $key => $val) {
-                $data_export[$key]['date']         = $val->date;
-                $data_export[$key]['user_name']    = $val->created_by;
-                $data_export[$key]['order_code']         = $val->order_code;
-                $data_export[$key]['order_creator']         = $val->order_creator;
-                $data_export[$key]['location']         = $val->location;
-                $data_export[$key]['member_id']         = $val->member_id;
-                $data_export[$key]['member_name']         = $val->member_name;
-                $data_export[$key]['service_code'] = $val->service_code;
-                $data_export[$key]['service_name'] = $val->service_name;
-                $data_export[$key]['times']     = $val->times . ' ' . trans('Times');
-                $data_export[$key]['amount']       = moneyFormat($val->amount);
-            }
-
-            $export             = new Export;
-            $export->collection = collect($data_export);
-            $export->headings   = [trans('Date'), trans('Staff'), trans('Invoice Code'), trans('Order Creator'), trans('Location'),
-                                   trans('Client ID'), trans('Client Name'), trans('Service Code'), trans('Service Name'), trans('Times'), trans('Amount')];
+            $export = $this->export_service_report($data);
             return Excel::download($export, 'service_provide.xlsx');
         }
-
         $total_amount = array_sum(array_column($data, 'amount'));
         $data         = $this->paginate($data, 50);
         $creators     = User::with('roles')
@@ -429,5 +386,35 @@ class ReportController extends Controller{
                             ->pluck('name', 'id')->toArray();
 
         return view("Report::service_provide", compact('filter', 'members', 'creators', 'data', 'total_amount'));
+    }
+
+    /**
+     * @param $data
+     * @return Export
+     */
+    public function export_service_report($data){
+        $data_export = [];
+        foreach($data as $key => $val) {
+            $val                                = (object)$val;
+            $data_export[$key]['date']          = $val->date;
+            $data_export[$key]['user_name']     = $val->created_by;
+            $data_export[$key]['order_code']    = (is_numeric($val->order_code)) ? 'CWB'.$val->order_code : $val->order_code;
+            $data_export[$key]['order_creator'] = $val->order_creator;
+            $data_export[$key]['location']      = $val->location;
+            $data_export[$key]['member_id']     = (is_numeric($val->id_number)) ? 'CWB'.$val->id_number : $val->id_number;
+            $data_export[$key]['member_name']   = $val->member_name;
+            $data_export[$key]['service_code']  = $val->service_code;
+            $data_export[$key]['service_name']  = $val->service_name;
+            $data_export[$key]['times']         = $val->times . ' ' . trans('Times');
+            $data_export[$key]['amount']        = moneyFormat($val->amount);
+        }
+
+        $export             = new Export;
+        $export->collection = collect($data_export);
+        $export->headings   = [trans('Date'), trans('Staff'), trans('Invoice Code'), trans('Order Creator'),
+                               trans('Location'),
+                               trans('Client ID'), trans('Client Name'), trans('Service Code'),
+                               trans('Service Name'), trans('Times'), trans('Amount')];
+        return $export;
     }
 }

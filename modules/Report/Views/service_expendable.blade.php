@@ -109,6 +109,7 @@ $month = (isset($filter['month'])) ? strtotime(Carbon::createFromFormat('m-Y', $
                         <tbody>
                         <?php $key = ($data->currentpage() - 1) * $data->perpage() + 1 ?>
                         @foreach($data as $key_data => $val)
+                            @php($val = (object)$val)
                             <tr>
                                 <td>{{ $key++ }}</td>
                                 <td>{{ $val->date }}</td>
