@@ -16,6 +16,7 @@ use Modules\Member\Model\MemberServiceHistory;
 use Modules\Order\Model\Order;
 use Modules\Role\Model\Role;
 use Modules\Service\Model\Service;
+use Modules\Setting\Model\CommissionRateSetting;
 use Modules\Store\Model\Store;
 use Modules\User\Model\User;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -291,19 +292,20 @@ class ReportController extends Controller{
             }
         }
 
+
         if (isset($request->export)) {
             $export = $this->export_service_report($data);
             return Excel::download($export, 'service_expendable.xlsx');
         }
         $total_amount = array_sum(array_column($data, 'amount'));
-        $data     = $this->paginate($data, 50);
-        $creators = User::with('roles')
-                        ->whereHas('roles', function($role_query){
-                            $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
-                            return $role_query->whereNotIn('role_id', [$admin->id]);
-                        })
-                        ->where('status', Status::STATUS_ACTIVE)
-                        ->pluck('name', 'id')->toArray();
+        $data         = $this->paginate($data, 50);
+        $creators     = User::with('roles')
+                            ->whereHas('roles', function($role_query){
+                                $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                                return $role_query->whereNotIn('role_id', [$admin->id]);
+                            })
+                            ->where('status', Status::STATUS_ACTIVE)
+                            ->pluck('name', 'id')->toArray();
 
         return view("Report::service_expendable", compact('filter', 'members', 'creators', 'data', 'total_amount'));
     }
@@ -317,6 +319,8 @@ class ReportController extends Controller{
         $filter                   = $request->all();
         $members                  = Member::getArray();
         $member_service_histories = MemberServiceHistory::query()
+                                                        ->join('users', 'updated_by', '=', 'users.id')
+                                                        ->select('users.name', 'member_service_histories.*')
                                                         ->with(['memberService' => function($ms){
                                                             $ms->with('order');
                                                             $ms->with('member');
@@ -338,45 +342,58 @@ class ReportController extends Controller{
             $member_service_histories = $member_service_histories->where('updated_by', $filter['staff']);
         }
 
-        $member_service_histories = $member_service_histories->orderBy('start', 'desc')->get();
+        $member_service_histories = $member_service_histories->orderBy('name')->orderBy('start', 'desc')->get();
 
 
         $location       = Store::query()->where('status', Status::STATUS_ACTIVE)->first();
         $data           = [];
         $key_data_check = [];
+        $service_pay    = (int)CommissionRateSetting::getValueByKey(CommissionRateSetting::SERVICE_PAY);
         foreach($member_service_histories as $key => $history) {
             $key_data = formatDate(strtotime($history->created_at), 'd-m-Y') . '-' .
                         $history->updated_by . "-" . $history->member_service_id;
 
             if ($history->updated_by !== optional($history->memberService)->created_by) {
+                $staff_name = optional($history->user)->name ?? "N/A";
                 if (!in_array($key_data, $key_data_check)) {
-                    $key_data_check[]         = $key_data;
-                    $data[$key_data]['times'] = 1;
+                    $key_data_check[]                                   = $key_data;
+                    $data[$staff_name]['histories'][$key_data]['times'] = 1;
                 } else {
-                    $data[$key_data]['times'] = $data[$key_data]['times'] + 1;
+                    $data[$staff_name]['histories'][$key_data]['times']
+                        = $data[$staff_name]['histories'][$key_data]['times'] + 1;
                 }
-                $data[$key_data]['date']          = formatDate(strtotime($history->created_at), 'd-m-Y H:i');
-                $data[$key_data]['order_code']    = optional($history->memberService->order)->code;
-                $data[$key_data]['order_id']      = optional($history->memberService->order)->id;
-                $data[$key_data]['location']      = $location->name;
-                $data[$key_data]['id_number']     = optional($history->memberService->member)->id_number;
-                $data[$key_data]['member_id']     = optional($history->memberService->member)->id;
-                $data[$key_data]['member_name']   = optional($history->memberService->member)->name;
-                $data[$key_data]['service_code']  = optional($history->memberService)->code;
-                $data[$key_data]['service_name']  = optional($history->memberService->service)->name;
-                $data[$key_data]['service_price'] = $history->memberService->price;
-                $data[$key_data]['created_by']    = optional($history->user)->name;
-                $data[$key_data]['order_creator'] = optional($history->memberService->creator)->name;
-                $data[$key_data]['amount']        = $data[$key_data]['times'] * $data[$key_data]['service_price'];
+                $data[$staff_name]['histories'][$key_data]['date']
+                                                                            = formatDate(strtotime($history->created_at), 'd-m-Y H:i');
+                $data[$staff_name]['histories'][$key_data]['order_code']
+                                                                            = optional($history->memberService->order)->code;
+                $data[$staff_name]['histories'][$key_data]['order_id']
+                                                                            = optional($history->memberService->order)->id;
+                $data[$staff_name]['histories'][$key_data]['location']      = $location->name;
+                $data[$staff_name]['histories'][$key_data]['id_number']
+                                                                            = optional($history->memberService->member)->id_number;
+                $data[$staff_name]['histories'][$key_data]['member_id']
+                                                                            = optional($history->memberService->member)->id;
+                $data[$staff_name]['histories'][$key_data]['member_name']
+                                                                            = optional($history->memberService->member)->name;
+                $data[$staff_name]['histories'][$key_data]['service_code']  = optional($history->memberService)->code;
+                $data[$staff_name]['histories'][$key_data]['service_name']
+                                                                            = optional($history->memberService->service)->name;
+                $data[$staff_name]['histories'][$key_data]['service_price'] = $history->memberService->price;
+                $data[$staff_name]['histories'][$key_data]['created_by']    = $staff_name;
+                $data[$staff_name]['histories'][$key_data]['order_creator']
+                                                                            = optional($history->memberService->creator)->name;
+                $data[$staff_name]['histories'][$key_data]['amount']
+                                                                            = $data[$staff_name]['histories'][$key_data]['times'] *
+                                                                              $service_pay;
+
+                $data[$staff_name]['total_times']
+                                                   = $this->getTotalProvideServiceCommission($history->updated_by, $filter['month']
+                                                                                                                   ??
+                                                                                                                   formatDate(time(), 'm-Y'));
+                $data[$staff_name]['total_amount'] = $data[$staff_name]['total_times'] * $service_pay;
             }
         }
-
-        if (isset($request->export)) {
-            $export = $this->export_service_report($data);
-            return Excel::download($export, 'service_provide.xlsx');
-        }
-        $total_amount = array_sum(array_column($data, 'amount'));
-        $data         = $this->paginate($data, 50);
+        $data         = $this->paginate($data, 5);
         $creators     = User::with('roles')
                             ->whereHas('roles', function($role_query){
                                 $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
@@ -385,7 +402,7 @@ class ReportController extends Controller{
                             ->where('status', Status::STATUS_ACTIVE)
                             ->pluck('name', 'id')->toArray();
 
-        return view("Report::service_provide", compact('filter', 'members', 'creators', 'data', 'total_amount'));
+        return view("Report::service_provide", compact('filter', 'members', 'creators', 'data'));
     }
 
     /**
@@ -398,10 +415,12 @@ class ReportController extends Controller{
             $val                                = (object)$val;
             $data_export[$key]['date']          = $val->date;
             $data_export[$key]['user_name']     = $val->created_by;
-            $data_export[$key]['order_code']    = (is_numeric($val->order_code)) ? 'CWB'.$val->order_code : $val->order_code;
+            $data_export[$key]['order_code']    = (is_numeric($val->order_code)) ? 'CWB' . $val->order_code :
+                $val->order_code;
             $data_export[$key]['order_creator'] = $val->order_creator;
             $data_export[$key]['location']      = $val->location;
-            $data_export[$key]['member_id']     = (is_numeric($val->id_number)) ? 'CWB'.$val->id_number : $val->id_number;
+            $data_export[$key]['member_id']     = (is_numeric($val->id_number)) ? 'CWB' . $val->id_number :
+                $val->id_number;
             $data_export[$key]['member_name']   = $val->member_name;
             $data_export[$key]['service_code']  = $val->service_code;
             $data_export[$key]['service_name']  = $val->service_name;
@@ -416,5 +435,20 @@ class ReportController extends Controller{
                                trans('Client ID'), trans('Client Name'), trans('Service Code'),
                                trans('Service Name'), trans('Times'), trans('Amount')];
         return $export;
+    }
+
+    /**
+     * @param $user_id
+     * @return int
+     */
+    public function getTotalProvideServiceCommission($user_id, $time){
+        return MemberServiceHistory::query()
+                                   ->join('member_services', function($join){
+                                       $join->on('member_service_id', '=', 'member_services.id');
+                                       $join->on('member_service_histories.updated_by', '<>', 'member_services.created_by');
+                                   })
+                                   ->whereMonth('member_service_histories.updated_at', $time)
+                                   ->where('member_service_histories.updated_by', $user_id)
+                                   ->count();
     }
 }
