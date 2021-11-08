@@ -11,7 +11,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans('Home') }}</a></li>
-                    <li class="breadcrumb-item active">{{ trans('Salary') }}</li>
+                    <li class="breadcrumb-item"><a href="{{ route('get.user.salary_list') }}">{{ trans('Salary') }}</a></li>
+                    <li class="breadcrumb-item active">{{ $salary->user->name }}</li>
                 </ol>
             </nav>
         </div>
@@ -117,24 +118,11 @@
                                     <div class="col-6">
                                         <label>
                                             {{ trans('Total monthly sales') }}
-                                            <span>({{ ($target_person_income == $target_by) ? trans('Personal') : trans('Company') }})</span>
+                                            <span class="text-info">({{ ($target_person_income == $target_by) ? trans('Personal') : trans('Company') }})</span>
                                         </label>
                                     </div>
                                     <div class="col-6">
-                                        <h6>{{ moneyFormat($orders->sum('total_price')) }}</h6>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-6">
-                                        <label>{{ trans('Extra Bonus') }}:</label>
-                                    </div>
-                                    <div class="col-6">
-                                        <span class="text-success">
-                                            {{ $salary->service_rate ?? $extra_bonus ?? 0 }}%
-                                        </span>
-                                        <span class="text-info">
-                                            (+{{ moneyFormat($salary->sale_commission ?? 0) }})
-                                        </span>
+                                        <h6 class="text-success">{{ moneyFormat($orders->sum('total_price')) }}</h6>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -148,19 +136,24 @@
                                             <span
                                                 class="text-success">{{ moneyFormat($salary->payment_rate ?? 0) }}</span>
                                         @endif
-                                        <span class="text-info">
+                                        <span class="text-primary" style="font-weight: 500;">
+                                            (+{{ moneyFormat(($salary->company_commission ?? 0) ) }})
+                                        </span>
+                                         <span class="text-info">
                                             ({{ trans("Next target") }}: {{ $user->getNextCommissionRate($filter['month'] ?? NULL) }})
                                         </span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-6">
-                                        <label>{{ trans('Payment rate') }}
-                                            /{{ trans('Bonus') }} {{ trans('Commission') }}:</label>
+                                        <label>{{ trans('Extra Bonus') }}:</label>
                                     </div>
                                     <div class="col-6">
                                         <span class="text-success">
-                                            +{{ moneyFormat(($salary->company_commission ?? 0) ) }}
+                                            {{ $salary->service_rate ?? $extra_bonus ?? 0 }}% - {{ moneyFormat($salary->getExtraBonusCommission('total')) }}
+                                        </span>
+                                        <span class="text-primary" style="font-weight: 500;">
+                                            (+{{ moneyFormat($salary->sale_commission ?? 0) }})
                                         </span>
                                     </div>
                                 </div>
@@ -170,8 +163,8 @@
                                     </div>
                                     <div class="col-6">
                                         <span
-                                            class="text-success">{{ moneyFormat($salary->service_commission ?? 0) }}</span>
-                                        <span class="text-info">
+                                            class="text-primary" style="font-weight: 500;">+{{ moneyFormat($salary->service_commission ?? 0) }}</span>
+                                        <span class="text-success">
                                             ({{ trans('Total') }}: <span
                                                 class="font-weight-bold">{{ !empty($salary) ? $salary->getTotalProvideServiceCommission() : 0 }}</span> {{trans('Times')}})
                                         </span>
@@ -182,7 +175,7 @@
                                         <label>{{ trans('Total Commission') }}:</label>
                                     </div>
                                     <div class="col-6">
-                                        <h6>{{ moneyFormat($salary->total_commission ?? 0) }}</h6>
+                                        <h6 class="text-danger">{{ moneyFormat($salary->total_commission ?? 0) }}</h6>
                                     </div>
                                 </div>
                             </div>

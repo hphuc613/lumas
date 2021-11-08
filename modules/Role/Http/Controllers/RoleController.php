@@ -67,7 +67,7 @@ class RoleController extends Controller{
         $role     = Role::find($id);
         $statuses = Status::getStatuses();
 
-        $rates = CommissionRate::query()->where('role_id', $role->id)->paginate(15);
+        $rates = CommissionRate::query()->where('role_id', $role->id)->orderBy('target')->paginate(50);
         return view('Role::update', compact('role', 'statuses', 'rates'));
     }
 

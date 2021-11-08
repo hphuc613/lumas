@@ -72,20 +72,23 @@ class User extends BaseUser{
      * @return int
      */
     public function getCommissionRate($time = null){
-        $rates = $this->getRoleAttribute()->commissionRates;
+        if (empty($time)){
+            $time = time();
+        }
+        $rates = $this->getRoleAttribute()->commissionRates->sortBy('target');
         $data  = 0;
 
         $target_by = $this->getTargetBy();
 
         if ($target_by === CommissionRateSetting::PERSON_INCOME) {
-            $income = $this->orders()->whereMonth('updated_at', formatDate($time, 'm'))->sum('total_price');
+            $income = $this->orders()->whereMonth('updated_at', formatDate($time, 'm-Y'))->sum('total_price');
             foreach($rates as $rate) {
                 if ((int)$income >= (int)$rate->target) {
                     $data = (int)$rate->rate;
                 }
             }
         } else {
-            $income = Order::query()->whereMonth('updated_at', formatDate($time, 'm'))->sum('total_price');
+            $income = Order::query()->whereMonth('updated_at', formatDate($time, 'm-Y'))->sum('total_price');
             foreach($rates as $rate) {
                 if ((int)$income >= (int)$rate->target) {
                     $data = $rate->bonus;

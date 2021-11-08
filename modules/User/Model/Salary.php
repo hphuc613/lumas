@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Base\Model\BaseModel;
 use Modules\Member\Model\MemberServiceHistory;
-use Modules\Order\Model\Order;
 use Modules\Setting\Model\CommissionRateSetting;
 
 /**
@@ -33,13 +32,16 @@ class Salary extends BaseModel{
                     ->join('users', 'users.id', '=', 'user_id')
                     ->select('users.name', 'salaries.*')
                     ->with(['user' => function($uq) use ($filter){
-                        if (isset($filter['role_id'])) {
-                            $uq->with('roles');
-                            $uq->whereHas('roles', function($qr) use ($filter){
-                                $qr->where('role_id', $filter['role_id']);
-                            });
-                        }
+                        $uq->with('roles');
                     }]);
+
+        if (isset($filter['role_id'])) {
+            $data->whereHas('user', function($uq) use ($filter){
+                $uq->whereHas('roles', function($qr) use ($filter){
+                    $qr->where('role_id', $filter['role_id']);
+                });
+            });
+        }
         if (isset($filter['name'])) {
             $data->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
@@ -91,30 +93,36 @@ class Salary extends BaseModel{
     }
 
     /**
+     * @param $get
      * @return float|int
      */
-    public function getExtraBonusCommission(){
+    public function getExtraBonusCommission($get = null){
         $extra_bonus = $this->service_rate ?? 0;
         $time        = time();
         if (isset($this->month)) {
             $time = strtotime(Carbon::createFromFormat('m/Y', $this->month));
         }
-        if ($this->user->getTargetBy() === CommissionRateSetting::PERSON_INCOME) {
-            $commission = $this->user->orders()
-                                     ->whereMonth('updated_at', formatDate($time, 'm'))
-                                     ->sum('total_price');
 
-            return $commission * $extra_bonus / 100;
+        $commission = MemberServiceHistory::query()
+                                          ->join('member_services', function($join){
+                                              $join->on('member_service_id', '=', 'member_services.id');
+                                              $join->on('member_service_histories.updated_by', '=', 'member_services.created_by');
+                                          })
+                                          ->select('member_service_histories.*', 'member_services.price')
+                                          ->whereMonth('start', formatDate($time, 'm-Y'))
+                                          ->where('member_service_histories.updated_by', $this->user->id);
+
+        $commission = $commission->sum('price');
+
+        if ($get == 'total') {
+            return $commission;
         }
-        $commission = Order::query()
-                           ->whereMonth('updated_at', formatDate($time, 'm'))
-                           ->sum('total_price');
 
         return $commission * $extra_bonus / 100;
     }
 
     /**
-     * @return float|int
+     * @return int
      */
     public function getTotalProvideServiceCommission(){
         $time = time();
@@ -122,8 +130,12 @@ class Salary extends BaseModel{
             $time = strtotime(Carbon::createFromFormat('m/Y', $this->month));
         }
         return MemberServiceHistory::query()
-                                   ->whereMonth('updated_at', formatDate($time, 'm'))
-                                   ->where('updated_by', $this->user->id)
+                                   ->join('member_services', function($join){
+                                       $join->on('member_service_id', '=', 'member_services.id');
+                                       $join->on('member_service_histories.updated_by', '<>', 'member_services.created_by');
+                                   })
+                                   ->whereMonth('member_service_histories.updated_at', formatDate($time, 'm-Y'))
+                                   ->where('member_service_histories.updated_by', $this->user->id)
                                    ->count();
     }
 

@@ -67,7 +67,7 @@ class SalaryController extends Controller{
         if ($target_by === CommissionRateSetting::PERSON_INCOME) {
             $orders->where('updated_by', $user->id);
         }
-        $orders->whereMonth('updated_at', formatDate($time, 'm'));
+        $orders->whereMonth('updated_at', formatDate($time, 'm-Y'));
         $orders         = $orders->paginate(50);
         $order_statuses = Order::getStatus();
 
@@ -123,6 +123,7 @@ class SalaryController extends Controller{
             $salary->service_commission = $salary->getTotalProvideServiceCommission() * $service_pay; //Provide Services
             $salary->total_commission   = $salary->getTotalCommission();
             $salary->total_salary       = $salary->getTotalSalary();
+
             $salary->save();
 
             DB::commit();
