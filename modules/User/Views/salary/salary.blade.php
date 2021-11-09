@@ -150,7 +150,7 @@
                                     </div>
                                     <div class="col-6">
                                         <span class="text-success">
-                                            {{ $salary->service_rate ?? $extra_bonus ?? 0 }}% - {{ moneyFormat($salary->getExtraBonusCommission('total')) }}
+                                            {{ $salary->service_rate ?? $extra_bonus ?? 0 }}% - {{moneyFormat( !empty($salary) ? $salary->getExtraBonusCommission('total') : 0 ) }}
                                         </span>
                                         <span class="text-primary" style="font-weight: 500;">
                                             (+{{ moneyFormat($salary->sale_commission ?? 0) }})
