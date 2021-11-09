@@ -123,7 +123,7 @@
                                         <div class="alert-danger rounded"></div>
                                         <div class="alert-success rounded"></div>
                                         <div class="form-group">
-                                            <label for="">Client Comment</label>
+                                            <label for="">{{ trans('Client Comment') }}</label>
                                             <input type="text" class="form-control" readonly
                                                    value="{{ $comment['comment'] ?? NULL }}">
                                         </div>
@@ -131,7 +131,7 @@
                                             <form action="{{ route('api.post.appointment.remarks', $appointment->id) }}"
                                                   class="form-remarks" method="post" data-id="{{$appointment->id}}">
                                                 <div class="form-group">
-                                                    <label for="">Staff Remarks</label>
+                                                    <label for="">{{ trans('Staff Remarks') }}</label>
                                                     <input type="text" class="form-control remarks-{{$appointment->id}}" name="remarks"
                                                            value="{{ $comment['remarks'] ?? NULL }}">
                                                 </div>

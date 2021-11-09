@@ -68,6 +68,7 @@ class OrderController extends Controller{
             $details[$key]['price'] = $item->price;
             $details[$key]['quantity'] = $item->quantity;
             $details[$key]['amount'] = $item->amount;
+            $details[$key]['discount'] = $item->discount;
             $details[$key]['created_at'] = formatDate(strtotime($item->created_at), 'Y-m-d H:i:s');
             $details[$key]['updated_at'] = formatDate(strtotime($item->updated_at), 'Y-m-d H:i:s');
         }

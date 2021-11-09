@@ -523,5 +523,9 @@
     "This data has been deleted": "此數據已被刪除",
     "Service Expendable Report": "服務消耗報告",
     "Cost": "成本",
-    "Service Provide Report": "服務提供報告"
+    "Service Provide Report": "服務提供報告",
+    "Bulk Add New": "批量添加新",
+    "Comment": "員工留言",
+    "Client Comment": "客戶員工留言",
+    "Staff Remarks": "職員評論"
 }
