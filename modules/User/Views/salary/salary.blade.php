@@ -12,7 +12,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">{{ trans('Home') }}</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('get.user.salary_list') }}">{{ trans('Salary') }}</a></li>
-                    <li class="breadcrumb-item active">{{ $salary->user->name }}</li>
+                    <li class="breadcrumb-item active">{{ $salary->user->name ?? \Illuminate\Support\Facades\Auth::user()->name }}</li>
                 </ol>
             </nav>
         </div>
