@@ -25,14 +25,12 @@ class AppointmentRequest extends FormRequest{
         switch($method){
             default:
                 return [
-                    'name'      => 'required',
                     'member_id' => 'required|check_exist:members,id',
                     'store_id'  => 'required|check_exist:stores,id',
                     'time'      => 'required',
                 ];
             case 'update':
                 return [
-                    'name'      => 'required',
                     'member_id' => 'required|check_exist:members,id',
                     'store_id'  => 'required|check_exist:stores,id',
                     'end_time'  => 'nullable|after:time',
@@ -51,7 +49,6 @@ class AppointmentRequest extends FormRequest{
 
     public function attributes(){
         return [
-            'name'      => trans('Subject'),
             'member_id' => trans('Client'),
             'store_id'  => trans('Store'),
             'time'      => trans('Time'),

@@ -6,12 +6,24 @@
             <input type="text" class="form-control" id="name" name="name"
                    value="{{ $appointment->name ?? old('name') }}">
         </div>
-        <div class="col-md-3 form-group">
+        <div class="col-md-6"></div>
+        <div class="col-md-6 form-group">
+            <label for="member">{{ trans('Client') }}</label>
+            {!! Form::select('member_id', $prompt + $members, !empty($member_display_id) ? $member_display_id : $appointment->member_id ?? null, [
+                'id' => 'member',
+                'class' => 'select2 form-control',
+                'style' => 'width: 100%']) !!}
+            @if(isset($appointment))
+                <input type="hidden" name="member_id"
+                       value="{{ !empty($member_display_id) ? $member_display_id : $appointment->member_id }}">
+            @endif
+        </div>
+        <div class="col-md-6 form-group">
             <label for="status">{{ trans('Status') }}</label>
             {!! Form::select('status', $statuses, $appointment->status ?? null,
             ['id' => 'status', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
         </div>
-        <div class="col-md-3 form-group">
+        <div class="d-none form-group">
             <label for="type">{{ trans('Appointment Type') }}</label>
             {!! Form::select('type', $appointment_types, $appointment->type
                                 ?? (!empty($type) ? $type : \Modules\Appointment\Model\Appointment::SERVICE_TYPE),
@@ -62,17 +74,6 @@
         @endif
         <div class="col-md-12">
             <hr>
-        </div>
-        <div class="col-md-6 form-group">
-            <label for="member">{{ trans('Client') }}</label>
-            {!! Form::select('member_id', $prompt + $members, !empty($member_display_id) ? $member_display_id : $appointment->member_id ?? null, [
-                'id' => 'member',
-                'class' => 'select2 form-control',
-                'style' => 'width: 100%']) !!}
-            @if(isset($appointment))
-                <input type="hidden" name="member_id"
-                       value="{{ !empty($member_display_id) ? $member_display_id : $appointment->member_id }}">
-            @endif
         </div>
         <div class="col-md-6 form-group">
             <label for="store">{{ trans('Store') }}</label>

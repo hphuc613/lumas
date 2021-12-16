@@ -122,6 +122,8 @@ class AppointmentController extends Controller{
                 'id'           => $appointment->id,
                 'title'        => $title,
                 'start'        => formatDate($appointment->time, 'Y-m-d H:i'),
+                'end'          => formatDate(strtotime($appointment->time) +
+                                             (($appointment->getTotalIntendTimeService()) * 60), 'Y-m-d H:i'),
                 'color'        => $appointment->getColorStatus(),
                 'product_list' => $this->getProductList($appointment)
             ];
@@ -177,11 +179,11 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postCreate(AppointmentRequest $request){
-        $data = $request->all();
-        $data = $this->createAppointment($data);
+        $data         = $request->all();
+        $data         = $this->createAppointment($data);
         $data['time'] = Carbon::parse($data['time'])
                               ->format('Y-m-d H:i');
-        $book = new Appointment($data);
+        $book         = new Appointment($data);
         $book->save();
         $request->session()->flash('success', trans('Appointment booked successfully.'));
 
@@ -327,14 +329,15 @@ class AppointmentController extends Controller{
         $appointment->end_time = (!empty($appointment->end_time)) ? formatDate($appointment->end_time, 'd-m-Y H:i') :
             null;
 
-        $users                    = User::with('roles')
-                                        ->whereHas('roles', function($role_query){
-                                            $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
-                                            return $role_query->whereNotIn('role_id', [$admin->id]);
-                                        })
-                                        ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
+        $users = User::with('roles')
+                     ->whereHas('roles', function($role_query){
+                         $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                         return $role_query->whereNotIn('role_id', [$admin->id]);
+                     })
+                     ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
         $services
-                                  = Service::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->service_ids, 1));
+               = Service::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->service_ids, 1));
+
         $courses
                                   = Course::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->course_ids, 1));
         $appointment->service_ids = $appointment->getServiceList();
@@ -513,23 +516,25 @@ class AppointmentController extends Controller{
      * @return array|string
      */
     public function getProductList($appointment){
-        $title    = (Auth::user()->isAdmin())
-            ? ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->user->name ?? "N/A")
-            : ($appointment->member->name ?? "N/A") . ' | ' . $appointment->name;
-        $html     = '';
-        $html     .= '<div class="table-responsive"><div>';
+        $title    = ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->member->phone ?? "N/A");
+        $html     = '<div class="table-responsive"><div>';
         $html     .= '<h5>' . $title . '</h5>';
         $html     .= '<div class="form-group">';
         $html     .= '<label>' . trans('Total Intend Time: ') . '</label>';
         $html     .= '<span class="text-danger">' . ($appointment->getTotalIntendTimeService() ?? 0) . '</span> ' .
                      trans(' minutes');
+        $html     .= ' (' . trans("End time") . ': <span class="text-danger">'
+                     . formatDate(strtotime($appointment->time) +
+                                  (($appointment->getTotalIntendTimeService()) * 60), 'H:i') .
+                     '</span>)';
         $html     .= '</div></div>';
-        $html     .= '<table class="table table-striped" id="product-list"><thead>
-                                    <tr>
-                                        <th>' . trans('Service') . '</th>
-                                        <th>' . trans('Intend Time') . '</th>
-                                    </tr>
-                                </thead>';
+        $html     .= '<table class="table table-striped" id="product-list">
+                        <thead>
+                            <tr>
+                                <th>' . trans('Service') . '</th>
+                                <th>' . trans('Intend Time') . '</th>
+                            </tr>
+                        </thead>';
         $html     .= '<tbody>';
         $products = ($appointment->type === Appointment::SERVICE_TYPE) ? $appointment->service_ids :
             $appointment->course_ids;

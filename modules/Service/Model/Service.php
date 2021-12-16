@@ -58,6 +58,12 @@ class Service extends BaseModel{
         if(!empty($status)){
             $query = $query->where('status', $status);
         }
+        if($in){
+            $query = $query->whereIn('id', $in);
+        }
+        if($not_in){
+            $query = $query->whereNotIn('id', $not_in);
+        }
         $query = $query->orderBy('name')->get();
 
         $data = [];

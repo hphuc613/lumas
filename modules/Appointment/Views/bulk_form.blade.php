@@ -9,15 +9,18 @@ $type                    = request()->get('type');
         @csrf
         <div class="row">
             <div class="col-md-6 form-group">
-                <label for="name">{{ trans('Subject') }}</label>
-                <input type="text" class="form-control" id="name" name="name">
+                <label for="member">{{ trans('Client') }}</label>
+                {!! Form::select('member_id', $prompt + $members, $member_display_id ?? null, [
+                    'id' => 'member',
+                    'class' => 'select2 form-control',
+                    'style' => 'width: 100%']) !!}
             </div>
-            <div class="col-md-3 form-group">
+            <div class="col-md-6 form-group">
                 <label for="status">{{ trans('Status') }}</label>
                 {!! Form::select('status', $statuses, null,
                 ['id' => 'status', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
             </div>
-            <div class="col-md-3 form-group">
+            <div class="d-none form-group">
                 <label for="type">{{ trans('Appointment Type') }}</label>
                 {!! Form::select('type', $appointment_types, \Modules\Appointment\Model\Appointment::SERVICE_TYPE,
                     ['id'   => 'type',
@@ -53,13 +56,6 @@ $type                    = request()->get('type');
             </div>
             <div class="col-md-12">
                 <hr>
-            </div>
-            <div class="col-md-6 form-group">
-                <label for="member">{{ trans('Client') }}</label>
-                {!! Form::select('member_id', $prompt + $members, $member_display_id ?? null, [
-                    'id' => 'member',
-                    'class' => 'select2 form-control',
-                    'style' => 'width: 100%']) !!}
             </div>
             <div class="col-md-6 form-group">
                 <label for="store">{{ trans('Store') }}</label>

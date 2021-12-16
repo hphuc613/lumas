@@ -21,7 +21,6 @@ class BulkAppointmentRequest extends FormRequest{
      */
     public function rules(){
         return [
-            'name'        => 'required',
             'member_id'   => 'required|check_exist:members,id',
             'store_id'    => 'required|check_exist:stores,id',
             'time'        => 'required',
@@ -42,7 +41,6 @@ class BulkAppointmentRequest extends FormRequest{
 
     public function attributes(){
         return [
-            'name'        => trans('Subject'),
             'member_id'   => trans('Client'),
             'store_id'    => trans('Store'),
             'time'        => trans('Time'),

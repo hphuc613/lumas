@@ -28,11 +28,6 @@
                 <form action="" method="get">
                     <div class="row">
                         <div class="col-md-3 form-group">
-                            <label for="name-search">{{ trans("Subject") }}</label>
-                            <input type="text" class="form-control" id="name-search" name="name"
-                                   value="{{ $filter['name'] ?? null }}">
-                        </div>
-                        <div class="col-md-3 form-group">
                             <label for="member-id">{{ trans('Client') }}</label>
                             {{ Form::select('member_id', [null => 'Select'] + $members, $filter['member_id'] ?? null,
                                              ['id' => 'member-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) }}

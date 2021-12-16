@@ -115,6 +115,13 @@
                 $('#get-date').val(formatDateTime(now));
             });
 
+            $(document).on("submit", "#appointment-form", function (e) {
+                var time_input = $(this).find('input[name="time"]').val();
+                var get_date = time_input.split(" ")[0];
+                var date = get_date.split("-").reverse().join('-');
+                window.localStorage.setItem('initialDate', date);
+            });
+
             $('#appointment_type').change(function () {
                 calendarStyleView();
                 location.href = "{{  route(\Illuminate\Support\Facades\Route::currentRouteName(),$member->id ?? $user->id ?? null) }}?type=" + $(this).val();
@@ -131,7 +138,7 @@
             getProductByType("{{ \Modules\Appointment\Model\Appointment::SERVICE_TYPE }}");
 
             /** Tooltip in calendar */
-            $(".tooltip-content").tooltip({
+            $(document).find(".tooltip-content").tooltip({
                 content: function () {
                     return $(this).attr('data-tooltip');
                 },
@@ -148,10 +155,9 @@
                 $(this).remove();
             });
 
-            let month_current = 0;
-            $(document).click(function () {
+            $(document).on("mouseover", ".tooltip-content", function () {
                 /** Tooltip in calendar */
-                $(".tooltip-content").tooltip({
+                $(this).tooltip({
                     content: function () {
                         return $(this).attr('data-tooltip');
                     },
@@ -163,9 +169,11 @@
                         ui.tooltip.css("max-width", "500px");
                     }
                 });
+            });
 
-
-                /** Upddate Event By Month **/
+            /** Update Event By Month **/
+            let month_current = 0;
+            $(document).click(function () {
                 const cdate = calendar.getDate();
                 const date = new Date(cdate);
                 const month = date.getMonth() + 1;
@@ -175,7 +183,6 @@
                 const param = "?month=" + month + "&year=" + year + "&member_id=" + member_id + "&user_id=" + user_id;
                 if (month_current !== month) {
                     month_current = month;
-                    console.log('cc');
                     $.ajax({
                         url: '{{ route("get.appointment.event_list") }}' + param,
                         method: "get",

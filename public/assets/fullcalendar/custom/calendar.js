@@ -20,10 +20,17 @@ function calendarStyleView() {
 
 /** Generate Calendar Appointment */
 function generateCalendarAppointment(url_update_time, url_product_list, member_id) {
-    var initialView;
+    var initialView, initialDate;
     var calendarEl = document.getElementById('fullcalendar');
     var initialLocaleCode = $('html').attr('lang');
     var events = JSON.parse($('#event').val());
+
+    if (window.localStorage.getItem('initialDate')) {
+        initialDate = window.localStorage.getItem('initialDate');
+        window.localStorage.removeItem('initialDate');
+    } else {
+        initialDate = new Date();
+    }
 
     if (window.localStorage.getItem('calendarStyle')) {
         initialView = window.localStorage.getItem('calendarStyle');
@@ -38,6 +45,7 @@ function generateCalendarAppointment(url_update_time, url_product_list, member_i
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
         },
+        initialDate: initialDate,
         initialView: initialView,
         selectable: true,
         locale: initialLocaleCode,
@@ -60,7 +68,7 @@ function generateCalendarAppointment(url_update_time, url_product_list, member_i
         eventDrop: function (info) {
             var eventObj = info.event;
             var time = info.event.start.toISOString();
-
+            window.localStorage.setItem('initialDate', time);
             eventDropUpdateTime(url_update_time, initialLocaleCode, eventObj, time)
         },
         eventDurationEditable: false,
@@ -73,9 +81,10 @@ function generateCalendarAppointment(url_update_time, url_product_list, member_i
         },
         eventClick: function (info) {
             var eventObj = info.event;
-            var update_boooking_url = $("#update-booking").attr('data-url');
-            $("#update-booking").attr("href", update_boooking_url + "/" + eventObj.id + "&member_id=" + member_id);
-            $("#update-booking").click();
+            var update_booking = $("#update-booking");
+            update_booking.attr("href", update_booking.attr('data-url') + "/" + eventObj.id + "&member_id=" + member_id);
+            update_booking.click();
+            window.localStorage.setItem('initialDate', info.event.start.toISOString());
             calendarStyleView();
         }
     });

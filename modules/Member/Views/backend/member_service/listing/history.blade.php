@@ -66,7 +66,7 @@
                                 <a href="{{ route("get.appointment.update",$history->appointment->id) }}"
                                    id="update-booking" data-toggle="modal"
                                    data-target="#form-modal"
-                                   data-title="{{ trans('View Appointment') }}">{{ $history->appointment->name ?? "N/A" }}</a>
+                                   data-title="{{ trans('View Appointment') }}">{{ trans('View Appointment') }}</a>
                             @endif
                         </td>
                         <td>{{ $history->memberService->service->name ?? "N/A" }}</td>
