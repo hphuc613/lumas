@@ -69,6 +69,12 @@
         <label for="user-id">{{ trans('Staff') }}</label>
         <div class="w-100">{{ $appointment->user->name ?? "N/A"}} </div>
     </div>
+    <div class="col-md-6 form-group">
+        <label>{{ trans('Assign More') }}</label>
+        <div class="w-100">
+            {{ isset($appointment) ? implode($appointment->staffs->pluck('name')->toArray(), ", ") : null }}
+        </div>
+    </div>
     <div class="col-md-12">
         <hr>
     </div>

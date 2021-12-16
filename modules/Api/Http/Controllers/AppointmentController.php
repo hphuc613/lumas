@@ -81,6 +81,7 @@ class AppointmentController extends Controller{
         $data['remarks_created_at'] = $comment['remarks_created_at'] ?? null;
         $data['room_name']          = $appointment->room->name ?? null;
         $data['instrument_name']    = $appointment->instrument->name ?? null;
+        $data['assign_more']        = implode($appointment->staffs->pluck('name')->toArray(), ", ");
         unset($data['room_id'], $data['instrument_id'], $data['notify_created']);
         $data['services'] = $appointment->getServiceList();
         $data['courses']  = $appointment->getCourseList();

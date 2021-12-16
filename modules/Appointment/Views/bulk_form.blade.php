@@ -9,6 +9,12 @@ $type                    = request()->get('type');
         @csrf
         <div class="row">
             <div class="col-md-6 form-group">
+                <label for="name">{{ trans('Subject') }}</label>
+                <input type="text" class="form-control" id="name" name="name"
+                       value="{{ $appointment->name ?? old('name') }}">
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-6 form-group">
                 <label for="member">{{ trans('Client') }}</label>
                 {!! Form::select('member_id', $prompt + $members, $member_display_id ?? null, [
                     'id' => 'member',
@@ -85,9 +91,16 @@ $type                    = request()->get('type');
             </div>
             @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
                 <div class="col-md-6 form-group">
-                    <label for="user-id">{{ trans('Staff') }}</label>
-                    {!! Form::select('user_id', $users, null,
-                    ['id' => 'user-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
+                    <label for="staff-appointment-form">{{ trans('Staff') }}</label>
+                    {!! Form::select('user_id', $prompt + $users, null,
+                    ['id' => 'staff-appointment-form', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
+                </div>
+                <div class="col-md-6 form-group">
+                    <label>{{ trans('Assign More') }}</label>
+                    {!! Form::select( 'assign_more[]', [], [],
+                        ['class'    => 'form-control select2',
+                         'multiple' => 'multiple',
+                         'id'       => 'assign-more']) !!}
                 </div>
                 <div class="col-md-12">
                     <hr>
@@ -135,6 +148,7 @@ $type                    = request()->get('type');
     </form>
 </div>
 {!! JsValidator::formRequest('Modules\Appointment\Http\Requests\BulkAppointmentRequest', '#appointment-bulk-form') !!}
+
 <script>
     $(document).ready(function () {
         $('#appointment-bulk-form #type').prop('disabled', true);

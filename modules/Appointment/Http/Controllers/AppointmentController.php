@@ -168,6 +168,7 @@ class AppointmentController extends Controller{
                                  })
                                  ->where('status', Status::STATUS_ACTIVE)
                                  ->pluck('name', 'id');
+
         if (!$request->ajax()) {
             return redirect()->back();
         }
@@ -179,12 +180,17 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postCreate(AppointmentRequest $request){
-        $data         = $request->all();
+        $data = $request->all();
+        unset($data['assign_more']);
         $data         = $this->createAppointment($data);
         $data['time'] = Carbon::parse($data['time'])
                               ->format('Y-m-d H:i');
         $book         = new Appointment($data);
         $book->save();
+        $book->staffs()->sync($request->assign_more);
+        foreach($request->assign_more as $staff_id) {
+            $book->addNotification($staff_id);
+        }
         $request->session()->flash('success', trans('Appointment booked successfully.'));
 
         return redirect()->back();
@@ -222,7 +228,7 @@ class AppointmentController extends Controller{
      */
     public function postBulkCreate(BulkAppointmentRequest $request){
         $data = request()->except(['_token']);
-        unset($data['day_of_week'], $data['time'], $data['from'], $data['to']);
+        unset($data['day_of_week'], $data['time'], $data['from'], $data['to'], $data['assign_more']);
         $date_start  = Carbon::parse($request->from)->timestamp;
         $date_end    = Carbon::parse($request->to)->timestamp + 86400;
         $time        = $request->time;
@@ -255,6 +261,8 @@ class AppointmentController extends Controller{
 
         $notifications = collect();
         foreach($clone_appointments as $appointment) {
+            $appointment->staffs()->sync($request->assign_more);
+
             $data_notify['id']              = Str::orderedUuid();
             $data_notify['type']            = 'App\Notifications\Notification';
             $data_notify['notifiable_type'] = 'Modules\User\Model\User';
@@ -276,6 +284,15 @@ class AppointmentController extends Controller{
             ]);
 
             $notifications->push($data_notify);
+
+            if (!empty($request->assign_more)){
+                foreach($request->assign_more as $val){
+                    $data_notify['id']              = Str::orderedUuid();
+                    $data_notify['notifiable_id']   = (int)$val;
+
+                    $notifications->push($data_notify);
+                }
+            }
         }
 
         foreach($notifications->chunk(200) as $chunk) {
@@ -343,11 +360,21 @@ class AppointmentController extends Controller{
         $appointment->service_ids = $appointment->getServiceList();
         $appointment->course_ids  = $appointment->getCourseList();
 
+
+        $assign_more_users = User::with('roles')
+                                 ->whereHas('roles', function($role_query){
+                                     $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                                     return $role_query->whereNotIn('role_id', [$admin->id]);
+                                 })
+                                 ->where('status', Status::STATUS_ACTIVE)
+                                 ->where('id', '<>', $appointment->user_id)
+                                 ->pluck('name', 'id');
+
         if (!$request->ajax()) {
             return redirect()->back();
         }
 
-        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users', 'rooms', 'instruments'));
+        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users', 'rooms', 'instruments', 'assign_more_users'));
     }
 
     /**
@@ -386,7 +413,17 @@ class AppointmentController extends Controller{
         if (isset($data['end_time'])) {
             $data['end_time'] = formatDate($data['end_time'], 'Y-m-d H:i');
         }
+        unset($data['assign_more']);
         $book->update($data);
+        $book->staffs()->sync($request->assign_more);
+        foreach($request->assign_more as $staff_id) {
+            $book->addNotification($staff_id);
+        }
+        NotificationModel::query()
+                         ->where('data->appointment_id', $book->id)
+                         ->where('notifiable_id', '<>', $book->user_id)
+                         ->whereNotIn('notifiable_id', $request->assign_more)
+                         ->delete();
 
         $request->session()->flash('success', trans('Appointment updated successfully.'));
 
@@ -555,4 +592,28 @@ class AppointmentController extends Controller{
         return $html;
     }
 
+    /**
+     * @param $id
+     * @return false|string
+     */
+    public function getAssignMoreStaff($id){
+        $data = User::with('roles')
+                    ->whereHas('roles', function($role_query){
+                        $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                        return $role_query->whereNotIn('role_id', [$admin->id]);
+                    })
+                    ->where('status', Status::STATUS_ACTIVE)
+                    ->where('id', '<>', $id)
+                    ->get();
+
+
+        $array = [];
+        if(!empty((int)$id)) {
+            foreach($data as $item) {
+                $array[] = ['id' => $item->id, 'text' => $item->name];
+            }
+        }
+
+        return json_encode($array);
+    }
 }

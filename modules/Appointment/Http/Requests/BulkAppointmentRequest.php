@@ -27,6 +27,8 @@ class BulkAppointmentRequest extends FormRequest{
             'from'        => 'required',
             'to'          => 'required|after:from',
             'day_of_week' => 'required',
+            'assign_more' => 'array|max:3',
+            'user_id'     => 'required'
         ];
     }
 
@@ -36,6 +38,7 @@ class BulkAppointmentRequest extends FormRequest{
             'check_exist' => ':attribute' . trans(' does not exist.'),
             'check_past'  => ':attribute' . trans(' is not in the past.'),
             'after'       => ':attribute' . trans(' must be a date after Start Date.'),
+            'assign_more.max' => ':attribute' . trans(' may not have more than 3 staffs.')
         ];
     }
 
@@ -47,6 +50,8 @@ class BulkAppointmentRequest extends FormRequest{
             'from'        => trans('Start Date'),
             'to'          => trans('End Date'),
             'day_of_week' => trans('Day of Week'),
+            'user_id'     => trans('Staff'),
+            'assign_more' => trans('Assign more')
         ];
     }
 }

@@ -535,5 +535,7 @@
     "Friday": "星期五",
     "Saturday": "星期六",
     "Sunday": "星期日",
-    "End time": "時間結束"
+    "End time": "時間結束",
+    "Assign More": "分配更多",
+    " may not have more than 3 staffs.": "分配更多人員不得超過 3 人。"
 }

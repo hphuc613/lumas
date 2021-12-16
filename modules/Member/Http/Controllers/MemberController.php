@@ -209,8 +209,8 @@ class MemberController extends Controller{
         $appointment_types = Appointment::getTypeList();
         $appointments      = Appointment::with('member')
                                         ->with('store')
-                                        ->with('user');
-        $appointments      = $appointments->where('member_id', $id);
+                                        ->with('user')
+                                        ->where('member_id', $id);
         $member            = Member::find($id);
 
         /** Type of appointment */

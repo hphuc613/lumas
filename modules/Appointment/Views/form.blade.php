@@ -100,16 +100,33 @@
         <div class="col-md-12">
             <hr>
         </div>
-        @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
-            <div class="col-md-6 form-group">
-                <label for="user-id">{{ trans('Staff') }}</label>
-                {!! Form::select('user_id', $users, $appointment->user_id ?? null,
-                ['id' => 'user-id', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
-            </div>
-            <div class="col-md-12">
-                <hr>
-            </div>
-        @endif
+        <div class="col-md-6 form-group">
+            <label for="user-id">{{ trans('Staff') }}</label>
+            @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
+                {!! Form::select('user_id', $prompt + $users->toArray(), $appointment->user_id ?? null,
+                ['id' => 'staff-appointment-form', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
+            @else
+                <input type="hidden" name="user_id" value={{ Auth::id() }}>
+            @endif
+        </div>
+        <div class="col-md-6 form-group">
+            <label for="logo">{{ trans('Assign More') }}</label>
+            @if(isset($assign_more_users))
+                @php($user_selected = isset($appointment) ? $appointment->staffs->pluck('id')->toArray() : [])
+                {!! Form::select( 'assign_more[]', $assign_more_users, $user_selected,
+                        ['class'    => 'form-control select2 w-100',
+                         'multiple' => 'multiple',
+                         'id'       => 'assign-more']) !!}
+            @else
+                {!! Form::select( 'assign_more[]', [], [],
+                        ['class'    => 'form-control select2',
+                         'multiple' => 'multiple',
+                         'id'       => 'assign-more']) !!}
+            @endif
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
         <div class="col-md-12 form-group">
             <label for="description">{{ trans('Description') }}</label>
             <textarea name="description" id="description" class="form-control"

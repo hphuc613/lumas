@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Modules\Appointment\Http\Controllers\AppointmentController;
 use Modules\Appointment\Model\Appointment;
 use Modules\Base\Model\Status;
 use Modules\Order\Model\Order;
@@ -175,6 +176,7 @@ class UserController extends Controller{
         $appointment_types = Appointment::getTypeList();
         $appointments      = Appointment::with('member')
                                         ->with('store')
+                                        ->with('staffs')
                                         ->with('user')
                                         ->where('user_id', $id);
 
@@ -185,23 +187,19 @@ class UserController extends Controller{
             $appointments = $appointments->where('type', Appointment::SERVICE_TYPE);
         }
 
-        $appointments = $appointments->get();
+        $now          = Carbon::now();
+        $appointments = $appointments->whereMonth('time', $now->month)
+                                     ->whereYear('time', $now->year)
+                                     ->orWhereHas('staffs', function($q) use ($id){
+                                         $q->where('user_id', $id);
+                                     })
+                                     ->whereMonth('time', $now->month)
+                                     ->whereYear('time', $now->year)
+                                     ->get();
 
         /** Get event */
-        $events = [];
-        foreach($appointments as $appointment) {
-            $title    = (Auth::user()->isAdmin())
-                ? ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->user->name ?? "N/A")
-                : ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->name ?? "N/A");
-            $events[] = [
-                'id'    => $appointment->id,
-                'title' => $title,
-                'start' => Carbon::parse($appointment->time)
-                                 ->format('Y-m-d H:i'),
-                'color' => $appointment->getColorStatus()
-            ];
-        }
-        $events = json_encode($events);
+        $appointment_controller = new AppointmentController();
+        $events                 = json_encode($appointment_controller->getEvents($appointments));
         return view("Appointment::index", compact('events', 'appointment_types', 'filter', 'user'));
     }
 

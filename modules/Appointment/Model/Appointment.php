@@ -5,6 +5,7 @@ namespace Modules\Appointment\Model;
 use App\AppHelpers\Helper;
 use App\Notifications\Notification;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Base\Model\BaseModel;
@@ -13,6 +14,7 @@ use Modules\Course\Model\Course;
 use Modules\Instrument\Model\Instrument;
 use Modules\Member\Model\Member;
 use Modules\Member\Model\MemberServiceHistory;
+use Modules\Notification\Model\NotificationModel;
 use Modules\Room\Model\Room;
 use Modules\Service\Model\Service;
 use Modules\Store\Model\Store;
@@ -76,19 +78,28 @@ class Appointment extends BaseModel{
         parent::boot();
 
         static::saved(function($model){
-            $model->afterSave();
+            $model->addNotification($model->user_id);
+            foreach($model->staffs as $staff) {
+                $model->addNotification($staff->id);
+            }
+
+            NotificationModel::query()
+                             ->where('data->appointment_id', $model->id)
+                             ->where('notifiable_id', '<>', $model->user_id)
+                             ->whereNotIn('notifiable_id', $model->staffs->pluck('id')->toArray())
+                             ->delete();
         });
     }
 
 
     /**
-     * After Save Model
+     * @param null $user_id
      */
-    public function afterSave(){
+    public function addNotification($user_id){
         /** Add Notification*/
+        $user = User::query()->find($user_id);
         if ($this->status == self::WAITING_STATUS) {
-            $user         = User::find($this->user_id);
-            $notification = $this->getNotification();
+            $notification = $this->getNotification($user);
             if ($notification) {
                 if ((int)strtotime($this->time) > time()) {
                     $data = [
@@ -129,17 +140,19 @@ class Appointment extends BaseModel{
         }
 
         if ($this->status == self::ABORT_STATUS || !empty($this->deleted_at)) {
-            if ($this->getNotification()) {
-                $this->getNotification()->markAsRead();
+            if ($this->getNotification($user)) {
+                $this->getNotification($user)->markAsRead();
             }
         }
     }
 
     /**
-     * @return false|mixed
+     * @param $user
+     * @return bool
      */
-    public function getNotification(){
-        $notification = $this->user->notifications->where('data.appointment_id', $this->id)->first();
+    public function getNotification($user){
+        $notification = $user->notifications->where('data.appointment_id', $this->id)->first();
+
         if (!empty($notification)) {
             return $notification;
         }
@@ -286,5 +299,12 @@ class Appointment extends BaseModel{
      */
     public function instrument(){
         return $this->belongsTo(Instrument::class, 'instrument_id');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function staffs(){
+        return $this->belongsToMany(User::class, 'appointment_staff', 'appointment_id', 'user_id');
     }
 }
