@@ -56,11 +56,11 @@
     </div>
     <div class="col-md-6 form-group">
         <label for="store">{{ trans('Room') }}</label>
-        <div class="w-100">{{ implode($appointment->getRooms(true), ', ') }} </div>
+        <div class="w-100">{{ implode(', ', $appointment->getRooms(true)) }} </div>
     </div>
     <div class="col-md-6 form-group">
         <label for="store">{{ trans('Instrument') }}</label>
-        <div class="w-100">{{ implode($appointment->getInstruments(true), ', ') }}</div>
+        <div class="w-100">{{ implode(', ', $appointment->getInstruments(true)) }}</div>
     </div>
     <div class="col-md-12">
         <hr>
@@ -72,7 +72,7 @@
     <div class="col-md-6 form-group">
         <label>{{ trans('Assign More') }}</label>
         <div class="w-100">
-            {{ isset($appointment) ? implode($appointment->staffs->pluck('name')->toArray(), ", ") : null }}
+            {{ isset($appointment) ? implode( ", ", $appointment->staffs->pluck('name')->toArray()) : null }}
         </div>
     </div>
     <div class="col-md-12">
