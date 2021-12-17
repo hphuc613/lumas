@@ -100,7 +100,7 @@ $type                    = request()->get('type');
                 <div class="col-md-6 form-group">
                     <label>{{ trans('Assign More') }}</label>
                     {!! Form::select( 'assign_more[]', [], [],
-                        ['class'    => 'form-control select2',
+                        ['class'    => 'form-control select2 w-100',
                          'multiple' => 'multiple',
                          'id'       => 'assign-more']) !!}
                 </div>

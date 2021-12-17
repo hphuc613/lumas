@@ -121,7 +121,7 @@
                          'id'       => 'assign-more']) !!}
             @else
                 {!! Form::select( 'assign_more[]', [], [],
-                        ['class'    => 'form-control select2',
+                        ['class'    => 'form-control select2 w-100',
                          'multiple' => 'multiple',
                          'id'       => 'assign-more']) !!}
             @endif
