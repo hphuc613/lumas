@@ -561,8 +561,10 @@ class AppointmentController extends Controller{
      */
     public function getProductList($appointment){
         $title    = ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->member->phone ?? "N/A");
+        $assign_more = !empty($appointment->staffs->count()) ? ", " . implode(', ', $appointment->staffs->pluck('name')->toArray()) : null;
         $html     = '<div class="table-responsive"><div>';
         $html     .= '<h5>' . $title . '</h5>';
+        $html     .= '<label>' . trans('Staff').':</label> '. ($appointment->user->name ?? "N/A") .  $assign_more;
         $html     .= '<div class="form-group">';
         $html     .= '<label>' . trans('Total Intend Time: ') . '</label>';
         $html     .= '<span class="text-danger">' . ($appointment->getTotalIntendTimeService() ?? 0) . '</span> ' .
