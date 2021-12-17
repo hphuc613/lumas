@@ -260,6 +260,45 @@ class Appointment extends BaseModel{
     }
 
     /**
+     * @param bool $get_name
+     * @return array
+     */
+    public function getRooms($get_name = false){
+        $ids = json_decode($this->room_id, true) ?? [];
+        if (is_numeric($ids)){
+            $ids = [$ids];
+        }
+
+        $data = Room::query()->whereIn('id', $ids);
+        if ($get_name){
+            $data = $data->pluck('name');
+        }else{
+            $data = $data->pluck('id');
+        }
+
+        return $data->toArray();
+    }
+
+    /**
+     * @param bool $get_name
+     * @return array
+     */
+    public function getInstruments($get_name = false){
+        $ids = json_decode($this->instrument_id, true) ?? [];
+        if (is_numeric($ids)){
+            $ids = [$ids];
+        }
+        $data = Instrument::query()->whereIn('id', $ids);
+        if ($get_name){
+            $data = $data->pluck('name');
+        }else{
+            $data = $data->pluck('id');
+        }
+
+        return $data->toArray();
+    }
+
+    /**
      * @return BelongsTo
      */
     public function store(){
@@ -285,20 +324,6 @@ class Appointment extends BaseModel{
      */
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function room(){
-        return $this->belongsTo(Room::class, 'room_id');
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function instrument(){
-        return $this->belongsTo(Instrument::class, 'instrument_id');
     }
 
     /**

@@ -85,16 +85,18 @@
         </div>
         <div class="col-md-6 form-group">
             <label for="room">{{ trans('Room') }}</label>
-            {!! Form::select('room_id', $prompt + $rooms, $appointment->room_id ?? null, [
+            {!! Form::select('room_id[]', $rooms, isset($appointment) ? $appointment->getRooms() : null, [
                 'id' => 'room',
                 'class' => 'select2 form-control',
+                'multiple' => 'multiple',
                 'style' => 'width: 100%']) !!}
         </div>
         <div class="col-md-6 form-group">
             <label for="instrument">{{ trans('Instrument') }}</label>
-            {!! Form::select('instrument_id', $prompt + $instruments, $appointment->instrument_id ?? null, [
+            {!! Form::select('instrument_id[]', $instruments, isset($appointment) ? $appointment->getInstruments() : null, [
                 'id' => 'instrument',
                 'class' => 'select2 form-control',
+                'multiple' => 'multiple',
                 'style' => 'width: 100%']) !!}
         </div>
         <div class="col-md-12">

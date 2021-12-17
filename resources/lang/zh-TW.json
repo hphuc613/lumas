@@ -537,5 +537,7 @@
     "Sunday": "星期日",
     "End time": "時間結束",
     "Assign More": "分配更多",
-    " may not have more than 3 staffs.": "分配更多人員不得超過 3 人。"
+    " may not have more than 3 staffs.": "分配更多人員不得超過 3 人。",
+    " may not have more than 4 instruments.": "不得超過 4 個樂器。",
+    " may not have more than 4 rooms.": "不得超過 4 個房間。"
 }

@@ -74,16 +74,18 @@ $type                    = request()->get('type');
             </div>
             <div class="col-md-6 form-group">
                 <label for="room">{{ trans('Room') }}</label>
-                {!! Form::select('room_id', $prompt + $rooms, null, [
+                {!! Form::select('room_id[]', $rooms, null, [
                     'id' => 'room',
                     'class' => 'select2 form-control',
+                    'multiple' => 'multiple',
                     'style' => 'width: 100%']) !!}
             </div>
             <div class="col-md-6 form-group">
                 <label for="instrument">{{ trans('Instrument') }}</label>
-                {!! Form::select('instrument_id', $prompt + $instruments, null, [
+                {!! Form::select('instrument_id[]', $instruments, null, [
                     'id' => 'instrument',
                     'class' => 'select2 form-control',
+                    'multiple' => 'multiple',
                     'style' => 'width: 100%']) !!}
             </div>
             <div class="col-md-12">

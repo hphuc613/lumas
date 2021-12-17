@@ -182,13 +182,15 @@ class AppointmentController extends Controller{
     public function postCreate(AppointmentRequest $request){
         $data = $request->all();
         unset($data['assign_more']);
-        $data         = $this->createAppointment($data);
-        $data['time'] = Carbon::parse($data['time'])
-                              ->format('Y-m-d H:i');
-        $book         = new Appointment($data);
+        $data['instrument_id'] = json_encode($data['instrument_id'] ?? []);
+        $data['room_id']       = json_encode($data['room_id'] ?? []);
+        $data                  = $this->createAppointment($data);
+        $data['time']          = Carbon::parse($data['time'])
+                                       ->format('Y-m-d H:i');
+        $book                  = new Appointment($data);
         $book->save();
         $book->staffs()->sync($request->assign_more);
-        foreach($request->assign_more as $staff_id) {
+        foreach(($request->assign_more ?? []) as $staff_id) {
             $book->addNotification($staff_id);
         }
         $request->session()->flash('success', trans('Appointment booked successfully.'));
@@ -229,13 +231,15 @@ class AppointmentController extends Controller{
     public function postBulkCreate(BulkAppointmentRequest $request){
         $data = request()->except(['_token']);
         unset($data['day_of_week'], $data['time'], $data['from'], $data['to'], $data['assign_more']);
-        $date_start  = Carbon::parse($request->from)->timestamp;
-        $date_end    = Carbon::parse($request->to)->timestamp + 86400;
-        $time        = $request->time;
-        $days        = $request->day_of_week;
-        $a_week      = 86400 * 7;
-        $data_insert = collect();
-        $data        = $this->createAppointment($data);
+        $date_start            = Carbon::parse($request->from)->timestamp;
+        $date_end              = Carbon::parse($request->to)->timestamp + 86400;
+        $time                  = $request->time;
+        $days                  = $request->day_of_week;
+        $a_week                = 86400 * 7;
+        $data_insert           = collect();
+        $data['instrument_id'] = json_encode($data['instrument_id'] ?? []);
+        $data['room_id']       = json_encode($data['room_id'] ?? []);
+        $data                  = $this->createAppointment($data);
         foreach($days as $day) {
             $day_next_week = Carbon::parse($date_start)->next($day)->timestamp;
             while($date_start <= $day_next_week && $day_next_week < $date_end) {
@@ -285,10 +289,10 @@ class AppointmentController extends Controller{
 
             $notifications->push($data_notify);
 
-            if (!empty($request->assign_more)){
-                foreach($request->assign_more as $val){
-                    $data_notify['id']              = Str::orderedUuid();
-                    $data_notify['notifiable_id']   = (int)$val;
+            if (!empty($request->assign_more)) {
+                foreach($request->assign_more as $val) {
+                    $data_notify['id']            = Str::orderedUuid();
+                    $data_notify['notifiable_id'] = (int)$val;
 
                     $notifications->push($data_notify);
                 }
@@ -414,15 +418,18 @@ class AppointmentController extends Controller{
             $data['end_time'] = formatDate($data['end_time'], 'Y-m-d H:i');
         }
         unset($data['assign_more']);
+
+        $data['room_id']       = json_encode($data['room_id'] ?? []);
+        $data['instrument_id'] = json_encode($data['instrument_id'] ?? []);
         $book->update($data);
         $book->staffs()->sync($request->assign_more);
-        foreach($request->assign_more as $staff_id) {
+        foreach(($request->assign_more ?? []) as $staff_id) {
             $book->addNotification($staff_id);
         }
         NotificationModel::query()
                          ->where('data->appointment_id', $book->id)
                          ->where('notifiable_id', '<>', $book->user_id)
-                         ->whereNotIn('notifiable_id', $request->assign_more)
+                         ->whereNotIn('notifiable_id', ($request->assign_more ?? []))
                          ->delete();
 
         $request->session()->flash('success', trans('Appointment updated successfully.'));
@@ -606,9 +613,8 @@ class AppointmentController extends Controller{
                     ->where('id', '<>', $id)
                     ->get();
 
-
         $array = [];
-        if(!empty((int)$id)) {
+        if (!empty((int)$id)) {
             foreach($data as $item) {
                 $array[] = ['id' => $item->id, 'text' => $item->name];
             }
