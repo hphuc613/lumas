@@ -43,17 +43,21 @@ class AppointmentController extends Controller{
                 $data = $data->whereDate('time', formatDate(strtotime($request->time), "Y-m-d"));
             }
         }
-        if (isset($request->user_id)) {
-            $data = $data->where('user_id', $request->user_id);
-        }
         if (isset($request->member_id)) {
             $data = $data->where('member_id', $request->member_id);
+        }
+        if (isset($request->user_id)) {
+            $data = $data->where('user_id', $request->user_id)
+                         ->orWhereHas('staffs', function($q) use ($request){
+                             $q->where('user_id', $request->user_id);
+                         });
         }
 
         $item_qty = 10;
         if (isset($request->item_qty)) {
             $item_qty = $request->item_qty;
         }
+
         $data = $data->orderBy('time', 'desc')->paginate($item_qty);
 
         return response()->json([
@@ -79,8 +83,8 @@ class AppointmentController extends Controller{
         $data['comment_created_at'] = $comment['created_at'] ?? null;
         $data['remarks']            = $comment['remarks'] ?? null;
         $data['remarks_created_at'] = $comment['remarks_created_at'] ?? null;
-        $data['room_name']          = $appointment->room->name ?? null;
-        $data['instrument_name']    = $appointment->instrument->name ?? null;
+        $data['room_name']          = implode($appointment->getRooms(true) ?? [], ', ');
+        $data['instrument_name']    = implode($appointment->getInstruments(true) ?? [], ', ');
         $data['assign_more']        = implode($appointment->staffs->pluck('name')->toArray(), ", ");
         unset($data['room_id'], $data['instrument_id'], $data['notify_created']);
         $data['services'] = $appointment->getServiceList();
