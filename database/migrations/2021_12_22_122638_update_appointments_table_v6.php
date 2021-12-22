@@ -14,7 +14,7 @@ class UpdateAppointmentsTableV6 extends Migration
     public function up()
     {
         Schema::table('appointments', function (Blueprint $table) {
-            $table->text('assign')->default('[]');
+            $table->text('assign')->default(null);
         });
     }
 

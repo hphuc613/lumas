@@ -303,7 +303,7 @@ class Appointment extends BaseModel{
      * @return array
      */
     public function getAssign(){
-        $assign        = json_decode($this->assign, 1);
+        $assign        = json_decode(!empty($this->assign) ? $this->assign : '[]', 1);
         $data          = [];
         foreach($assign as $staff_id => $item) {
             if (!empty($item['service_id'])) {
