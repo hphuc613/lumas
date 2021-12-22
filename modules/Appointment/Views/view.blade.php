@@ -101,37 +101,60 @@
                 <thead>
                 <tr>
                     <th>{{ trans('Service/Course Name') }}</th>
-                    <th>{{ trans('Intend Time') }}</th>
+                    @if($staffs['check'])
+                        <th>{{ trans('Staff') }}</th>
+                        <th>{{ trans('Time') }}</th>
+                    @else
+                        <th>{{ trans('Intend Time') }}</th>
+                    @endif
                 </tr>
                 </thead>
                 <tbody>
                 @if(isset($appointment))
-                    @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
-                        @foreach($appointment->service_ids as $item)
-                            @if(!empty($item))
-                                <tr class="pl-2">
-                                    <td>
-                                        <span class="text-option">{{ $item->name }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-option">{{ $item->intend_time . trans(" minutes") }}</span>
-                                    </td>
-                                </tr>
-                            @endif
+                    @if($staffs['check'])
+                        @unset($staffs['check'])
+                        @foreach($staffs as $staff)
+                            <tr class="pl-2">
+                                <td>
+                                    <span class="text-option">{{ $staff['service_name'] }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-option">{{ $staff['staff_name'] }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-option">{{ $staff['time'] }}</span>
+                                </td>
+                            </tr>
                         @endforeach
                     @else
-                        @foreach($appointment->course_ids as $item)
-                            @if(!empty($item))
-                                <tr class="pl-2">
-                                    <td>
-                                        <span class="text-option">{{ $item->name }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-option">{{ $item->intend_time . trans(" minutes")}}</span>
-                                    </td>
-                                </tr>
-                            @endif
-                        @endforeach
+                        @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
+                            @foreach($appointment->service_ids as $item)
+                                @if(!empty($item))
+                                    <tr class="pl-2">
+                                        <td>
+                                            <span class="text-option">{{ $item->name }}</span>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="text-option">{{ $item->intend_time . trans(" minutes") }}</span>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @else
+                            @foreach($appointment->course_ids as $item)
+                                @if(!empty($item))
+                                    <tr class="pl-2">
+                                        <td>
+                                            <span class="text-option">{{ $item->name }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-option">{{ $item->intend_time . trans(" minutes")}}</span>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @endif
                     @endif
                 @endif
                 </tbody>

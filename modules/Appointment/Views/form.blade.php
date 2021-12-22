@@ -113,22 +113,38 @@
         </div>
         <div class="col-md-6 form-group">
             <label for="logo">{{ trans('Assign More') }}</label>
-            @if(isset($assign_more_users))
-                @php($user_selected = isset($appointment) ? $appointment->staffs->pluck('id')->toArray() : [])
-                {!! Form::select( 'assign_more[]', $assign_more_users, $user_selected,
-                        ['class'    => 'form-control select2 w-100',
-                         'multiple' => 'multiple',
-                         'id'       => 'assign-more']) !!}
-            @else
-                {!! Form::select( 'assign_more[]', [], [],
-                        ['class'    => 'form-control select2 w-100',
-                         'multiple' => 'multiple',
-                         'id'       => 'assign-more']) !!}
-            @endif
+            @php($staff_ids = isset($appointment) ? $appointment->staffs->pluck('id')->toArray() : [])
+            {!! Form::select( 'assign_more[]', $assign_more_users ?? [], $staff_ids,
+                    ['class'    => 'form-control select2 w-100',
+                     'multiple' => 'multiple',
+                     'id'       => 'assign-more']) !!}
         </div>
         <div class="col-md-12">
             <hr>
         </div>
+        @if(isset($appointment))
+            <div class="col-md-12 form-group assign-group" id="assign-group">
+                <label for="logo">{{ trans('Assign') }}</label>
+                <div class="assign-list mb-3" id="assign-list">
+                    @unset($staffs['check'])
+                    @foreach($staffs as $staff)
+                        <div class="row mb-2 assign-item">
+                            <div class="col-md-4">
+                                <input type="hidden" name="assign[{{ $staff['staff_id'] }}][staff]" value="{{ $staff['staff_id'] }}">
+                                {{ $staff['staff_name'] }}
+                            </div>
+                            <div class="col-md-4">
+                                {!! Form::select( 'assign['.$staff['staff_id'].'][service]', $prompt + $service_selected, $staff['service_id'] ?? NULL,
+                                ['class'    => 'form-control select2 w-100 assign-service']) !!}
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="assign[{{ $staff['staff_id'] }}][time]" placeholder="{{ trans('Time') }}" class="form-control" value="{{ $staff['time'] ?? null }}">
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
         <div class="col-md-12 form-group">
             <label for="description">{{ trans('Description') }}</label>
             <textarea name="description" id="description" class="form-control"

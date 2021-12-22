@@ -374,11 +374,29 @@ class AppointmentController extends Controller{
                                  ->where('id', '<>', $appointment->user_id)
                                  ->pluck('name', 'id');
 
+        $staffs = [];
+        foreach($appointment->staffs as $staff) {
+            $staffs[$staff->id]['staff_id']     = $staff->id;
+            $staffs[$staff->id]['staff_name']   = $staff->name;
+            $staffs[$staff->id]['service_id']   = null;
+            $staffs[$staff->id]['service_name'] = null;
+            $staffs[$staff->id]['time']         = null;
+        }
+        $staffs[$appointment->user_id]['staff_id']     = $appointment->user_id;
+        $staffs[$appointment->user_id]['staff_name']   = $appointment->user->name ?? 'N/A';
+        $staffs[$appointment->user_id]['service_id']   = null;
+        $staffs[$appointment->user_id]['service_name'] = null;
+        $staffs[$appointment->user_id]['time']         = null;
+        $staffs['check']                               = false;
+
+        $staffs = !empty($appointment->getAssign()) ? $appointment->getAssign() : $staffs;
+
+        $service_selected = $appointment->service_ids->pluck('name', 'id')->toArray();
         if (!$request->ajax()) {
             return redirect()->back();
         }
 
-        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users', 'rooms', 'instruments', 'assign_more_users'));
+        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users', 'rooms', 'instruments', 'assign_more_users', 'service_selected', 'staffs'));
     }
 
     /**
@@ -418,7 +436,14 @@ class AppointmentController extends Controller{
             $data['end_time'] = formatDate($data['end_time'], 'Y-m-d H:i');
         }
         unset($data['assign_more']);
-
+        $assign = [];
+        if ($request->user_id == $book->user_id) {
+            foreach($request->assign as $item) {
+                $assign[$item['staff']]['service_id'] = $item['service'];
+                $assign[$item['staff']]['time']       = $item['time'];
+            }
+        }
+        $data['assign']        = json_encode($assign);
         $data['room_id']       = json_encode($data['room_id'] ?? []);
         $data['instrument_id'] = json_encode($data['instrument_id'] ?? []);
         $book->update($data);
@@ -560,43 +585,73 @@ class AppointmentController extends Controller{
      * @return array|string
      */
     public function getProductList($appointment){
-        $title    = ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->member->phone ?? "N/A");
-        $assign_more = !empty($appointment->staffs->count()) ? ", " . implode(', ', $appointment->staffs->pluck('name')->toArray()) : null;
-        $html     = '<div class="table-responsive"><div>';
-        $html     .= '<h5>' . $title . '</h5>';
-        $html     .= '<label>' . trans('Staff').':</label> '. ($appointment->user->name ?? "N/A") .  $assign_more;
-        $html     .= '<div class="form-group">';
-        $html     .= '<label>' . trans('Total Intend Time: ') . '</label>';
-        $html     .= '<span class="text-danger">' . ($appointment->getTotalIntendTimeService() ?? 0) . '</span> ' .
-                     trans(' minutes');
-        $html     .= ' (' . trans("End time") . ': <span class="text-danger">'
-                     . formatDate(strtotime($appointment->time) +
-                                  (($appointment->getTotalIntendTimeService()) * 60), 'H:i') .
-                     '</span>)';
-        $html     .= '</div></div>';
-        $html     .= '<table class="table table-striped" id="product-list">
-                        <thead>
+        $title       = ($appointment->member->name ?? "N/A") . ' | ' . ($appointment->member->phone ?? "N/A");
+        $assign_more = !empty($appointment->staffs->count()) ?
+            ", " . implode(', ', $appointment->staffs->pluck('name')->toArray()) : null;
+        $html        = '<div class="table-responsive"><div>';
+        $html        .= '<h5>' . $title . '</h5>';
+        $html        .= '<label>' . trans('Staff') . ':</label> ' . ($appointment->user->name ?? "N/A") . $assign_more;
+        $html        .= '<div class="form-group">';
+        $html        .= '<label>' . trans('Total Intend Time: ') . '</label>';
+        $html        .= '<span class="text-danger">' . ($appointment->getTotalIntendTimeService() ?? 0) . '</span> ' .
+                        trans(' minutes');
+        $html        .= ' (' . trans("End time") . ': <span class="text-danger">'
+                        . formatDate(strtotime($appointment->time) +
+                                     (($appointment->getTotalIntendTimeService()) * 60), 'H:i') .
+                        '</span>)';
+        $html        .= '</div></div>';
+
+        $html .= '<table class="table table-striped" id="product-list">';
+
+        $staffs = $appointment->getAssign();
+        if (!empty($staffs)) {
+            $html .= '<thead>
                             <tr>
                                 <th>' . trans('Service') . '</th>
-                                <th>' . trans('Intend Time') . '</th>
+                                <th>' . trans('Staff') . '</th>
+                                <th>' . trans('Time') . '</th>
                             </tr>
                         </thead>';
-        $html     .= '<tbody>';
-        $products = ($appointment->type === Appointment::SERVICE_TYPE) ? $appointment->service_ids :
-            $appointment->course_ids;
-        foreach($products as $item) {
-            if (!empty($item)) {
+            $html .= '<tbody>';
+            unset($staffs['check']);
+            foreach($staffs as $staff) {
                 $html .= '<tr class="pl-2">
-                            <td>
-                                <span class="text-option">' . $item->name . '</span>
-                            </td>
-                            <td>
-                                <span class="text-option">' . $item->intend_time . trans(" minutes") . '</span>
-                            </td>
-                        </tr>';
+                        <td>
+                            <span class="text-option">' . $staff['service_name'] . '</span>
+                        </td>
+                        <td>
+                            <span class="text-option">' . $staff['staff_name'] . '</span>
+                        </td>
+                        <td>
+                            <span class="text-option">' . $staff['time'] . '</span>
+                        </td>
+                    </tr>';
+            }
+        } else {
+            $html     .= '<thead>
+                            <tr >
+                                <th > ' . trans('Service') . ' </th >
+                                <th > ' . trans('Intend Time') . ' </th >
+                            </tr >
+                        </thead > ';
+            $html     .= '<tbody > ';
+            $products = ($appointment->type === Appointment::SERVICE_TYPE) ? $appointment->service_ids :
+                $appointment->course_ids;
+            foreach($products as $item) {
+                if (!empty($item)) {
+                    $html .= '<tr class="pl-2" >
+                            <td >
+                                <span class="text-option" > ' . $item->name . '</span >
+                            </td >
+                            <td >
+                                <span class="text-option" > ' . $item->intend_time . trans(" minutes") . '</span >
+                            </td >
+                        </tr > ';
+                }
             }
         }
-        $html .= '</tbody></table></div>';
+        $html .= '</tbody ></table ></div > ';
+
 
         return $html;
     }

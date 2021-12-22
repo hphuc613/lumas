@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Modules\Base\Model\BaseModel;
 use Modules\Base\Model\Status;
 use Modules\Course\Model\Course;
@@ -180,7 +181,7 @@ class Appointment extends BaseModel{
     }
 
     /**
-     * @return array
+     * @return Collection
      */
     public function getServiceList(){
         $data = Helper::isJson($this->service_ids, 1);
@@ -194,7 +195,7 @@ class Appointment extends BaseModel{
             }
         }
 
-        return $list;
+        return collect($list);
     }
 
     /**
@@ -265,14 +266,14 @@ class Appointment extends BaseModel{
      */
     public function getRooms($get_name = false){
         $ids = json_decode($this->room_id, true) ?? [];
-        if (is_numeric($ids)){
+        if (is_numeric($ids)) {
             $ids = [$ids];
         }
 
         $data = Room::query()->whereIn('id', $ids);
-        if ($get_name){
+        if ($get_name) {
             $data = $data->pluck('name');
-        }else{
+        } else {
             $data = $data->pluck('id');
         }
 
@@ -285,17 +286,41 @@ class Appointment extends BaseModel{
      */
     public function getInstruments($get_name = false){
         $ids = json_decode($this->instrument_id, true) ?? [];
-        if (is_numeric($ids)){
+        if (is_numeric($ids)) {
             $ids = [$ids];
         }
         $data = Instrument::query()->whereIn('id', $ids);
-        if ($get_name){
+        if ($get_name) {
             $data = $data->pluck('name');
-        }else{
+        } else {
             $data = $data->pluck('id');
         }
 
         return $data->toArray();
+    }
+
+    /**
+     * @return array
+     */
+    public function getAssign(){
+        $assign        = json_decode($this->assign, 1);
+        $data          = [];
+        foreach($assign as $staff_id => $item) {
+            if (!empty($item['service_id'])) {
+                $staff                           = User::query()->find($staff_id);
+                $service                         = Service::query()->find($item['service_id']);
+                $data[$staff_id]['staff_id']     = $staff->id;
+                $data[$staff_id]['staff_name']   = $staff->name;
+                $data[$staff_id]['service_id']   = $service->id;
+                $data[$staff_id]['service_name'] = $service->name;
+                $data[$staff_id]['time']         = $item['time'];
+            }
+        }
+        if (!empty($data)){
+            $data['check'] = true;
+        }
+
+        return $data;
     }
 
     /**
