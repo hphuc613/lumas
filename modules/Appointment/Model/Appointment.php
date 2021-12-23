@@ -303,21 +303,30 @@ class Appointment extends BaseModel{
      * @return array
      */
     public function getAssign(){
-        $assign        = json_decode(!empty($this->assign) ? $this->assign : '[]', 1);
-        $data          = [];
-        foreach($assign as $staff_id => $item) {
-            if (!empty($item['service_id'])) {
-                $staff                           = User::query()->find($staff_id);
-                $service                         = Service::query()->find($item['service_id']);
-                $data[$staff_id]['staff_id']     = $staff->id;
-                $data[$staff_id]['staff_name']   = $staff->name;
-                $data[$staff_id]['service_id']   = $service->id;
-                $data[$staff_id]['service_name'] = $service->name;
-                $data[$staff_id]['time']         = $item['time'];
+        $assign = json_decode(!empty($this->assign) ? $this->assign : '[]', 1);
+        $data   = [];
+        $time   = 0;
+        foreach($assign as $key => $item) {
+            if (!empty($item['staff_id'])) {
+                $staff                      = User::query()->find($item['staff_id']);
+                $data[$key]['staff_id']     = $staff->id;
+                $data[$key]['staff_name']   = $staff->name;
+                $data[$key]['service_id']   = null;
+                $data[$key]['service_name'] = trans("No service specified");
+                $data[$key]['time']         = null;
+                $data[$key]['intend_time']  = 0;
+
+
+                $service = Service::query()->find($item['service_id']);
+                if (!empty($service)) {
+                    $time += $service->intend_time * 60;
+
+                    $data[$key]['service_id']   = $service->id;
+                    $data[$key]['service_name'] = $service->name;
+                    $data[$key]['time']         = formatDate(strtotime($this->time) + $time, 'H:i');
+                    $data[$key]['intend_time']  = $service->intend_time ?? null;
+                }
             }
-        }
-        if (!empty($data)){
-            $data['check'] = true;
         }
 
         return $data;

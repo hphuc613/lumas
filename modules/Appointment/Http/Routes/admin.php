@@ -27,7 +27,5 @@ Route::middleware(['admin'])->prefix("admin")->group(function(){
         Route::get("/delete/{id}",
             "AppointmentController@delete")->name("get.appointment.delete")->middleware('can:appointment-delete');
         Route::get("/product-list/{id}", "AppointmentController@getProductList")->name('get.appointment.product_list');
-
-        Route::get("/assign-more/{id}", "AppointmentController@getAssignMoreStaff")->name('get.appointment.getAssignMoreStaff');
     });
 });

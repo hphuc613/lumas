@@ -101,61 +101,31 @@
                 <thead>
                 <tr>
                     <th>{{ trans('Service/Course Name') }}</th>
-                    @if($staffs['check'])
-                        <th>{{ trans('Staff') }}</th>
-                        <th>{{ trans('Time') }}</th>
-                    @else
-                        <th>{{ trans('Intend Time') }}</th>
-                    @endif
+                    <th>{{ trans('Staff') }}</th>
+                    <th>{{ trans('Time') }}</th>
+                    <th>{{ trans('Intend Time') }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 @if(isset($appointment))
-                    @if($staffs['check'])
-                        @unset($staffs['check'])
-                        @foreach($staffs as $staff)
-                            <tr class="pl-2">
-                                <td>
-                                    <span class="text-option">{{ $staff['service_name'] }}</span>
-                                </td>
-                                <td>
-                                    <span class="text-option">{{ $staff['staff_name'] }}</span>
-                                </td>
-                                <td>
-                                    <span class="text-option">{{ $staff['time'] }}</span>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @else
-                        @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
-                            @foreach($appointment->service_ids as $item)
-                                @if(!empty($item))
-                                    <tr class="pl-2">
-                                        <td>
-                                            <span class="text-option">{{ $item->name }}</span>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="text-option">{{ $item->intend_time . trans(" minutes") }}</span>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        @else
-                            @foreach($appointment->course_ids as $item)
-                                @if(!empty($item))
-                                    <tr class="pl-2">
-                                        <td>
-                                            <span class="text-option">{{ $item->name }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="text-option">{{ $item->intend_time . trans(" minutes")}}</span>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        @endif
-                    @endif
+                    @foreach($assign as $item)
+                        <tr class="pl-2">
+                            <td>
+                                <span class="text-option @if(empty($item['service_id'])) font-italic @endif">
+                                    {{ $item['service_name'] }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-option">{{ $item['staff_name'] }}</span>
+                            </td>
+                            <td>
+                                <span class="text-option">{{ $item['time'] }}</span>
+                            </td>
+                            <td>
+                                <span class="text-option">{{ $item['intend_time'] ." ". trans("minutes") }}</span>
+                            </td>
+                        </tr>
+                    @endforeach
                 @endif
                 </tbody>
             </table>

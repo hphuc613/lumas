@@ -539,5 +539,8 @@
     "Assign More": "分配更多",
     " may not have more than 3 staffs.": "分配更多人員不得超過 3 人。",
     " may not have more than 4 instruments.": "不得超過 4 個樂器。",
-    " may not have more than 4 rooms.": "不得超過 4 個房間。"
+    " may not have more than 4 rooms.": "不得超過 4 個房間。",
+    "Assign": "分配",
+    "Select Staff": "選擇員工",
+    "No service specified": "未指定服務"
 }

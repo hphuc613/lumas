@@ -102,119 +102,37 @@
         <div class="col-md-12">
             <hr>
         </div>
-        <div class="col-md-6 form-group">
-            <label for="user-id">{{ trans('Staff') }}</label>
-            @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
-                {!! Form::select('user_id', $prompt + $users->toArray(), $appointment->user_id ?? null,
-                ['id' => 'staff-appointment-form', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
-            @else
-                <input type="hidden" name="user_id" value={{ Auth::id() }}>
-            @endif
-        </div>
-        <div class="col-md-6 form-group">
-            <label for="logo">{{ trans('Assign More') }}</label>
-            @php($staff_ids = isset($appointment) ? $appointment->staffs->pluck('id')->toArray() : [])
-            {!! Form::select( 'assign_more[]', $assign_more_users ?? [], $staff_ids,
-                    ['class'    => 'form-control select2 w-100',
-                     'multiple' => 'multiple',
-                     'id'       => 'assign-more']) !!}
-        </div>
-        <div class="col-md-12">
-            <hr>
-        </div>
-        @if(isset($appointment))
-            <div class="col-md-12 form-group assign-group" id="assign-group">
-                <label for="logo">{{ trans('Assign') }}</label>
-                <div class="assign-list mb-3" id="assign-list">
-                    @unset($staffs['check'])
-                    @foreach($staffs as $staff)
-                        <div class="row mb-2 assign-item">
-                            <div class="col-md-4">
-                                <input type="hidden" name="assign[{{ $staff['staff_id'] }}][staff]" value="{{ $staff['staff_id'] }}">
-                                {{ $staff['staff_name'] }}
-                            </div>
-                            <div class="col-md-4">
-                                {!! Form::select( 'assign['.$staff['staff_id'].'][service]', $prompt + $service_selected, $staff['service_id'] ?? NULL,
-                                ['class'    => 'form-control select2 w-100 assign-service']) !!}
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" name="assign[{{ $staff['staff_id'] }}][time]" placeholder="{{ trans('Time') }}" class="form-control" value="{{ $staff['time'] ?? null }}">
-                            </div>
-                        </div>
-                    @endforeach
+        <div class="col-md-12 form-group mb-0">
+            <label for="assign">{{ trans('Assign') }}</label>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    {!! Form::select( 'user_id', ['' => trans('Select Staff')] + $users->toArray(), $assign[1]['staff_id'] ?? NULL,
+                    ['class'    => 'form-control select2 w-100']) !!}
+                </div>
+                <div class="col-md-6">
+                    {!! Form::select( 'assign[1][service]', ['' => trans('Select Service')] + $services, $assign[1]['service_id'] ?? NULL,
+                    ['class'    => 'form-control select2 w-100']) !!}
                 </div>
             </div>
-        @endif
+        </div>
+        <div class="col-md-12 form-group">
+            @for($i = 2; $i <= 4; $i++)
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        {!! Form::select( 'assign['.$i.'][staff]', ['' => trans('Select Staff')] + $users->toArray(), $assign[$i]['staff_id'] ?? NULL,
+                        ['class'    => 'form-control select2 w-100']) !!}
+                    </div>
+                    <div class="col-md-6">
+                        {!! Form::select( 'assign['.$i.'][service]', ['' => trans('Select Service')] + $services, $assign[$i]['service_id'] ?? NULL,
+                        ['class'    => 'form-control select2 w-100']) !!}
+                    </div>
+                </div>
+            @endfor
+        </div>
         <div class="col-md-12 form-group">
             <label for="description">{{ trans('Description') }}</label>
             <textarea name="description" id="description" class="form-control"
                       rows="4">{{ $appointment->description ?? null }}</textarea>
-        </div>
-        <div class="col-md-12">
-            <div class="row p-2">
-                <div class="col-md-6">
-                    <h4>{{ trans('Service Listing') }}</h4>
-                </div>
-                <div class="col-md-6">
-                    <div class="select-course w-100">
-                        {!! Form::select('course_ids', [null => trans("Select Course")] + $courses, null, [
-                        'id' => 'course-select',
-                        'class' => 'select2 form-control select-product',
-                        'style' => 'width: 100%']) !!}
-                    </div>
-                    <div class="select-service w-100">
-                        {!! Form::select('service_ids', [null => trans("Select Service")] + $services, null, [
-                        'id' => 'service-select',
-                        'class' => 'select2 form-control select-product',
-                        'style' => 'width: 100%']) !!}
-                    </div>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped" id="product-list">
-                    <thead>
-                    <tr>
-                        <th>{{ trans('Service/Course Name') }}</th>
-                        <th class="text-center">{{ trans('Action') }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @if(isset($appointment))
-                        @if($appointment->type === \Modules\Appointment\Model\Appointment::SERVICE_TYPE)
-                            @foreach($appointment->service_ids as $item)
-                                @if(!empty($item))
-                                    <tr class="pl-2">
-                                        <td>
-                                            <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
-                                            <span class="text-option">{{ $item->name }}</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-danger delete-product"><i
-                                                    class="fas fa-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        @else
-                            @foreach($appointment->course_ids as $item)
-                                @if(!empty($item))
-                                    <tr class="pl-2">
-                                        <td>
-                                            <input type="hidden" name="product_ids[]" value="{{ $item->id }}">
-                                            <span class="text-option">{{ $item->name }}</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-danger delete-product"><i
-                                                    class="fas fa-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        @endif
-                    @endif
-                    </tbody>
-                </table>
-            </div>
         </div>
         <div class="col-md-12 mt-5 d-flex justify-content-between">
             @if(!$route_is_member_product)

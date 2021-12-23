@@ -91,53 +91,36 @@ $type                    = request()->get('type');
             <div class="col-md-12">
                 <hr>
             </div>
-            @if(Auth::user()->isAdmin() || Auth::user()->getRoleAttribute()->name === 'Manager')
-                <div class="col-md-6 form-group">
-                    <label for="staff-appointment-form">{{ trans('Staff') }}</label>
-                    {!! Form::select('user_id', $prompt + $users, null,
-                    ['id' => 'staff-appointment-form', 'class' => 'select2 form-control', 'style' => 'width: 100%']) !!}
-                </div>
-                <div class="col-md-6 form-group">
-                    <label>{{ trans('Assign More') }}</label>
-                    {!! Form::select( 'assign_more[]', [], [],
-                        ['class'    => 'form-control select2 w-100',
-                         'multiple' => 'multiple',
-                         'id'       => 'assign-more']) !!}
-                </div>
-                <div class="col-md-12">
-                    <hr>
-                </div>
-            @endif
-            <div class="col-md-12 form-group">
-                <label for="description">{{ trans('Description') }}</label>
-                <textarea name="description" id="description" class="form-control"rows="4"></textarea>
-            </div>
-            <div class="col-md-12">
-                <div class="row p-2">
+            <div class="col-md-12 form-group mb-0">
+                <label for="assign">{{ trans('Assign') }}</label>
+                <div class="row mb-2">
                     <div class="col-md-6">
-                        <h4>{{ trans('Service Listing') }}</h4>
+                        {!! Form::select( 'user_id', ['' => trans('Select Staff')] + $users, NULL,
+                        ['class'    => 'form-control select2 w-100']) !!}
                     </div>
                     <div class="col-md-6">
-                        <div class="select-service w-100">
-                            {!! Form::select('service_ids',$prompt + $services, null, [
-                            'id' => 'service-select',
-                            'class' => 'select2 form-control select-product',
-                            'style' => 'width: 100%']) !!}
+                        {!! Form::select( 'assign[1][service]', ['' => trans('Select Service')] + $services, NULL,
+                        ['class'    => 'form-control select2 w-100']) !!}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 form-group">
+                @for($i = 2; $i <= 4; $i++)
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            {!! Form::select( 'assign['.$i.'][staff]', ['' => trans('Select Staff')] + $users, NULL,
+                            ['class'    => 'form-control select2 w-100']) !!}
+                        </div>
+                        <div class="col-md-6">
+                            {!! Form::select( 'assign['.$i.'][service]', ['' => trans('Select Service')] + $services, NULL,
+                            ['class'    => 'form-control select2 w-100']) !!}
                         </div>
                     </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped" id="product-list">
-                        <thead>
-                        <tr>
-                            <th>{{ trans('Service/Course Name') }}</th>
-                            <th class="text-center">{{ trans('Action') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+                @endfor
+            </div>
+            <div class="col-md-12 form-group">
+                <label for="description">{{ trans('Description') }}</label>
+                <textarea name="description" id="description" class="form-control" rows="4"></textarea>
             </div>
             <div class="col-md-12 mt-5 d-flex justify-content-between">
                 <div>

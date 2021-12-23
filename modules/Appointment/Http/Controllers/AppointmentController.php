@@ -2,7 +2,6 @@
 
 namespace Modules\Appointment\Http\Controllers;
 
-use App\AppHelpers\Helper;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
@@ -155,7 +154,6 @@ class AppointmentController extends Controller{
     public function getCreate(Request $request){
         $statuses          = Appointment::getStatuses();
         $services          = Service::getArray(Status::STATUS_ACTIVE);
-        $courses           = Course::getArray(Status::STATUS_ACTIVE);
         $rooms             = Room::getArray(Status::STATUS_ACTIVE);
         $instruments       = Instrument::getArray(Status::STATUS_ACTIVE);
         $appointment_types = Appointment::getTypeList();
@@ -172,7 +170,7 @@ class AppointmentController extends Controller{
         if (!$request->ajax()) {
             return redirect()->back();
         }
-        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'users', 'rooms', 'instruments'));
+        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'members', 'stores', 'users', 'rooms', 'instruments'));
     }
 
     /**
@@ -180,17 +178,16 @@ class AppointmentController extends Controller{
      * @return RedirectResponse
      */
     public function postCreate(AppointmentRequest $request){
-        $data = $request->all();
+        $data        = $request->all();
+        $data        = $this->createAppointment($data);
+        $assign_more = $data['assign_more'];
         unset($data['assign_more']);
-        $data['instrument_id'] = json_encode($data['instrument_id'] ?? []);
-        $data['room_id']       = json_encode($data['room_id'] ?? []);
-        $data                  = $this->createAppointment($data);
-        $data['time']          = Carbon::parse($data['time'])
-                                       ->format('Y-m-d H:i');
-        $book                  = new Appointment($data);
+        $data['time'] = Carbon::parse($data['time'])
+                              ->format('Y-m-d H:i');
+        $book         = new Appointment($data);
         $book->save();
-        $book->staffs()->sync($request->assign_more);
-        foreach(($request->assign_more ?? []) as $staff_id) {
+        $book->staffs()->sync($assign_more);
+        foreach($assign_more as $staff_id) {
             $book->addNotification($staff_id);
         }
         $request->session()->flash('success', trans('Appointment booked successfully.'));
@@ -231,15 +228,15 @@ class AppointmentController extends Controller{
     public function postBulkCreate(BulkAppointmentRequest $request){
         $data = request()->except(['_token']);
         unset($data['day_of_week'], $data['time'], $data['from'], $data['to'], $data['assign_more']);
-        $date_start            = Carbon::parse($request->from)->timestamp;
-        $date_end              = Carbon::parse($request->to)->timestamp + 86400;
-        $time                  = $request->time;
-        $days                  = $request->day_of_week;
-        $a_week                = 86400 * 7;
-        $data_insert           = collect();
-        $data['instrument_id'] = json_encode($data['instrument_id'] ?? []);
-        $data['room_id']       = json_encode($data['room_id'] ?? []);
-        $data                  = $this->createAppointment($data);
+        $date_start  = Carbon::parse($request->from)->timestamp;
+        $date_end    = Carbon::parse($request->to)->timestamp + 86400;
+        $time        = $request->time;
+        $days        = $request->day_of_week;
+        $a_week      = 86400 * 7;
+        $data_insert = collect();
+        $data        = $this->createAppointment($data);
+        $assign_more = $data['assign_more'];
+        unset($data['assign_more']);
         foreach($days as $day) {
             $day_next_week = Carbon::parse($date_start)->next($day)->timestamp;
             while($date_start <= $day_next_week && $day_next_week < $date_end) {
@@ -265,7 +262,7 @@ class AppointmentController extends Controller{
 
         $notifications = collect();
         foreach($clone_appointments as $appointment) {
-            $appointment->staffs()->sync($request->assign_more);
+            $appointment->staffs()->sync($assign_more);
 
             $data_notify['id']              = Str::orderedUuid();
             $data_notify['type']            = 'App\Notifications\Notification';
@@ -289,8 +286,8 @@ class AppointmentController extends Controller{
 
             $notifications->push($data_notify);
 
-            if (!empty($request->assign_more)) {
-                foreach($request->assign_more as $val) {
+            if (!empty($assign_more)) {
+                foreach($assign_more as $val) {
                     $data_notify['id']            = Str::orderedUuid();
                     $data_notify['notifiable_id'] = (int)$val;
 
@@ -315,17 +312,36 @@ class AppointmentController extends Controller{
      */
     public function createAppointment($data){
         /** Get list id service/course*/
-        if ($data['type'] === Appointment::SERVICE_TYPE) {
-            $data['service_ids'] = json_encode($data['product_ids'] ?? []);
-        } else {
-            $data['course_ids'] = json_encode($data['product_ids'] ?? []);
+        $assign_more = [];
+        $assign      = [];
+        $service_ids = [];
+        foreach($data['assign'] as $key => $item) {
+            if (isset($item['staff'])) {
+                $assign_more[] = (int)$item['staff'];
+            }
+            if (isset($item['service'])) {
+                $service_ids[] = $item['service'];
+            }
+
+            if ($key == 1) {
+                $assign[$key]['staff_id']   = $data['user_id'];
+                $assign[$key]['service_id'] = $item['service'];
+            } else {
+                $assign[$key]['staff_id']   = $item['staff'];
+                $assign[$key]['service_id'] = $item['service'];
+            }
         }
-        unset($data['product_ids']);
+
+        $data['assign']        = json_encode($assign);
+        $data['service_ids']   = json_encode($service_ids);
+        $data['instrument_id'] = json_encode($data['instrument_id'] ?? []);
+        $data['room_id']       = json_encode($data['room_id'] ?? []);
 
         if (!isset($data['user_id']) || empty($data['user_id'])) {
             $data['user_id'] = Auth::id();
         }
 
+        $data['assign_more'] = $assign_more;
         return $data;
     }
 
@@ -350,53 +366,27 @@ class AppointmentController extends Controller{
         $appointment->end_time = (!empty($appointment->end_time)) ? formatDate($appointment->end_time, 'd-m-Y H:i') :
             null;
 
-        $users = User::with('roles')
-                     ->whereHas('roles', function($role_query){
-                         $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
-                         return $role_query->whereNotIn('role_id', [$admin->id]);
-                     })
-                     ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
-        $services
-               = Service::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->service_ids, 1));
+        $users    = User::with('roles')
+                        ->whereHas('roles', function($role_query){
+                            $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
+                            return $role_query->whereNotIn('role_id', [$admin->id]);
+                        })
+                        ->where('status', Status::STATUS_ACTIVE)->pluck('name', 'id');
+        $services = Service::getArray(Status::STATUS_ACTIVE);
 
-        $courses
-                                  = Course::getArray(Status::STATUS_ACTIVE, false, Helper::isJson($appointment->course_ids, 1));
         $appointment->service_ids = $appointment->getServiceList();
         $appointment->course_ids  = $appointment->getCourseList();
 
 
-        $assign_more_users = User::with('roles')
-                                 ->whereHas('roles', function($role_query){
-                                     $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
-                                     return $role_query->whereNotIn('role_id', [$admin->id]);
-                                 })
-                                 ->where('status', Status::STATUS_ACTIVE)
-                                 ->where('id', '<>', $appointment->user_id)
-                                 ->pluck('name', 'id');
+        $assign = !empty($appointment->getAssign()) ? $appointment->getAssign() : [];
 
-        $staffs = [];
-        foreach($appointment->staffs as $staff) {
-            $staffs[$staff->id]['staff_id']     = $staff->id;
-            $staffs[$staff->id]['staff_name']   = $staff->name;
-            $staffs[$staff->id]['service_id']   = null;
-            $staffs[$staff->id]['service_name'] = null;
-            $staffs[$staff->id]['time']         = null;
-        }
-        $staffs[$appointment->user_id]['staff_id']     = $appointment->user_id;
-        $staffs[$appointment->user_id]['staff_name']   = $appointment->user->name ?? 'N/A';
-        $staffs[$appointment->user_id]['service_id']   = null;
-        $staffs[$appointment->user_id]['service_name'] = null;
-        $staffs[$appointment->user_id]['time']         = null;
-        $staffs['check']                               = false;
-
-        $staffs = !empty($appointment->getAssign()) ? $appointment->getAssign() : $staffs;
-
-        $service_selected = $appointment->service_ids->pluck('name', 'id')->toArray();
         if (!$request->ajax()) {
             return redirect()->back();
         }
 
-        return view("Appointment::detail", compact('statuses', 'appointment_types', 'services', 'courses', 'members', 'stores', 'appointment', 'services', 'users', 'rooms', 'instruments', 'assign_more_users', 'service_selected', 'staffs'));
+        return view("Appointment::detail",
+            compact('statuses', 'appointment_types', 'members', 'stores',
+                'appointment', 'services', 'users', 'rooms', 'instruments', 'assign'));
     }
 
     /**
@@ -424,37 +414,45 @@ class AppointmentController extends Controller{
 
         $data = $request->all();
 
-        /** Get list id service/course*/
-        if ($data['type'] === Appointment::SERVICE_TYPE) {
-            $data['service_ids'] = json_encode($data['product_ids'] ?? []);
-        } else {
-            $data['course_ids'] = json_encode($data['product_ids'] ?? []);
+        $assign_more = [];
+        $assign      = [];
+        $service_ids = [];
+        foreach($request->assign as $key => $item) {
+            if (isset($item['staff'])) {
+                $assign_more[] = (int)$item['staff'];
+            }
+            if (isset($item['service'])) {
+                $service_ids[] = $item['service'];
+            }
+
+            if ($key == 1) {
+                $assign[$key]['staff_id']   = $request->user_id;
+                $assign[$key]['service_id'] = $item['service'];
+            } else {
+                $assign[$key]['staff_id']   = $item['staff'];
+                $assign[$key]['service_id'] = $item['service'];
+            }
         }
-        unset($data['product_ids']);
+
+        $data['assign']      = json_encode($assign);
+        $data['service_ids'] = json_encode($service_ids);
+        unset($data['assign_more']);
         $data['time'] = formatDate($data['time'], 'Y-m-d H:i');
         if (isset($data['end_time'])) {
             $data['end_time'] = formatDate($data['end_time'], 'Y-m-d H:i');
         }
-        unset($data['assign_more']);
-        $assign = [];
-        if ($request->user_id == $book->user_id) {
-            foreach($request->assign as $item) {
-                $assign[$item['staff']]['service_id'] = $item['service'];
-                $assign[$item['staff']]['time']       = $item['time'];
-            }
-        }
-        $data['assign']        = json_encode($assign);
+
         $data['room_id']       = json_encode($data['room_id'] ?? []);
         $data['instrument_id'] = json_encode($data['instrument_id'] ?? []);
         $book->update($data);
-        $book->staffs()->sync($request->assign_more);
-        foreach(($request->assign_more ?? []) as $staff_id) {
+        $book->staffs()->sync($assign_more);
+        foreach($assign_more as $staff_id) {
             $book->addNotification($staff_id);
         }
         NotificationModel::query()
                          ->where('data->appointment_id', $book->id)
                          ->where('notifiable_id', '<>', $book->user_id)
-                         ->whereNotIn('notifiable_id', ($request->assign_more ?? []))
+                         ->whereNotIn('notifiable_id', ($assign_more ?? []))
                          ->delete();
 
         $request->session()->flash('success', trans('Appointment updated successfully.'));
@@ -603,48 +601,53 @@ class AppointmentController extends Controller{
 
         $html .= '<table class="table table-striped" id="product-list">';
 
-        $staffs = $appointment->getAssign();
-        if (!empty($staffs)) {
+        $assign = $appointment->getAssign();
+        if (!empty($assign)) {
             $html .= '<thead>
                             <tr>
                                 <th>' . trans('Service') . '</th>
                                 <th>' . trans('Staff') . '</th>
                                 <th>' . trans('Time') . '</th>
+                                <th>' . trans('Intend Time') . '</th>
                             </tr>
                         </thead>';
             $html .= '<tbody>';
-            unset($staffs['check']);
-            foreach($staffs as $staff) {
-                $html .= '<tr class="pl-2">
+            unset($assign['check']);
+            foreach($assign as $item) {
+                $service_null = empty($item['service_id']) ? 'font-italic' : null;
+                $html         .= '<tr class="pl-2">
                         <td>
-                            <span class="text-option">' . $staff['service_name'] . '</span>
+                            <span class="text-option ' . $service_null . '">
+                                    ' . $item['service_name'] . '
+                            </span>
                         </td>
                         <td>
-                            <span class="text-option">' . $staff['staff_name'] . '</span>
+                            <span class="text-option">' . $item['staff_name'] . '</span>
                         </td>
                         <td>
-                            <span class="text-option">' . $staff['time'] . '</span>
+                            <span class="text-option">' . $item['time'] . '</span>
+                        </td>
+                        <td>
+                            <span class="text-option">' . $item['intend_time'] . " " . trans("minutes") . '</span>
                         </td>
                     </tr>';
             }
         } else {
-            $html     .= '<thead>
+            $html .= '<thead>
                             <tr >
                                 <th > ' . trans('Service') . ' </th >
                                 <th > ' . trans('Intend Time') . ' </th >
                             </tr >
                         </thead > ';
-            $html     .= '<tbody > ';
-            $products = ($appointment->type === Appointment::SERVICE_TYPE) ? $appointment->service_ids :
-                $appointment->course_ids;
-            foreach($products as $item) {
+            $html .= '<tbody > ';
+            foreach($appointment->service_ids as $item) {
                 if (!empty($item)) {
                     $html .= '<tr class="pl-2" >
                             <td >
                                 <span class="text-option" > ' . $item->name . '</span >
                             </td >
                             <td >
-                                <span class="text-option" > ' . $item->intend_time . trans(" minutes") . '</span >
+                                <span class="text-option" > ' . $item->intend_time . " " . trans(" minutes") . '</span >
                             </td >
                         </tr > ';
                 }
@@ -654,29 +657,5 @@ class AppointmentController extends Controller{
 
 
         return $html;
-    }
-
-    /**
-     * @param $id
-     * @return false|string
-     */
-    public function getAssignMoreStaff($id){
-        $data = User::with('roles')
-                    ->whereHas('roles', function($role_query){
-                        $admin = Role::query()->where('name', Role::ADMINISTRATOR)->first();
-                        return $role_query->whereNotIn('role_id', [$admin->id]);
-                    })
-                    ->where('status', Status::STATUS_ACTIVE)
-                    ->where('id', '<>', $id)
-                    ->get();
-
-        $array = [];
-        if (!empty((int)$id)) {
-            foreach($data as $item) {
-                $array[] = ['id' => $item->id, 'text' => $item->name];
-            }
-        }
-
-        return json_encode($array);
     }
 }

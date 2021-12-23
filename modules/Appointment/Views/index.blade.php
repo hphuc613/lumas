@@ -206,21 +206,6 @@
                 }
                 /************************************/
             });
-
-            $(document).on('change', '#staff-appointment-form', function () {
-                var id = ($(this).val() === "") ? 0 : $(this).val();
-
-                $.ajax({
-                    url: "{{ route('get.appointment.getAssignMoreStaff', '') }}/" + id,
-                    type: "get"
-                }).done(function (response) {
-                    var assignMore = $('#assign-more');
-                    assignMore.find("option").remove();
-                    assignMore.select2({
-                        data: jQuery.parseJSON(response)
-                    });
-                })
-            });
         });
     </script>
 @endpush
