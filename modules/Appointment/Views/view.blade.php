@@ -97,38 +97,55 @@
                     </span>)
                 </div>
             </div>
-            <table class="table table-striped" id="product-list">
-                <thead>
-                <tr>
-                    <th>{{ trans('Service/Course Name') }}</th>
-                    <th>{{ trans('Staff') }}</th>
-                    <th>{{ trans('Time') }}</th>
-                    <th>{{ trans('Intend Time') }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                @if(isset($appointment))
-                    @foreach($assign as $item)
-                        <tr class="pl-2">
-                            <td>
+
+            @if(isset($appointment))
+                <table class="table table-striped" id="product-list">
+                    <thead>
+                    <tr>
+                        <th>{{ trans('Service/Course Name') }}</th>
+                        @if(!empty($assign))
+                            <th>{{ trans('Staff') }}</th>
+                            <th>{{ trans('End Time') }}</th>
+                        @endif
+                        <th>{{ trans('Intend Time') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @if(!empty($assign))
+                        @foreach($assign as $item)
+                            <tr class="pl-2">
+                                <td>
                                 <span class="text-option @if(empty($item['service_id'])) font-italic @endif">
                                     {{ $item['service_name'] }}
                                 </span>
-                            </td>
-                            <td>
-                                <span class="text-option">{{ $item['staff_name'] }}</span>
-                            </td>
-                            <td>
-                                <span class="text-option">{{ $item['time'] }}</span>
-                            </td>
-                            <td>
-                                <span class="text-option">{{ $item['intend_time'] ." ". trans("minutes") }}</span>
-                            </td>
-                        </tr>
-                    @endforeach
-                @endif
-                </tbody>
-            </table>
+                                </td>
+                                <td>
+                                    <span class="text-option">{{ $item['staff_name'] }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-option">{{ $item['time'] }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-option">{{ $item['intend_time'] ." ". trans("minutes") }}</span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        @foreach($appointment->service_ids as $item)
+                            <tr class="pl-2">
+                                <td>
+                                    <span class="text-option">{{ $item->name }}</span>
+                                </td>
+                                <td>
+                                    <span
+                                        class="text-option">{{ $item->intend_time . " " . trans(" minutes") }}</span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
     <div class="col-md-12 mt-5 d-flex justify-content-between">

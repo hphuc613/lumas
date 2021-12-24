@@ -607,7 +607,7 @@ class AppointmentController extends Controller{
                             <tr>
                                 <th>' . trans('Service') . '</th>
                                 <th>' . trans('Staff') . '</th>
-                                <th>' . trans('Time') . '</th>
+                                <th>' . trans('End Time') . '</th>
                                 <th>' . trans('Intend Time') . '</th>
                             </tr>
                         </thead>';
