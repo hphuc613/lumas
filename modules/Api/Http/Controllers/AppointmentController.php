@@ -88,6 +88,7 @@ class AppointmentController extends Controller{
         $data['assign_more']        = implode(', ', $appointment->staffs->pluck('name')->toArray());
         unset($data['room_id'], $data['instrument_id'], $data['notify_created']);
         $data['services'] = $appointment->getServiceList();
+        $data['assign']   = $appointment->getAssign();
         $data['courses']  = $appointment->getCourseList();
 
         return response()->json([
