@@ -77,7 +77,7 @@ class AppointmentController extends Controller{
                                                  ->with('member')
                                                  ->with('user')
                                                  ->find($id);
-        $comment                    = json_decode($appointment->comment, 1);
+        $comment                    = json_decode(!empty($appointment->comment) ? $appointment->comment : "[]", 1);
         $data                       = $appointment->toArray();
         $data['comment']            = $comment['comment'] ?? null;
         $data['comment_created_at'] = $comment['created_at'] ?? null;
