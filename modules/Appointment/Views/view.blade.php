@@ -102,10 +102,10 @@
                 <table class="table table-striped" id="product-list">
                     <thead>
                     <tr>
-                        <th>{{ trans('Service/Course Name') }}</th>
+                        <th>{{ trans('Service name') }}</th>
                         @if(!empty($assign))
                             <th>{{ trans('Staff') }}</th>
-                            <th>{{ trans('End Time') }}</th>
+                            <th>{{ trans('End time') }}</th>
                         @endif
                         <th>{{ trans('Intend Time') }}</th>
                     </tr>
