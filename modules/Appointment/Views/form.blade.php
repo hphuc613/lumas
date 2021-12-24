@@ -106,7 +106,7 @@
             <label for="assign">{{ trans('Assign') }}</label>
             <div class="row mb-2">
                 <div class="col-md-6">
-                    {!! Form::select( 'user_id', ['' => trans('Select Staff')] + $users->toArray(), $assign[1]['staff_id'] ?? NULL,
+                    {!! Form::select( 'user_id', ['' => trans('Select Staff')] + $users->toArray(), $assign[1]['staff_id'] ?? $appointment->user_id ?? NULL,
                     ['class'    => 'form-control select2 w-100']) !!}
                 </div>
                 <div class="col-md-6">
